@@ -13,6 +13,17 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        float x=0, z=0;
+        if (Input.GetButton("Horizontal"))
+        {
+            x = Input.GetAxis("Horizontal");
+        }
+
+        if (Input.GetButton("Vertical"))
+        {
+            z = Input.GetAxis("Vertical");
+        }
+
+        transform.Translate(new Vector3(x*0.08f, 0, z*0.08f));
     }
 }
