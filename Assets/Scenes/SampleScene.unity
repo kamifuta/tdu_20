@@ -444,7 +444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffdfe22f0bef7e45b44d1a2fbc24bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningPointObj: {fileID: 4397367458314505374, guid: d9e89357da86ba943a098ba65fa3681c,
+  miningPointObj: {fileID: 2823117124402665854, guid: 5f0fa789edda8e84d8dbdaa34c5f5036,
     type: 3}
 --- !u!43 &479562875
 Mesh:
@@ -878,6 +878,7 @@ GameObject:
   - component: {fileID: 895728101}
   - component: {fileID: 895728105}
   - component: {fileID: 895728106}
+  - component: {fileID: 895728107}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -989,6 +990,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!114 &895728107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895728100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4884b825f0365f4c8360ef661c12da8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,7 +1254,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-23900
+  m_Name: pb_Mesh13922
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1721,7 +1734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffdfe22f0bef7e45b44d1a2fbc24bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningPointObj: {fileID: 4397367458314505374, guid: d9e89357da86ba943a098ba65fa3681c,
+  miningPointObj: {fileID: 2823117124402665854, guid: 5f0fa789edda8e84d8dbdaa34c5f5036,
     type: 3}
 --- !u!1 &1765562937
 GameObject:
@@ -2046,7 +2059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ffdfe22f0bef7e45b44d1a2fbc24bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miningPointObj: {fileID: 4397367458314505374, guid: d9e89357da86ba943a098ba65fa3681c,
+  miningPointObj: {fileID: 2823117124402665854, guid: 5f0fa789edda8e84d8dbdaa34c5f5036,
     type: 3}
 --- !u!1 &1899161477
 GameObject:
@@ -2099,7 +2112,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 889d9963723729240b52e6446106d061, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2159,6 +2172,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wall
       objectReference: {fileID: 0}
+    - target: {fileID: 5548500831465414565, guid: 57814c1a8f222a14ebd0003fb58c4059,
+        type: 3}
+      propertyPath: miningPointObj
+      value: 
+      objectReference: {fileID: 2823117124402665854, guid: 5f0fa789edda8e84d8dbdaa34c5f5036,
+        type: 3}
     - target: {fileID: 5548500831465414566, guid: 57814c1a8f222a14ebd0003fb58c4059,
         type: 3}
       propertyPath: m_LocalPosition.x
