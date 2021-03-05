@@ -9,7 +9,7 @@ public class FireTrap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Fire_EF_Obj= Resources.Load<GameObject>("Fire");
+        Fire_EF_Obj= Resources.Load<GameObject>("Fire_EF");
 
         Fire_EF = Instantiate(Fire_EF_Obj, transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
         Fire_EF.Play();
