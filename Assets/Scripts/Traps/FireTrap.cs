@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireTrap : MonoBehaviour
+public class FireTrap : Trap
 {
     private GameObject Fire_EF_Obj;
     private ParticleSystem Fire_EF;
@@ -11,13 +11,18 @@ public class FireTrap : MonoBehaviour
     {
         Fire_EF_Obj= Resources.Load<GameObject>("Fire_EF");
 
-        Fire_EF = Instantiate(Fire_EF_Obj, transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
-        Fire_EF.Play();
+        OnAwake();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    protected override void OnAwake()
+    {
+        Fire_EF = Instantiate(Fire_EF_Obj, transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
+        Fire_EF.Play();
     }
 }
