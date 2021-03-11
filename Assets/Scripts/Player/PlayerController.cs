@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
             z = Input.GetAxis("Vertical");
         }
 
-        transform.Translate(new Vector3(x*0.08f, 0, z*0.08f));
+        transform.Translate(new Vector3(x, 0, z) * Time.deltaTime);
     }
 }
+ 
