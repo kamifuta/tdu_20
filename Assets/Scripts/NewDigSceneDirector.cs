@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class NewDigSceneDirector : MonoBehaviour
 {
     public GameObject[] BoardSprite = new GameObject[3];
+    public Sprite[] _BoardSprites = new Sprite[3];
     private int[,] Board = new int[13, 10];
     private GameObject[,] BoardImage = new GameObject[13, 10];
+    public SpriteRenderer[,] SpriteRenderer = new SpriteRenderer[13, 10];
     private int Strength = 0;
     private Vector3 mousePos;
     private Vector3 objPos;
@@ -24,11 +26,10 @@ public class NewDigSceneDirector : MonoBehaviour
         {
             for (int j = 0; j < 10; j++)
             {
-                
                 Strength = Random.Range(0, 3);
                 Board[i, j] = Strength;
                 BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
-
+                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
             }
         }
     }
@@ -101,11 +102,16 @@ public class NewDigSceneDirector : MonoBehaviour
                 {
                     continue;
                 }
-                Destroy(BoardImage[objPosX + i, objPosY + j]);
+                //Destroy(BoardImage[objPosX + i, objPosY + j]);
                 Board[objPosX + i, objPosY + j] -= 2;
                 if (Board[objPosX+i, objPosY+j] > -1)
                 {
-                    BoardImage[objPosX + i, objPosY +j] = Instantiate(BoardSprite[Board[objPosX + i, objPosY + j]], new Vector3(objPosX + i, objPosY + j, 0), Quaternion.identity);
+                    //BoardImage[objPosX + i, objPosY +j] = Instantiate(BoardSprite[Board[objPosX + i, objPosY + j]], new Vector3(objPosX + i, objPosY + j, 0), Quaternion.identity);
+                    SpriteRenderer[objPosX + i, objPosY + j].sprite = _BoardSprites[Board[objPosX + i, objPosY + j]];
+                }
+                else
+                {
+                    Destroy(BoardImage[objPosX + i, objPosY + j]);
                 }
             }
         }
@@ -118,11 +124,16 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            Destroy(BoardImage[objPosX, objPosY + j]);
+            //Destroy(BoardImage[objPosX, objPosY + j]);
             Board[objPosX, objPosY + j]--;
             if (Board[objPosX , objPosY + j] > -1)
             {
-                BoardImage[objPosX, objPosY + j] = Instantiate(BoardSprite[Board[objPosX, objPosY + j]], new Vector3(objPosX, objPosY + j, 0), Quaternion.identity);
+                //BoardImage[objPosX, objPosY + j] = Instantiate(BoardSprite[Board[objPosX, objPosY + j]], new Vector3(objPosX, objPosY + j, 0), Quaternion.identity);
+                SpriteRenderer[objPosX, objPosY + j].sprite = _BoardSprites[Board[objPosX, objPosY + j]];
+            }
+            else
+            {
+                Destroy(BoardImage[objPosX, objPosY + j]);
             }
         }
         for (int j = -1; j <= 1; j++)
@@ -131,11 +142,16 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            Destroy(BoardImage[objPosX + j, objPosY]);
+            //Destroy(BoardImage[objPosX + j, objPosY]);
             Board[objPosX + j, objPosY]--;
             if (Board[objPosX + j, objPosY ] > -1)
             {
-                BoardImage[objPosX + j, objPosY] = Instantiate(BoardSprite[Board[objPosX + j, objPosY ]], new Vector3(objPosX + j, objPosY, 0), Quaternion.identity);
+                //BoardImage[objPosX + j, objPosY] = Instantiate(BoardSprite[Board[objPosX + j, objPosY ]], new Vector3(objPosX + j, objPosY, 0), Quaternion.identity);
+                SpriteRenderer[objPosX + j, objPosY].sprite = _BoardSprites[Board[objPosX + j, objPosY]];
+            }
+            else
+            {
+                Destroy(BoardImage[objPosX + j, objPosY]);
             }
         }
     }
