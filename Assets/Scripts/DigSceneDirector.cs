@@ -71,10 +71,12 @@ public class DigSceneDirector : MonoBehaviour
             //RaycastHit raycastHit;
 
             RaycastHit[] hit = Physics.RaycastAll(ray.origin, ray.direction);
+            Debug.Log(hit.Length);
+            /*
             if (hit != null)
             {
                 Debug.Log("aaa");
-            }
+            }*/
             /*
             if (Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
             {
