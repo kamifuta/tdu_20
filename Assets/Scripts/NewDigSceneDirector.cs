@@ -17,6 +17,8 @@ public class NewDigSceneDirector : MonoBehaviour
     private int objPosY;
     public Button HammerButton;
     public Button PickelButton;
+    Slider _slider;     //CountBar HP
+    float _hp = 0;
     //public bool HammerCheck = true;
     //public bool PickelCheck = true;
 
@@ -38,11 +40,16 @@ public class NewDigSceneDirector : MonoBehaviour
     void Start()
     {
         IntializeArray();
+        _slider = GameObject.Find("CountBar").GetComponent<Slider>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(_hp >= 30)
+        {
+            //Debug.Log("FINISH!!!");
+        }
         if (Input.GetMouseButtonDown(0))
         {
             SearchMousePosition();
@@ -115,6 +122,9 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
             }
         }
+        _hp += 2;
+        // HPゲージに値を設定
+        _slider.value = _hp;
     }
     public void PickelMode()
     {
@@ -154,5 +164,11 @@ public class NewDigSceneDirector : MonoBehaviour
                 Destroy(BoardImage[objPosX + j, objPosY]);
             }
         }
+        _hp++;
+        // HPゲージに値を設定
+        _slider.value = _hp;
+
+        //試行回数hp
+        //
     }
 }
