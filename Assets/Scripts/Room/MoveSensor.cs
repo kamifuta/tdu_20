@@ -14,7 +14,6 @@ public class MoveSensor : MonoBehaviour
 
     void Update()
     {
-
         if (Input.GetKey(KeyCode.W)) //上キーが押されていれば
         {
             sensorObjPos.position += new Vector3(0.0f, 3.0f, 0.0f);
