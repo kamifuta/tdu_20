@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class IceTrap : Trap
 {
-    public Image IceImage;
+    public GameObject canvas;
+    public GameObject IceImage;
     private int IceHp;
     // Start is called before the first frame update
     void Start()
@@ -33,7 +34,8 @@ public class IceTrap : Trap
     }
     protected override void OnAwake()
     {
-        Instantiate(IceImage, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+        GameObject prefab = (GameObject)Instantiate(IceImage,new Vector3(0.0f,0.0f,0.0f),Quaternion.identity);
+        prefab.transform.SetParent(canvas.transform, false);
 
 
     }
