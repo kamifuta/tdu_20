@@ -17,35 +17,36 @@ public class Having : MonoBehaviour
         }
     }
 
-    public Dictionary<ItemInfo.Item, _item> HaveItem = new Dictionary<ItemInfo.Item, _item>();
+    private ItemInfo itemInfo = new ItemInfo();
+    public Dictionary<int, _item> HaveItem = new Dictionary<int, _item>();
 
     public void GetItem(ItemInfo.Item key)
     {
         if (CheckHadItem(key))
         {
-            HaveItem[key].itemCount++;
+            HaveItem[(int)key].itemCount++;
         }
         else
         {
-            _item item = new _item(new ItemInfo().ItemName[(int)key], 1);
-            HaveItem.Add(key, item);
+            _item item = new _item(itemInfo.ItemName[(int)key], 1);
+            HaveItem.Add((int)key, item);
             /*HaveItem[key].itemName = new ItemInfo().ItemName[(int)key];
             HaveItem[key].itemCount = 1;*/
         }
     }
 
-    public void ThrowItem(string itemName)
+    public void ThrowItem(ItemInfo.Item key)
     {
-        ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), new ItemInfo().ItemName.IndexOf(itemName));
-        if(HaveItem[key].itemCount > 0)
+        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), itemInfo.ItemName.IndexOf(itemName));
+        if(HaveItem[(int)key].itemCount > 0)
         {
-            HaveItem[key].itemCount--;
+            HaveItem[(int)key].itemCount--;
         }
     }
 
     public bool CheckHadItem(ItemInfo.Item key)
     {
-        if (HaveItem.ContainsKey(key))
+        if (HaveItem.ContainsKey((int)key))
         {
             return true;
         }

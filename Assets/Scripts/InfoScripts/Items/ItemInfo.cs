@@ -11,10 +11,10 @@ public class ItemInfo
         C,
     };
 
-    public List<string> ItemName = new List<string>()
+    public Dictionary<int,string> ItemName = new Dictionary<int,string>()
     {
-        "A",
-        "B",
-        "C",
+        {0, "A"},
+        {1, "B"},
+        {2, "C"},
     };
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Trap:MonoBehaviour
 {
+    public string trapName;
+
     protected virtual void OnAwake()
     {
 

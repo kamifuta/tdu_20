@@ -5,10 +5,12 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     private Having having;
+    private Having_trap having_Trap;
     // Start is called before the first frame update
     void Start()
     {
         having = GetComponent<Having>();
+        having_Trap = GetComponent<Having_trap>();
     }
 
     // Update is called once per frame
@@ -29,19 +31,10 @@ public class PlayerAction : MonoBehaviour
             having.GetItem(ItemInfo.Item.C);
         }
 
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            having.GetItem(ItemInfo.Item.A);
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.B))
-        {
-            having.GetItem(ItemInfo.Item.B);
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.C))
-        {
-            having.GetItem(ItemInfo.Item.C);
+            Debug.Log("jj");
+            having_Trap.GetTrap(TrapsInfo.TrapEnum.fireTrap);
         }
     }
 }
