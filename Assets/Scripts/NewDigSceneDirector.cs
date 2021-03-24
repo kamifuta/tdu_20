@@ -8,6 +8,7 @@ public class NewDigSceneDirector : MonoBehaviour
     public GameObject[] BoardSprite = new GameObject[3];
     public Sprite[] _BoardSprites = new Sprite[3];
     private int[,] Board = new int[13, 10];
+    //private int [,] FossilLocation = new int[13,10];
     private GameObject[,] BoardImage = new GameObject[13, 10];
     public SpriteRenderer[,] SpriteRenderer = new SpriteRenderer[13, 10];
     private int Strength = 0;
@@ -21,6 +22,11 @@ public class NewDigSceneDirector : MonoBehaviour
     float _hp = 0;
     //public bool HammerCheck = true;
     //public bool PickelCheck = true;
+
+    private void FossilGenerator()
+    {
+        
+    }
 
     private void IntializeArray()
     {
