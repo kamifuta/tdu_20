@@ -31,7 +31,52 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void FossilGenerator()
     {
-        
+        int RandomGenerateNum;  //生成する化石の個数
+        RandomGenerateNum = Random.Range(2, 5);
+        //Debug.Log("個数＝" + RandomGenerateNum);
+        int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
+        Vector3 Flocation = new Vector3(0, 0, 0);
+        for (int i = 0; i < RandomGenerateNum; i++)
+        {
+            RandomKindNum = Random.Range(0, 12/*13*/);
+            //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
+            
+            if (RandomKindNum <= 3)
+            {
+                Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
+            }
+            else if(RandomKindNum <= 7)
+            {
+                Flocation = new Vector3(Random.Range(1, 11), Random.Range(1, 8), 0);
+            }
+            else if(RandomKindNum <= 11)
+            {
+                Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
+            }
+            //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
+            
+            for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0);k++)
+            {
+                for(int j=0;j< FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+                {
+                    FossilLocation[k, j] = 1;
+                }
+                //これでいけそう   配列に値入れる
+            }
+            
+            var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
+            tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
+
+            float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
+            Debug.Log(FossilDic[RandomKindNum].Fsize.Length);
+            tmp.transform.localScale = new Vector3(foo,foo,1);
+
+        }
+
+        //Generateするのに必要なこと
+        //todo:生成する場所の制限
+        //todo:配列の連携
+        //todo:生成するオブジェクトの種類の比率
     }
 
 
@@ -71,24 +116,7 @@ public class NewDigSceneDirector : MonoBehaviour
             {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
         };
 
-        int RandomGenerateNum;  //生成する化石の個数
-        RandomGenerateNum = Random.Range(2, 5);
-        Debug.Log("個数＝" + RandomGenerateNum);
-        int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
-
-        for (int i = 0; i < RandomGenerateNum; i++)
-        {
-            RandomKindNum = Random.Range(0, 13);
-            Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
-            var tmp = Instantiate(Fprefab);
-            tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
-            
-        }
-
-        //Generateするのに必要なこと
-        //todo:生成する場所の制限
-        //todo:配列の連携
-        //todo:生成するオブジェクトの種類の比率
+        FossilGenerator();
 
 
     }
