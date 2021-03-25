@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class NewDigSceneDirector : MonoBehaviour
 {
     public GameObject[] BoardSprite = new GameObject[3];
@@ -22,6 +23,15 @@ public class NewDigSceneDirector : MonoBehaviour
     float _hp = 0;
     //public bool HammerCheck = true;
     //public bool PickelCheck = true;
+    private int[,] FossilLocation = new int[13, 10];
+
+    Dictionary<int, FossilList> FossilDic;
+    
+
+    private void FossilGenerator()
+    {
+        
+    }
 
     private void FossilGenerator()
     {
@@ -47,6 +57,22 @@ public class NewDigSceneDirector : MonoBehaviour
     {
         IntializeArray();
         _slider = GameObject.Find("CountBar").GetComponent<Slider>();
+        FossilDic = new Dictionary<int, FossilList>()
+        {
+            {0,new FossilList("小さい　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
+            {1,new FossilList("小さい　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
+            {2,new FossilList("小さい　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
+            {3,new FossilList("小さい　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
+            {4,new FossilList("大きい　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
+            {5,new FossilList("大きい　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
+            {6,new FossilList("大きい　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
+            {7,new FossilList("大きい　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
+            {8,new FossilList("特大の　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
+            {9,new FossilList("特大の　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
+            {10,new FossilList("特大の　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
+            {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
+            {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
+        };
     }
 
     // Update is called once per frame
