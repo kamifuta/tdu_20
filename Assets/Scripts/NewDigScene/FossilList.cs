@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//  F = Fossil
-
 public class FossilList
 {
-    string Fname;
-    Sprite Fsprite;
-    int[,] Fsize;
+    //  接頭辞　F = Fossil
+
+    public string Fname;
+    public Sprite Fsprite;
+    public int[,] Fsize;
     
     public FossilList(string _name,Sprite _sprite,int[,] _size)
     {

@@ -26,17 +26,59 @@ public class NewDigSceneDirector : MonoBehaviour
     private int[,] FossilLocation = new int[13, 10];
 
     Dictionary<int, FossilList> FossilDic;
-    
+
+    public GameObject Fprefab;
 
     private void FossilGenerator()
     {
-        
+        int RandomGenerateNum;  //生成する化石の個数
+        RandomGenerateNum = Random.Range(2, 5);
+        //Debug.Log("個数＝" + RandomGenerateNum);
+        int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
+        Vector3 Flocation = new Vector3(0, 0, 0);
+        for (int i = 0; i < RandomGenerateNum; i++)
+        {
+            RandomKindNum = Random.Range(0, 12/*13*/);
+            //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
+            
+            if (RandomKindNum <= 3)
+            {
+                Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
+            }
+            else if(RandomKindNum <= 7)
+            {
+                Flocation = new Vector3(Random.Range(1, 11), Random.Range(1, 8), 0);
+            }
+            else if(RandomKindNum <= 11)
+            {
+                Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
+            }
+            //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
+            
+            for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0);k++)
+            {
+                for(int j=0;j< FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+                {
+                    FossilLocation[k, j] = 1;
+                }
+                //これでいけそう   配列に値入れる
+            }
+            
+            var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
+            tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
+
+            float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
+            Debug.Log(FossilDic[RandomKindNum].Fsize.Length);
+            tmp.transform.localScale = new Vector3(foo,foo,1);
+
+        }
+
+        //Generateするのに必要なこと
+        //todo:生成する場所の制限
+        //todo:配列の連携
+        //todo:生成するオブジェクトの種類の比率
     }
 
-    private void FossilGenerator()
-    {
-        
-    }
 
     private void IntializeArray()
     {
@@ -59,20 +101,24 @@ public class NewDigSceneDirector : MonoBehaviour
         _slider = GameObject.Find("CountBar").GetComponent<Slider>();
         FossilDic = new Dictionary<int, FossilList>()
         {
-            {0,new FossilList("小さい　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
-            {1,new FossilList("小さい　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
-            {2,new FossilList("小さい　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
-            {3,new FossilList("小さい　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[2,2])},
-            {4,new FossilList("大きい　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
-            {5,new FossilList("大きい　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
-            {6,new FossilList("大きい　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
-            {7,new FossilList("大きい　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[3,3])},
-            {8,new FossilList("特大の　赤色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
-            {9,new FossilList("特大の　青色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
-            {10,new FossilList("特大の　緑色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
-            {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("SampleGem"),new int[4,4])},
+            {0,new FossilList("小さい　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[2,2])},
+            {1,new FossilList("小さい　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[2,2])},
+            {2,new FossilList("小さい　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[2,2])},
+            {3,new FossilList("小さい　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[2,2])},
+            {4,new FossilList("大きい　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[3,3])},
+            {5,new FossilList("大きい　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[3,3])},
+            {6,new FossilList("大きい　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[3,3])},
+            {7,new FossilList("大きい　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[3,3])},
+            {8,new FossilList("特大の　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[4,4])},
+            {9,new FossilList("特大の　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[4,4])},
+            {10,new FossilList("特大の　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[4,4])},
+            {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[4,4])},
             {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
         };
+
+        FossilGenerator();
+
+
     }
 
     // Update is called once per frame
