@@ -7,10 +7,10 @@ public class MoveSensor : MonoBehaviour
     Transform sensorObjPos;
     [SerializeField]Animator sensorAnimator=null;
     [System.NonSerialized] public GameObject selectObj;
-   
-    private List<float> objColorListBackup=new List<float>();
-    private List<GameObject> objListBackup = new List<GameObject>();
 
+    private List<float> objRendererList = new List<float>();
+    //private int enterRendererCount=0;
+    private int exitRendererCount=0;
     private float clickposX;
     private float clickposZ;
 
@@ -18,6 +18,11 @@ public class MoveSensor : MonoBehaviour
     private void Awake()
     {
         sensorObjPos = gameObject.GetComponent<Transform>();
+    }
+
+    private void OnDisable()
+    {
+        objRendererList.Clear();
     }
 
     void Update()
@@ -79,65 +84,42 @@ public class MoveSensor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         sensorAnimator.SetTrigger("TouchObj");
-        float[] objColorAlpha;
-        GameObject[] objInRenderer;
-        if (other.gameObject.GetComponent<Renderer>())//とりあえず子オブジェクトまで（孫は書いてない）
-        {
-            objColorAlpha = new float[1];
-            objInRenderer = new GameObject[1];
-            objColorAlpha[0]=other.gameObject.GetComponent<Renderer>().material.color.a;//Add
-            ObjColorChange(other.gameObject, 100f / 255f);
-            Debug.Log("ObjColorChange");            
-        }
-        else
-        {
-            Debug.Log("EnterJewel");
-            var childRenderer = other.gameObject.GetComponentsInChildren<Renderer>();
-            int childTransformslen = childRenderer.Length;
 
-            objColorAlpha = new float[childTransformslen];
-            objInRenderer = new GameObject[childTransformslen];
-            for (int i = 0; i < childTransformslen; i++)
-            {
-                objColorAlpha[i] = childRenderer[i].material.color.a;
-                objInRenderer[i] = childRenderer[i].gameObject;
-                ObjColorChange(objInRenderer[i], 100f / 255f);
-            }
+        Debug.Log("EnterJewel");
+        var childRenderer = other.gameObject.GetComponentsInChildren<Renderer>();
+        int childRendererLen = childRenderer.Length;
+        foreach (var colorchangeRenderer in childRenderer)
+        {
+            objRendererList.Add(colorchangeRenderer.material.color.a);
+            ObjColorChange(colorchangeRenderer, 80f / 255f);
+            Debug.Log("childRenderer[i]" + colorchangeRenderer);
         }
 
-        objColorListBackup.AddRange(objColorAlpha);
-        objListBackup.AddRange(objInRenderer);
-
-        Debug.Log(objColorAlpha);
-        //objColorAlpha.Clear();
         selectObj = other.gameObject;
     }
 
 
     private void OnTriggerExit(Collider other)
     {
-        List<float> enterObjColorAlpha=new List<float>();
-        List<GameObject> enterObj=new List<GameObject>();
-        enterObjColorAlpha.AddRange(objColorListBackup);
-        enterObj.AddRange(objListBackup);
-        objColorListBackup.Clear();
-        int alphaCount = enterObjColorAlpha.Count;
-
-        for (int i=0; enterObjColorAlpha[i] < alphaCount; i++)
-        {
-            ObjColorChange(other.gameObject, enterObjColorAlpha[i]);
-        }
-        //enterObjColorAlpha.Clear();
-        //enterObjColorAlpha.Clear();
-        selectObj = null;
         sensorAnimator.SetTrigger("IdleObj");
+
+        Debug.Log("ExitJewel");
+        var childRenderer = other.gameObject.GetComponentsInChildren<Renderer>();//とりあえず子オブジェクトまで（孫は書いてない）
+        foreach (var colorchangeRenderer in childRenderer)
+        {
+            ObjColorChange(colorchangeRenderer, objRendererList[exitRendererCount]);
+            exitRendererCount++;
+            Debug.Log("colorchangeRenderer" + colorchangeRenderer);
+        }
+
+        selectObj = null;
     }
 
-    private void ObjColorChange(GameObject colorChangeObj,float alphaColor)
+    private void ObjColorChange(Renderer colorChangeRenderer,float alphaColor)
     {
-        Color colorChangeObjColor = colorChangeObj.GetComponent<Renderer>().material.color;
+        Color colorChangeObjColor = colorChangeRenderer.material.color;
         colorChangeObjColor.a = alphaColor;
-        colorChangeObj.GetComponent<Renderer>().material.color = colorChangeObjColor; 
+        colorChangeRenderer.material.color = colorChangeObjColor; 
     }
 }
 
