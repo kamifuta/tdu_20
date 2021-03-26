@@ -18,18 +18,16 @@ public class IceTrap : Trap
     // Update is called once per frame
     void Update()
     {
+
+        GameObject obj = GameObject.Find("IceImage(Clone)");
         if (Input.GetMouseButtonDown(0)) 
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 10.0f)) 
-            {
-               Debug.Log(hit.collider.gameObject.name);
-                
-            }
-        
-        
-     
+            IceHp -= 1;
+            Debug.Log(IceHp);
+        }
+        if (IceHp == 0) 
+        {
+            Destroy(obj);
         }
     }
     protected override void OnAwake()
