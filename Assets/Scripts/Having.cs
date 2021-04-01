@@ -6,50 +6,159 @@ using System.Linq;
 
 public class Having : MonoBehaviour
 {
-    public class _item
+    
+
+    public class _trap
     {
         public string itemName;
         public int itemCount;
-        public _item(string name,int count)
+        public _trap(string name, int count)
         {
             itemName = name;
             itemCount = count;
         }
     }
 
-    public Dictionary<ItemInfo.Item, _item> HaveItem = new Dictionary<ItemInfo.Item, _item>();
+    
+
+    private ItemInfo itemInfo = new ItemInfo();
+    private TrapsInfo trapInfo = new TrapsInfo();
+   
+    public Dictionary<int, ItemInfo._item> HaveItem = new Dictionary<int, ItemInfo._item>();
+    public Dictionary<int, _trap> HaveTrap = new Dictionary<int, _trap>();
+    public int redPoint = 0;
+    public int bluePoint = 0;
+    public int yellowPoint = 0;
+    public int greenPoint = 0;
+
+    private PlayerAction playerAction;
+
+    private void Awake()
+    {
+        playerAction = GetComponent<PlayerAction>();
+    }
+
+    //アイテム用------------------------------------------------
 
     public void GetItem(ItemInfo.Item key)
     {
         if (CheckHadItem(key))
         {
-            HaveItem[key].itemCount++;
+            HaveItem[(int)key].itemCount++;
         }
         else
         {
-            _item item = new _item(new ItemInfo().ItemName[(int)key], 1);
-            HaveItem.Add(key, item);
+            ItemInfo._item item = new ItemInfo().ItemInfoDic[(int)key];
+            item.itemCount = 1;
+            HaveItem.Add((int)key, item);
             /*HaveItem[key].itemName = new ItemInfo().ItemName[(int)key];
             HaveItem[key].itemCount = 1;*/
         }
     }
 
-    public void ThrowItem(string itemName)
+    public void ThrowItem(ItemInfo.Item key)
     {
-        ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), new ItemInfo().ItemName.IndexOf(itemName));
-        if(HaveItem[key].itemCount > 0)
+        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), itemInfo.ItemName.IndexOf(itemName));
+        if(HaveItem[(int)key].itemCount > 0)
         {
-            HaveItem[key].itemCount--;
+            HaveItem[(int)key].itemCount--;
         }
     }
 
     public bool CheckHadItem(ItemInfo.Item key)
     {
-        if (HaveItem.ContainsKey(key))
+        if (HaveItem.ContainsKey((int)key))
         {
             return true;
         }
 
         return false;
+    }
+    //---------------------------------------------------------------------------
+
+    //トラップ用-----------------------------------------------------------------
+
+    public void GetTrap(TrapsInfo.TrapEnum key)
+    {
+        if (CheckHadTrap(key))
+        {
+            HaveTrap[(int)key].itemCount++;
+        }
+        else
+        {
+            _trap trap = new _trap(trapInfo.trapName[(int)key], 1);
+            HaveTrap.Add((int)key, trap);
+        }
+    }
+
+    public void PutTrap(TrapsInfo.TrapEnum key)
+    {
+        if (HaveTrap[(int)key].itemCount > 0)
+        {
+            HaveTrap[(int)key].itemCount--;
+        }
+
+        playerAction.Put(key);
+        //Instantiate(trapPrefab, transform.position + Vector3.forward, Quaternion.identity);
+    }
+
+    public void ThrowTrap(TrapsInfo.TrapEnum key)
+    {
+        if (HaveTrap[(int)key].itemCount > 0)
+        {
+            HaveTrap[(int)key].itemCount--;
+        }
+    }
+
+    public bool CheckHadTrap(TrapsInfo.TrapEnum key)
+    {
+        if (HaveTrap.ContainsKey((int)key))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    //----------------------------------------------------------------
+
+    //ポイント用-------------------------------------------------------
+
+    public void GetPoint(ItemInfo.pointType pointType, int point)
+    {
+        switch (pointType)
+        {
+            case ItemInfo.pointType.red:
+                redPoint += point;
+                break;
+            case ItemInfo.pointType.blue:
+                bluePoint += point;
+                break;
+            case ItemInfo.pointType.yellow:
+                yellowPoint += point;
+                break;
+            case ItemInfo.pointType.green:
+                yellowPoint += point;
+                break;
+        }
+    }
+
+    public void LosePoint(ItemInfo.pointType pointType, int point)
+    {
+        switch (pointType)
+        {
+            case ItemInfo.pointType.red:
+                redPoint -= point;
+                break;
+            case ItemInfo.pointType.blue:
+                bluePoint -= point;
+                break;
+            case ItemInfo.pointType.yellow:
+                yellowPoint -= point;
+                break;
+            case ItemInfo.pointType.green:
+                yellowPoint -= point;
+                break;
+        }
     }
 }

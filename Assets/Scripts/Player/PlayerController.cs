@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerInput input;
+    private PlayerAction playerAction;
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        input = GetComponent<PlayerInput>();
+        playerAction = GetComponent<PlayerAction>();
+        rb = GetComponent<Rigidbody>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,18 +24,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float x=0, z=0;
-        if (Input.GetButton("Horizontal"))
+        if (!playerAction.IsAction)
         {
-            x = Input.GetAxis("Horizontal");
+            rb.velocity = input.moveVec.normalized;
         }
 
-        if (Input.GetButton("Vertical"))
+        if (input.moveVec.x != 0 || input.moveVec.z != 0)
         {
-            z = Input.GetAxis("Vertical");
+            transform.LookAt(transform.position + input.moveVec);
         }
-
-        transform.Translate(new Vector3(x, 0, z) * Time.deltaTime);
+        
     }
 }
  

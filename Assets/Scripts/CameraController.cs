@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
-    private Having having;
-
+    private GameObject target;
     // Start is called before the first frame update
     void Start()
     {
-        having = GetComponent<Having>();
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        transform.position = target.transform.position + Vector3.up * 10;
     }
 }
