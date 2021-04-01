@@ -25,10 +25,10 @@ public class MoveSensor : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void OnEnable()
+    /*private void OnEnable()
     {
         //アニメ―ション開始（AnimationAwake切る）
-    }
+    }*/
     private void OnDisable()
     {
         selectObjList.Clear();
@@ -38,7 +38,7 @@ public class MoveSensor : MonoBehaviour
         Debug.Log("exitRendererCount" + exitRendererCount);
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -64,18 +64,20 @@ public class MoveSensor : MonoBehaviour
 
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (selectObjList[exitObjCount]) //nullじゃなかったら
+            if (selectObjList.Count-1== exitObjCount) //nullじゃなかったら
             {
+                Debug.Log("オブジェクト移動開始!!!!!!!");
                 moveObjObj.SetActive(true);
-                moveObj.selectObj = selectObjList[exitObjCount];
+                moveObj.MoveObjSet(selectObjList[exitObjCount]);
                 selectObjList[exitObjCount].transform.position += new Vector3(0.0f,1.0f,0.0f);
                 OnTriggerExit(selectObjList[exitObjCount].GetComponent<Collider>());
                 gameObject.SetActive(false);
             }
             else
             {
+                gameObject.SetActive(false);
                 Debug.Log("オブジェクト配置開始!!!!!!!");
-                //オブジェクト配置
+                //別スクリプトでオブジェクトの情報引っ張ってきて直でMoveObjに渡す
             }
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
@@ -103,8 +105,8 @@ public class MoveSensor : MonoBehaviour
                 if (Physics.Raycast(ray, out hit[i]))
                 {
                     Debug.Log("hit[i].point" + hit[i].point);
-                    clickposX = ((int)(hit[i].point.x / 1.5)) * 1.5f;///////////////////////////////////////////////四捨五入がいい
-                    clickposZ = ((int)(hit[i].point.z / 1.5)) * 1.5f;///////////////////////////////////////////////四捨五入がいい
+                    clickposX = Mathf.RoundToInt(hit[i].point.x / 1.5f) * 1.5f;//clickposxはfloat(.5にはなる)
+                    clickposZ = Mathf.RoundToInt(hit[i].point.z / 1.5f) * 1.5f;
                     Debug.Log("clickposX:" + clickposX);
                     Debug.Log("clickposY:" + clickposZ);
 
@@ -121,7 +123,6 @@ public class MoveSensor : MonoBehaviour
 
         Debug.Log("EnterJewel");
         var childRenderer = other.gameObject.GetComponentsInChildren<Renderer>();
-        int childRendererLen = childRenderer.Length;
         foreach (var colorchangeRenderer in childRenderer)
         {
             objRendererList.Add(colorchangeRenderer.material.color.a);

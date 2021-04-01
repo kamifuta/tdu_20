@@ -10,37 +10,65 @@ public class MoveObj : MonoBehaviour
     private float clickposX;
     private float clickposZ;
 
-    [System.NonSerialized]public GameObject selectObj;//MoveSensorからいじる
+    private MoveObjTriggerStayJudge stayJudge;
+    private Collider moveObjCollider;
+    private Collider moveObjCollidersub;
+    Rigidbody moveObjRigidBody;
+
+    private GameObject moveObj;//MoveSensorからいじる
     private void Awake()
     {
         //moveSensor = moveSensorObj.GetComponent<MoveSensor>();
         gameObject.SetActive(false);
     }
-    
+    public void MoveObjSet(GameObject selectObj)
+    {
+        moveObj = selectObj;
+        for (int i=0; i<3;i++)
+        {
+            if (i==0)
+            {
+                moveObjCollidersub = moveObj.GetComponent<BoxCollider>();
+            }
+            else if (i==1)
+            {
+                moveObjCollidersub = moveObj.GetComponent<SphereCollider>();
+            }
+            else if (i==2)
+            {
+                moveObjCollidersub = moveObj.GetComponent<CapsuleCollider>();
+            }
+            if (moveObjCollidersub != null)
+            {
+                moveObjCollider = moveObjCollidersub;
+                break;
+            }
+        }
+        
+        moveObjCollider.isTrigger = true;
+        stayJudge = moveObj.AddComponent<MoveObjTriggerStayJudge>();
+        moveObjRigidBody=moveObj.AddComponent<Rigidbody>();
+        moveObjRigidBody.useGravity = false;
+    }
+
     private void Update()
     {
       
         if (Input.GetKeyDown(KeyCode.W))
         {
-
-            selectObj.transform.position += new Vector3(0.0f, 0.0f, 1.5f);
-            
+            moveObj.transform.position += new Vector3(0.0f, 0.0f, 1.5f);   
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-
-            selectObj.transform.position += new Vector3(0.0f, 0.0f, -1.5f);
-            
+            moveObj.transform.position += new Vector3(0.0f, 0.0f, -1.5f);   
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-
-            selectObj.transform.position += new Vector3(-1.5f, 0.0f, 0.0f);
+            moveObj.transform.position += new Vector3(-1.5f, 0.0f, 0.0f);
         }
-        
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            selectObj.transform.position += new Vector3(1.5f, 0.0f, 0.0f);
+            moveObj.transform.position += new Vector3(1.5f, 0.0f, 0.0f);
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -49,21 +77,36 @@ public class MoveObj : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Space))
         {
-            moveSensorObj.SetActive(true);
-            selectObj.transform.position += new Vector3(0.0f,-1.0f,0.0f);
-            moveSensorObj.transform.position = new Vector3(0, moveSensorObj.transform.position.y,0);//////////////////////////////////////////////////////////////////////////////////////////////////
-            gameObject.SetActive(false);
+            if (stayJudge.stayObj == null)
+            {
+                moveSensorObj.SetActive(true);
+                moveObj.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);////
+                moveObjCollider.isTrigger = false;
+                Destroy(stayJudge); 
+                Destroy(moveObjRigidBody);
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                //置けないよーっていうなんか。
+            }
+            
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Debug.Log("オブジェクト削除!!!!!!!!!!");
             //Delete書く//////////////////////////////////////////////////////////////////////////////////////////////////////////
             moveSensorObj.SetActive(true);
-            moveSensorObj.transform.position = new Vector3(0, moveSensorObj.transform.position.y,0);//////////////////////////////////////////////////////////////////////////////////////////////////
+            moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);///
             gameObject.SetActive(false);
         }
 
-
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Debug.Log("stayJudge:"+ stayJudge);
+            Debug.Log("moveObjCollider:" + moveObjCollider);
+        }
     }
 
     private void ClickFloor(Ray ray)
@@ -78,22 +121,22 @@ public class MoveObj : MonoBehaviour
             if (hit[i].transform != null && hit[i].transform.gameObject.CompareTag("Floor"))
             {
                 Debug.Log("!RoomObj,hit2d:" + hit[i].transform.gameObject);
-                //sensorObjPos.position 
 
                 if (Physics.Raycast(ray, out hit[i]))
                 {
                     Debug.Log("hit[i].point" + hit[i].point);
-                    clickposX = ((int)(hit[i].point.x / 1.5)) * 1.5f;///////////////////////////////////////////////四捨五入がいい
-                    clickposZ = ((int)(hit[i].point.z / 1.5)) * 1.5f;///////////////////////////////////////////////四捨五入がいい
+                    clickposX = Mathf.RoundToInt(hit[i].point.x / 1.5f) * 1.5f;//clickposxはfloat(.5にはなる)
+                    clickposZ = Mathf.RoundToInt(hit[i].point.z / 1.5f) * 1.5f;
                     Debug.Log("clickposX:" + clickposX);
                     Debug.Log("clickposY:" + clickposZ);
 
-                    selectObj.transform.position = new Vector3(clickposX, selectObj.transform.position.y, clickposZ);
+                    moveObj.transform.position = new Vector3(clickposX, moveObj.transform.position.y, clickposZ);
      
                 }
 
             }
         }
     }
+
 
 }
