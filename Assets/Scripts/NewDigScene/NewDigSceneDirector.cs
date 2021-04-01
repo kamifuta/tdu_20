@@ -24,61 +24,140 @@ public class NewDigSceneDirector : MonoBehaviour
     //public bool HammerCheck = true;
     //public bool PickelCheck = true;
     private int[,] FossilLocation = new int[13, 10];
-
+    int FlocationX = 0;
+    int FlocationY = 0;
+    bool CheckOverlap = true; //重なりあるか否か
     Dictionary<int, FossilList> FossilDic;
 
     public GameObject Fprefab;
 
-    private void FossilGenerator()
+    private IEnumerator FossilGenerator()
     {
         int RandomGenerateNum;  //生成する化石の個数
         RandomGenerateNum = Random.Range(2, 5);
         //Debug.Log("個数＝" + RandomGenerateNum);
         int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
         Vector3 Flocation = new Vector3(0, 0, 0);
-        for (int i = 0; i < RandomGenerateNum; i++)
+        for(int i = 0; i < RandomGenerateNum; i++)
         {
             RandomKindNum = Random.Range(0, 12/*13*/);
             //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
-            
-            if (RandomKindNum <= 3)
+
+            //↓下記のwhileは大きなバグの原因含んでいるので注意！！終わらない可能性あり
+            while (true)
             {
-                Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
-            }
-            else if(RandomKindNum <= 7)
-            {
-                Flocation = new Vector3(Random.Range(1, 11), Random.Range(1, 8), 0);
-            }
-            else if(RandomKindNum <= 11)
-            {
-                Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
-            }
-            //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
-            
-            for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0);k++)
-            {
-                for(int j=0;j< FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+                if (RandomKindNum <= 3)
                 {
-                    FossilLocation[k, j] = 1;
+                    Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
                 }
-                //これでいけそう   配列に値入れる
+                else if (RandomKindNum <= 7)
+                {
+                    Flocation = new Vector3(Random.Range(1, 11), Random.Range(1, 8), 0);
+                }
+                else if (RandomKindNum <= 11)
+                {
+                    Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
+                }
+                //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
+                FlocationX = (int)Mathf.Floor(Flocation.x); //Flocationのxの小数第一位を切り捨てたもの　配列の値に使う
+                FlocationY = (int)Mathf.Floor(Flocation.y); //Flocationのyの小数第一位を切り捨てたもの　配列の値に使う
+
+                yield return StartCoroutine(CheckLocation(RandomKindNum, FlocationX, FlocationY));
+                if (CheckOverlap) break;
             }
-            
+
+            int testX = 0;
+            int testY = 0;
+
+            for (int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
+            {
+                for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+                {
+                    if (RandomKindNum <= 3)
+                    {
+                        FossilLocation[k + FlocationX, j + FlocationY] = 1;
+                        testX = k + FlocationX;
+                        testY = j + FlocationY;
+                        Debug.Log(RandomKindNum+"("+testX+","+testY+")");
+                        
+                    }
+                    else if (RandomKindNum <= 7)
+                    {
+
+                        FossilLocation[k + FlocationX - 1, j + FlocationY -1] = 1;
+                        testX = k + FlocationX-1;
+                        testY = j + FlocationY-1;
+                        Debug.Log(RandomKindNum + "(" + testX + "," + testY + ")");
+                    }
+                    else if (RandomKindNum <= 11)
+                    {
+                        FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
+                        testX = k + FlocationX-1;
+                        testY = j + FlocationY-1;
+                        Debug.Log(RandomKindNum + "(" + testX + "," + testY + ")");
+                    }
+                }
+            }
             var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
             tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
 
             float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
-            Debug.Log(FossilDic[RandomKindNum].Fsize.Length);
             tmp.transform.localScale = new Vector3(foo,foo,1);
 
         }
 
         //Generateするのに必要なこと
-        //todo:生成する場所の制限
-        //todo:配列の連携
+        //todo:重ならないように　 →　完了
+        //todo:生成する場所の制限　→　完了
+        //todo:配列の連携　化石掘れたかどうか
         //todo:生成するオブジェクトの種類の比率
+        //todo:各エフェクト
+        //todo:終わった後の処理
     }
 
+    //事前に化石が置かれているか精査
+    private IEnumerator CheckLocation(int RandomKindNum,int FlocationX,int FlocationY)
+    {
+        for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
+        {
+            for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+            {
+                if (RandomKindNum <= 3)
+                {
+                    if (FossilLocation[k + FlocationX, j + FlocationY] == 1)
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
+                }
+                else if (RandomKindNum <= 7)
+                {
+                    if (FossilLocation[k + FlocationX-1, j + FlocationY-1] == 1)
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
+                }
+                else if (RandomKindNum <= 11)
+                {
+                    if (FossilLocation[k + FlocationX-1, j + FlocationY-1] == 1)
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
+                }
+
+
+            }
+        }
+        CheckOverlap =  true;
+    }
+    private void DigResult()
+    {
+        //生成された化石のキーと生成場所をそれぞれ配列で保存
+        //それぞれの配列０番目から見ていく
+        Debug.Log("dosiyo");
+    }
 
     private void IntializeArray()
     {
@@ -116,7 +195,7 @@ public class NewDigSceneDirector : MonoBehaviour
             {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
         };
 
-        FossilGenerator();
+        StartCoroutine(FossilGenerator());
 
 
     }
@@ -126,9 +205,10 @@ public class NewDigSceneDirector : MonoBehaviour
     {
         if(_hp >= 30)
         {
+            //DigResult();
             //Debug.Log("FINISH!!!");
         }
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && _hp < 30)
         {
             SearchMousePosition();
 
@@ -247,6 +327,5 @@ public class NewDigSceneDirector : MonoBehaviour
         _slider.value = _hp;
 
         //試行回数hp
-        //
     }
 }
