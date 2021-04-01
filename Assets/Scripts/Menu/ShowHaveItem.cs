@@ -38,7 +38,7 @@ public class ShowHaveItem : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
             //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
             if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
@@ -56,7 +56,7 @@ public class ShowHaveItem : MonoBehaviour
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new ItemInfo().ItemName[i];
+            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;

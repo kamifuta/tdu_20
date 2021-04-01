@@ -1,44 +1,45 @@
-﻿using System.Collections;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 
-public class NodeController : MonoBehaviour
+public class NodeController_point : MonoBehaviour
 {
-    private GameObject itemPanel;
-    public GameObject throwButtonObj;
+    public GameObject countUpButtonObj;
+    public GameObject countDownButtonObj;
+    public Text itemCountText;
     private Having having;
     private ShowHaveItem showHaveItem;
+
+    private int itemCount=0;
 
     // Start is called before the first frame update
     void Start()
     {
-        itemPanel = GameObject.Find("HaveItemPanel");
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
         showHaveItem = GameObject.FindObjectOfType<ShowHaveItem>();
-        throwButtonObj.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void OnClickItemNode()
     {
-        throwButtonObj.SetActive(true);
+        countUpButtonObj.SetActive(true);
     }
 
-    public void OnClickThrowButton()
+    public void OnClickCountUpButton()
     {
+        itemCount++;
         string itemName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
         //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), new ItemInfo().ItemName.IndexOf(itemName));
         var pair = new ItemInfo().ItemInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
         ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), pair.Key);
-        throwButtonObj.SetActive(false);
         having.ThrowItem(key);
         showHaveItem.ShowItem();
     }

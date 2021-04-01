@@ -1,15 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
-public class ShowHaveTrap : MonoBehaviour
+public class ShowExchangePoint : MonoBehaviour
 {
     public GameObject nodePrefab;
     private List<GameObject> nodeList = new List<GameObject>();
     private List<Text> nodeNameTextList = new List<Text>();
     private List<Text> nodeCountTextList = new List<Text>();
+    private List<Text> nodePointTextList = new List<Text>();
     private Having having;
     private int listNum = 0;
 
@@ -21,7 +22,7 @@ public class ShowHaveTrap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
     }
 
     // Update is called once per frame
@@ -38,10 +39,10 @@ public class ShowHaveTrap : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
             //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
-            if (!having.CheckHadTrap((TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), i)) || having.HaveTrap[i].itemCount == 0)
+            if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
             {
                 continue;
             }
@@ -54,10 +55,12 @@ public class ShowHaveTrap : MonoBehaviour
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
+                nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new TrapsInfo().trapName[i];
-            nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
+            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
+            nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
+            nodePointTextList[listNum].text = having.HaveItem[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
