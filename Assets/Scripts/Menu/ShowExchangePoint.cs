@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowHaveItem : MonoBehaviour
+public class ShowExchangePoint : MonoBehaviour
 {
     public GameObject nodePrefab;
+    public Text havePointText;
     private List<GameObject> nodeList = new List<GameObject>();
     private List<Text> nodeNameTextList = new List<Text>();
     private List<Text> nodeCountTextList = new List<Text>();
+    private List<Text> nodePointTextList = new List<Text>();
     private Having having;
     private int listNum = 0;
 
@@ -27,18 +29,18 @@ public class ShowHaveItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        havePointText.text = "赤:" + having.redPoint + "青:" + having.bluePoint + "黄:" + having.yellowPoint + "緑:" + having.greenPoint;
     }
 
     public void ShowItem()
     {
         listNum = 0;
-        foreach(var obj in nodeList)
+        foreach (var obj in nodeList)
         {
             obj.SetActive(false);
         }
 
-        for(int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
+        for (int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
             //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
             if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
@@ -54,12 +56,23 @@ public class ShowHaveItem : MonoBehaviour
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
+                nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
             }
 
             nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
+            nodePointTextList[listNum].text = having.HaveItem[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
+    }
+
+    public void DesidePoint()
+    {
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<NodeController_point>().Exchange();
+        }
+        ShowItem();
     }
 }

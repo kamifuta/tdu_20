@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class ShowHaveItem : MonoBehaviour
+public class ShowHaveTrap : MonoBehaviour
 {
     public GameObject nodePrefab;
     private List<GameObject> nodeList = new List<GameObject>();
@@ -21,27 +21,27 @@ public class ShowHaveItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ShowItem()
     {
         listNum = 0;
-        foreach(var obj in nodeList)
+        foreach (var obj in nodeList)
         {
             obj.SetActive(false);
         }
 
-        for(int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
+        for (int i = 0; i < 3; i++)
         {
             //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
-            if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
+            if (!having.CheckHadTrap((TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), i)) || having.HaveTrap[i].itemCount == 0)
             {
                 continue;
             }
@@ -56,8 +56,8 @@ public class ShowHaveItem : MonoBehaviour
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
+            nodeNameTextList[listNum].text = new TrapsInfo().trapName[i];
+            nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;
         }

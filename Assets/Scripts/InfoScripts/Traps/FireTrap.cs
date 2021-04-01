@@ -6,6 +6,7 @@ public class FireTrap : Trap
 {
     private GameObject Fire_EF_Obj;
     private ParticleSystem Fire_EF;
+
     // Start is called before the first frame update
     void Start()
     {
