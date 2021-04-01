@@ -29,6 +29,7 @@ public class Having : MonoBehaviour
     public int redPoint = 0;
     public int bluePoint = 0;
     public int yellowPoint = 0;
+    public int greenPoint = 0;
 
     private PlayerAction playerAction;
 
@@ -136,11 +137,28 @@ public class Having : MonoBehaviour
             case ItemInfo.pointType.yellow:
                 yellowPoint += point;
                 break;
+            case ItemInfo.pointType.green:
+                yellowPoint += point;
+                break;
         }
     }
 
-    public void losePoint(ItemInfo.pointType pointType, int point)
+    public void LosePoint(ItemInfo.pointType pointType, int point)
     {
-
+        switch (pointType)
+        {
+            case ItemInfo.pointType.red:
+                redPoint -= point;
+                break;
+            case ItemInfo.pointType.blue:
+                bluePoint -= point;
+                break;
+            case ItemInfo.pointType.yellow:
+                yellowPoint -= point;
+                break;
+            case ItemInfo.pointType.green:
+                yellowPoint -= point;
+                break;
+        }
     }
 }

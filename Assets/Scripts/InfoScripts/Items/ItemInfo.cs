@@ -9,6 +9,7 @@ public class ItemInfo
         A,
         B,
         C,
+        D,
     };
 
     public enum pointType
@@ -16,6 +17,7 @@ public class ItemInfo
         red,
         blue,
         yellow,
+        green,
     };
 
     public class _item
@@ -40,5 +42,6 @@ public class ItemInfo
         {0, new _item(Item.A,pointType.red,"A",0,80)},
         {1, new _item(Item.B,pointType.blue,"B",0,50)},
         {2, new _item(Item.C, pointType.yellow,"C",0,30)},
+        {3, new _item(Item.D, pointType.green,"D",0,10)},
     };
 }

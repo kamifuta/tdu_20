@@ -9,9 +9,11 @@ public class NodeController_point : MonoBehaviour
 {
     public GameObject countUpButtonObj;
     public GameObject countDownButtonObj;
+    public Button countUpButton;
+    public Button countDownButton;
     public Text itemCountText;
     private Having having;
-    private ShowHaveItem showHaveItem;
+    private ItemInfo.Item key;
 
     private int itemCount=0;
 
@@ -19,28 +21,41 @@ public class NodeController_point : MonoBehaviour
     void Start()
     {
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
-        showHaveItem = GameObject.FindObjectOfType<ShowHaveItem>();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        countDownButton.interactable = false;
 
-    }
-
-    public void OnClickItemNode()
-    {
-        countUpButtonObj.SetActive(true);
+        string itemName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
+        var pair = new ItemInfo().ItemInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
+        key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), pair.Key);
     }
 
     public void OnClickCountUpButton()
     {
         itemCount++;
-        string itemName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), new ItemInfo().ItemName.IndexOf(itemName));
-        var pair = new ItemInfo().ItemInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
-        ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), pair.Key);
-        having.ThrowItem(key);
-        showHaveItem.ShowItem();
+        having.GetPoint(having.HaveItem[(int)key].pointType, having.HaveItem[(int)key].point);
+        itemCountText.text = "x" + itemCount;
+        if(itemCount== having.HaveItem[(int)key].itemCount)
+        {
+            countUpButton.interactable = false;
+        }
+        if (countDownButton.interactable == false)
+        {
+            countDownButton.interactable = true;
+        }
+    }
+
+    public void OnClickCountDownButton()
+    {
+        itemCount--;
+        having.LosePoint(having.HaveItem[(int)key].pointType, having.HaveItem[(int)key].point);
+        itemCountText.text = "x" + itemCount;
+        if (itemCount == 0)
+        {
+            countDownButton.interactable = false;
+        }
+        if (countUpButton.interactable == false)
+        {
+            countUpButton.interactable = true;
+        }
     }
 }

@@ -196,7 +196,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7764537365323376805}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1452327655521637309}
+        m_MethodName: OnClickCountDownButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &960504396264080922
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,7 +404,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 245730878374387740}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1452327655521637309}
+        m_MethodName: OnClickCountUpButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1445783533727501206
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,7 +688,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countUpButtonObj: {fileID: 1369151495632800157}
   countDownButtonObj: {fileID: 722635333560302061}
-  itemCountText: {fileID: 0}
+  countUpButton: {fileID: 301555474561414600}
+  countDownButton: {fileID: 2693595380159613431}
+  itemCountText: {fileID: 2661080754481369189}
 --- !u!1 &8537627513134524782
 GameObject:
   m_ObjectHideFlags: 0
