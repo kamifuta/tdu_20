@@ -42,7 +42,7 @@ public class PlayerAction : MonoBehaviour
         having = GetComponent<Having>();
 
         menuePanel.SetActive(false);
-        talkPanel.SetActive(false);
+        //talkPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -78,7 +78,6 @@ public class PlayerAction : MonoBehaviour
         RaycastHit hit;
         if (Physics.CapsuleCast(p1, p2, collider.radius, transform.forward, out hit, 0.5f, actionLayerMask) && !IsAction)
         {
-            Debug.Log("sss");
             switch (hit.collider.gameObject.layer)
             {
                 case 9:
@@ -102,7 +101,6 @@ public class PlayerAction : MonoBehaviour
 
     public void Talk()
     {
-        Debug.Log("f");
         talkPanel.SetActive(true);
     }
 

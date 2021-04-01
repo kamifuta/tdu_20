@@ -5,12 +5,19 @@ using UnityEngine;
 public class TalkPanel : MonoBehaviour
 {
     public GameObject talkPanel;
-    public GameObject exchangePanel;
+    public GameObject exchangePointPanel;
+
+    private PlayerAction playerAction;
+
+    private void Awake()
+    {
+        playerAction = FindObjectOfType<PlayerAction>();
+    }
 
     private void Start()
     {
+        exchangePointPanel.SetActive(false);
         talkPanel.SetActive(false);
-        exchangePanel.SetActive(false);
     }
 
     public void CheckHavePoint()
@@ -21,7 +28,7 @@ public class TalkPanel : MonoBehaviour
     public void ExchacgePoint()
     {
         talkPanel.SetActive(false);
-        exchangePanel.SetActive(true);
+        exchangePointPanel.SetActive(true);
     }
 
     public void ExchacgeItem()
@@ -36,6 +43,13 @@ public class TalkPanel : MonoBehaviour
 
     public void StopTalk()
     {
+        talkPanel.SetActive(false);
+        playerAction.IsAction = false;
+    }
 
+    public void CloseExchangePoint()
+    {
+        talkPanel.SetActive(true);
+        exchangePointPanel.SetActive(false);
     }
 }

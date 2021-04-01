@@ -58,4 +58,13 @@ public class NodeController_point : MonoBehaviour
             countUpButton.interactable = true;
         }
     }
+
+    public void Exchange()
+    {
+        for(int i = 0; i < itemCount; i++)
+        {
+            having.ThrowItem(key);
+        }
+        itemCountText.text = "x" + 0;
+    }
 }

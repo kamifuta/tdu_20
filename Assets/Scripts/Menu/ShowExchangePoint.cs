@@ -66,4 +66,13 @@ public class ShowExchangePoint : MonoBehaviour
             listNum++;
         }
     }
+
+    public void DesidePoint()
+    {
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).GetComponent<NodeController_point>().Exchange();
+        }
+        ShowItem();
+    }
 }
