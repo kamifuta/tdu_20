@@ -35,6 +35,6 @@ public class IceTrap : Trap
         GameObject prefab = (GameObject)Instantiate(IceImage,new Vector3(0.0f,0.0f,0.0f),Quaternion.identity);
         prefab.transform.SetParent(canvas.transform, false);
 
-
+        //キャラを動かせなくする
     }
 }
