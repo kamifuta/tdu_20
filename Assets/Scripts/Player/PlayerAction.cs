@@ -63,7 +63,7 @@ public class PlayerAction : MonoBehaviour
             having.GetItem(ItemInfo.Item.C);
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (input.PushedSerch)
         {
             having.GetTrap(TrapsInfo.TrapEnum.fireTrap);
         }

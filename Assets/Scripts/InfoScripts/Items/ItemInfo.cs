@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//基地に設置可能なオブジェクトの情報
 public class ItemInfo
 {
     public enum Item
