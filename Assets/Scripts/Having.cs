@@ -26,6 +26,7 @@ public class Having : MonoBehaviour
    
     public Dictionary<int, ItemInfo._item> HaveItem = new Dictionary<int, ItemInfo._item>();
     public Dictionary<int, _trap> HaveTrap = new Dictionary<int, _trap>();
+    public Dictionary<int, FossilInfo.Fossil> HaveFossil = new Dictionary<int, FossilInfo.Fossil>();
     public int redPoint = 0;
     public int bluePoint = 0;
     public int yellowPoint = 0;
@@ -51,14 +52,11 @@ public class Having : MonoBehaviour
             ItemInfo._item item = new ItemInfo().ItemInfoDic[(int)key];
             item.itemCount = 1;
             HaveItem.Add((int)key, item);
-            /*HaveItem[key].itemName = new ItemInfo().ItemName[(int)key];
-            HaveItem[key].itemCount = 1;*/
         }
     }
 
     public void ThrowItem(ItemInfo.Item key)
     {
-        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), itemInfo.ItemName.IndexOf(itemName));
         if(HaveItem[(int)key].itemCount > 0)
         {
             HaveItem[(int)key].itemCount--;
@@ -122,11 +120,49 @@ public class Having : MonoBehaviour
 
     //----------------------------------------------------------------
 
+    //化石用----------------------------------------------------------
+
+    public void GetFossil(FossilInfo.FossilSize size, ItemInfo.pointType color)
+    {
+        if (CheckHadFossil(size,color))
+        {
+            HaveFossil[(int)size + (int)color * 3].itemCount++;
+        }
+        else
+        {
+            FossilInfo.Fossil fossil = new FossilInfo().FossilInfoDic[(int)size * 3 + (int)color];
+            fossil.itemCount = 1;
+            HaveFossil.Add((int)size + (int)color * 3, fossil);
+            /*HaveItem[key].itemName = new ItemInfo().ItemName[(int)key];
+            HaveItem[key].itemCount = 1;*/
+        }
+    }
+
+    public void ThrowFossil(FossilInfo.FossilSize size, ItemInfo.pointType color)
+    {
+        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), itemInfo.ItemName.IndexOf(itemName));
+        if (HaveItem[(int)size + (int)color * 3].itemCount > 0)
+        {
+            HaveFossil[(int)size + (int)color * 3].itemCount--;
+        }
+    }
+
+    public bool CheckHadFossil(FossilInfo.FossilSize size, ItemInfo.pointType color)
+    {
+        if (HaveFossil.ContainsKey((int)size + (int)color * 3))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    //----------------------------------------------------------------
+
     //ポイント用-------------------------------------------------------
 
-    public void GetPoint(ItemInfo.pointType pointType, int point)
+    public void GetPoint(ItemInfo.pointType color, int point)
     {
-        switch (pointType)
+        switch (color)
         {
             case ItemInfo.pointType.red:
                 redPoint += point;
@@ -143,9 +179,9 @@ public class Having : MonoBehaviour
         }
     }
 
-    public void LosePoint(ItemInfo.pointType pointType, int point)
+    public void LosePoint(ItemInfo.pointType color, int point)
     {
-        switch (pointType)
+        switch (color)
         {
             case ItemInfo.pointType.red:
                 redPoint -= point;

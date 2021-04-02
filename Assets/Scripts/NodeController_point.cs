@@ -13,7 +13,9 @@ public class NodeController_point : MonoBehaviour
     public Button countDownButton;
     public Text itemCountText;
     private Having having;
-    private ItemInfo.Item key;
+    private FossilInfo.FossilSize sizeKey;
+    private ItemInfo.pointType colorKey;
+    private KeyValuePair<int,FossilInfo.Fossil> pair;
 
     private int itemCount=0;
 
@@ -25,16 +27,17 @@ public class NodeController_point : MonoBehaviour
         countDownButton.interactable = false;
 
         string itemName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        var pair = new ItemInfo().ItemInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
-        key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), pair.Key);
+        pair = new FossilInfo().FossilInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
+        sizeKey= (FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), pair.Key % 3);
+        colorKey = (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), pair.Key/3);
     }
 
     public void OnClickCountUpButton()
     {
         itemCount++;
-        having.GetPoint(having.HaveItem[(int)key].pointType, having.HaveItem[(int)key].point);
+        having.GetPoint(having.HaveFossil[pair.Key].fossilColor, having.HaveFossil[pair.Key].point);
         itemCountText.text = "x" + itemCount;
-        if(itemCount== having.HaveItem[(int)key].itemCount)
+        if(itemCount== having.HaveItem[pair.Key].itemCount)
         {
             countUpButton.interactable = false;
         }
@@ -47,7 +50,7 @@ public class NodeController_point : MonoBehaviour
     public void OnClickCountDownButton()
     {
         itemCount--;
-        having.LosePoint(having.HaveItem[(int)key].pointType, having.HaveItem[(int)key].point);
+        having.LosePoint(having.HaveFossil[pair.Key].fossilColor, having.HaveItem[pair.Key].point);
         itemCountText.text = "x" + itemCount;
         if (itemCount == 0)
         {
@@ -63,7 +66,7 @@ public class NodeController_point : MonoBehaviour
     {
         for(int i = 0; i < itemCount; i++)
         {
-            having.ThrowItem(key);
+            having.ThrowFossil(sizeKey,colorKey);
         }
         itemCountText.text = "x" + 0;
     }

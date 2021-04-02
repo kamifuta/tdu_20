@@ -63,6 +63,11 @@ public class PlayerAction : MonoBehaviour
             having.GetItem(ItemInfo.Item.C);
         }
 
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            having.GetFossil(FossilInfo.FossilSize.small, ItemInfo.pointType.red);
+        }
+
         if (input.PushedSerch)
         {
             having.GetTrap(TrapsInfo.TrapEnum.fireTrap);
