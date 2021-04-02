@@ -110,6 +110,7 @@ public class NodeController_exchange : MonoBehaviour
         {
             having.GetItem(key);
         }
+        itemCount = 0;
         itemCountText.text = "x" + 0;
     }
 }
