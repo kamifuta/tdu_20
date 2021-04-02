@@ -70,7 +70,7 @@ public class PlayerAction : MonoBehaviour
 
         if (input.PushedSerch)
         {
-            having.GetTrap(TrapsInfo.TrapEnum.fireTrap);
+            having.GetTrap(TrapsInfo.Trap.fireTrap);
         }
 
         if (input.PushedMenue)
@@ -109,16 +109,16 @@ public class PlayerAction : MonoBehaviour
         talkPanel.SetActive(true);
     }
 
-    public void Put(TrapsInfo.TrapEnum key)
+    public void Put(TrapsInfo.Trap key)
     {
         var trap=Instantiate(trapPrefab, transform.position + transform.forward - Vector3.up * 0.5f, Quaternion.identity);
-        trap.name = new TrapsInfo().trapName[(int)key];
+        trap.name = new TrapsInfo().trapInfoDic[(int)key].itemName;
     }
 
     public void Pick()
     {
-        var pair = new TrapsInfo().trapName.FirstOrDefault(c => c.Value == targetTrap.name);
-        TrapsInfo.TrapEnum key = (TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), pair.Key);
+        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == targetTrap.name);
+        TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         having.GetTrap(key);
         Destroy(targetTrap);
         IsAction = false;

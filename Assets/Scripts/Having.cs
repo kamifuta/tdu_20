@@ -8,7 +8,7 @@ public class Having : MonoBehaviour
 {
     
 
-    public class _trap
+    /*public class _trap
     {
         public string itemName;
         public int itemCount;
@@ -17,7 +17,7 @@ public class Having : MonoBehaviour
             itemName = name;
             itemCount = count;
         }
-    }
+    }*/
 
     
 
@@ -25,7 +25,7 @@ public class Having : MonoBehaviour
     private TrapsInfo trapInfo = new TrapsInfo();
    
     public Dictionary<int, ItemInfo._item> HaveItem = new Dictionary<int, ItemInfo._item>();
-    public Dictionary<int, _trap> HaveTrap = new Dictionary<int, _trap>();
+    public Dictionary<int, TrapsInfo._trap> HaveTrap = new Dictionary<int, TrapsInfo._trap>();
     public Dictionary<int, FossilInfo.Fossil> HaveFossil = new Dictionary<int, FossilInfo.Fossil>();
     public int redPoint = 0;
     public int bluePoint = 0;
@@ -76,7 +76,7 @@ public class Having : MonoBehaviour
 
     //トラップ用-----------------------------------------------------------------
 
-    public void GetTrap(TrapsInfo.TrapEnum key)
+    public void GetTrap(TrapsInfo.Trap key)
     {
         if (CheckHadTrap(key))
         {
@@ -84,12 +84,13 @@ public class Having : MonoBehaviour
         }
         else
         {
-            _trap trap = new _trap(trapInfo.trapName[(int)key], 1);
+            TrapsInfo._trap trap = new TrapsInfo().trapInfoDic[(int)key];
+            trap.itemCount = 1;
             HaveTrap.Add((int)key, trap);
         }
     }
 
-    public void PutTrap(TrapsInfo.TrapEnum key)
+    public void PutTrap(TrapsInfo.Trap key)
     {
         if (HaveTrap[(int)key].itemCount > 0)
         {
@@ -100,7 +101,7 @@ public class Having : MonoBehaviour
         //Instantiate(trapPrefab, transform.position + Vector3.forward, Quaternion.identity);
     }
 
-    public void ThrowTrap(TrapsInfo.TrapEnum key)
+    public void ThrowTrap(TrapsInfo.Trap key)
     {
         if (HaveTrap[(int)key].itemCount > 0)
         {
@@ -108,7 +109,7 @@ public class Having : MonoBehaviour
         }
     }
 
-    public bool CheckHadTrap(TrapsInfo.TrapEnum key)
+    public bool CheckHadTrap(TrapsInfo.Trap key)
     {
         if (HaveTrap.ContainsKey((int)key))
         {

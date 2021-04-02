@@ -37,7 +37,7 @@ public class NodeController_point : MonoBehaviour
         itemCount++;
         having.GetPoint(having.HaveFossil[pair.Key].fossilColor, having.HaveFossil[pair.Key].point);
         itemCountText.text = "x" + itemCount;
-        if(itemCount== having.HaveItem[pair.Key].itemCount)
+        if(itemCount== having.HaveFossil[pair.Key].itemCount)
         {
             countUpButton.interactable = false;
         }
