@@ -27,13 +27,17 @@ public class NewDigSceneDirector : MonoBehaviour
     int FlocationX = 0;
     int FlocationY = 0;
     bool CheckOverlap = true; //重なりあるか否か
+    int[] MemorizeKey = new int[4];
+    Vector3[] MemorizeLocation = new Vector3[4];
+    int[] ExcavationCompleted = new int[5]; //SuccessCNT++で一つ多くても参照不可にならないように+1
     Dictionary<int, FossilList> FossilDic;
-
+    private int _count = 0; //Generator何回ループしているか、memorizeに入れる際使用
     public GameObject Fprefab;
+    int SuccessCNT = 0; //発掘成功した化石のキー配列（ExcavationCompleted[]）回すため
+    int RandomGenerateNum;  //生成する化石の個数
 
     private IEnumerator FossilGenerator()
     {
-        int RandomGenerateNum;  //生成する化石の個数
         RandomGenerateNum = Random.Range(2, 5);
         //Debug.Log("個数＝" + RandomGenerateNum);
         int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
@@ -41,6 +45,8 @@ public class NewDigSceneDirector : MonoBehaviour
         for(int i = 0; i < RandomGenerateNum; i++)
         {
             RandomKindNum = Random.Range(0, 12/*13*/);
+            MemorizeKey[_count] = RandomKindNum;
+            
             //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
 
             //↓下記のwhileは大きなバグの原因含んでいるので注意！！終わらない可能性あり
@@ -65,6 +71,8 @@ public class NewDigSceneDirector : MonoBehaviour
                 yield return StartCoroutine(CheckLocation(RandomKindNum, FlocationX, FlocationY));
                 if (CheckOverlap) break;
             }
+            MemorizeLocation[_count] = new Vector3(FlocationX,FlocationY,0);//FlocateionXで管理したほうがいい？？？
+            _count++;
 
             int testX = 0;
             int testY = 0;
@@ -79,11 +87,9 @@ public class NewDigSceneDirector : MonoBehaviour
                         testX = k + FlocationX;
                         testY = j + FlocationY;
                         Debug.Log(RandomKindNum+"("+testX+","+testY+")");
-                        
                     }
                     else if (RandomKindNum <= 7)
                     {
-
                         FossilLocation[k + FlocationX - 1, j + FlocationY -1] = 1;
                         testX = k + FlocationX-1;
                         testY = j + FlocationY-1;
@@ -146,17 +152,59 @@ public class NewDigSceneDirector : MonoBehaviour
                         yield break;
                     }
                 }
-
-
             }
         }
         CheckOverlap =  true;
     }
     private void DigResult()
     {
+        for(int i = 0; i < RandomGenerateNum; i++)
+        {
+            CompareArray(i);
+            //Debug.Log(SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
+            //ここまできたらbool型配列ｉ番目をtrueにするとか？
+        }
         //生成された化石のキーと生成場所をそれぞれ配列で保存
         //それぞれの配列０番目から見ていく
-        Debug.Log("dosiyo");
+        //一回タップするごとに呼ばれる　または　壁ｈｐが30以上になったら呼ばれる
+    }
+
+    private void CompareArray(int i)
+    {
+        for (int k = 0; k < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); k++)
+        {
+            for (int j = 0; j < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); j++)
+            {
+                if (MemorizeKey[i] <= 3)
+                {
+                    if (Board[k + (int)MemorizeLocation[i].x, j + (int)MemorizeLocation[i].y] > 0)
+                    {
+                        //Debug.Log("<=3"+k + (int)MemorizeLocation[i].x+","+j + (int)MemorizeLocation[i].y);
+                        return;
+                    }
+                }
+                else if (MemorizeKey[i] <= 7)
+                {
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
+                    {
+                        //Debug.Log("<=7" + k + (int)MemorizeLocation[i].x + "," + j + (int)MemorizeLocation[i].y);
+                        return;
+                    }
+                }
+                else if (MemorizeKey[i] <= 11)
+                {
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
+                    {
+                        //Debug.Log("<=11" + k + (int)MemorizeLocation[i].x + "," + j + (int)MemorizeLocation[i].y);
+                        return;
+                    }
+                }
+            }
+        }
+        ExcavationCompleted[SuccessCNT] = MemorizeKey[i];
+        //Debug.Log("CNT&Key" + SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
+        SuccessCNT++;
+        
     }
 
     private void IntializeArray()
@@ -199,16 +247,17 @@ public class NewDigSceneDirector : MonoBehaviour
 
 
     }
-
+    bool aaa = true;
     // Update is called once per frame
     void Update()
     {
-        if(_hp >= 30)
+        if(_hp >= 30 && aaa)
         {
-            //DigResult();
+            DigResult();
+            aaa = false;
             //Debug.Log("FINISH!!!");
         }
-        if (Input.GetMouseButtonDown(0) && _hp < 30)
+        if (Input.GetMouseButtonDown(0) && _hp < 30)//且つすべての化石が掘り出されていないとき
         {
             SearchMousePosition();
 
@@ -227,14 +276,14 @@ public class NewDigSceneDirector : MonoBehaviour
                 {
                     PickelMode();                    
                 }
-
+                
             }
         }
     }
     private void SearchMousePosition()
     {
         mousePos = Input.mousePosition;
-        mousePos.z = 10.0f;                             //役割何？
+        mousePos.z = 10.0f;                   //役割何？
         objPos = Camera.main.ScreenToWorldPoint(mousePos);
         //Debug.Log(objPos);
     }

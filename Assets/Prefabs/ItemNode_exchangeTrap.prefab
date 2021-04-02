@@ -197,7 +197,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1452327655521637309}
+      - m_Target: {fileID: 3959175082937476200}
         m_MethodName: OnClickCountDownButton
         m_Mode: 1
         m_Arguments:
@@ -405,7 +405,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1452327655521637309}
+      - m_Target: {fileID: 3959175082937476200}
         m_MethodName: OnClickCountUpButton
         m_Mode: 1
         m_Arguments:
@@ -584,9 +584,9 @@ GameObject:
   - component: {fileID: 3624821814151405367}
   - component: {fileID: 3624821814151405360}
   - component: {fileID: 7654610635418916192}
-  - component: {fileID: 1452327655521637309}
+  - component: {fileID: 3959175082937476200}
   m_Layer: 5
-  m_Name: ItemNode_point
+  m_Name: ItemNode_exchangeTrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &1452327655521637309
+--- !u!114 &3959175082937476200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -683,7 +683,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3624821814151405362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f1f24b5a0b511946a06c49b5e8a3875, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ca5af0720aabc644bddea84b95c7948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   countUpButtonObj: {fileID: 1369151495632800157}
