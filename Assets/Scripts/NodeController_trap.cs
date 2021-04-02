@@ -40,8 +40,8 @@ public class NodeController_trap : MonoBehaviour
     public void OnClickThrowButton()
     {
         string trapName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        var pair = new TrapsInfo().trapName.FirstOrDefault(c => c.Value == trapName);
-        TrapsInfo.TrapEnum key = (TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), pair.Key);
+        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
+        TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         throwButtonObj.SetActive(false);
         putButtonObj.SetActive(false);
         having.ThrowTrap(key);
@@ -52,8 +52,8 @@ public class NodeController_trap : MonoBehaviour
     public void OnClickPutButton()
     {
         string trapName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        var pair = new TrapsInfo().trapName.FirstOrDefault(c => c.Value == trapName);
-        TrapsInfo.TrapEnum key = (TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), pair.Key);
+        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
+        TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         throwButtonObj.SetActive(false);
         putButtonObj.SetActive(false);
         having.PutTrap(key);

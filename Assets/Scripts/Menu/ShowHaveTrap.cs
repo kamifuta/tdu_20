@@ -38,10 +38,11 @@ public class ShowHaveTrap : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < new TrapsInfo().trapInfoDic.Count; i++)
         {
+            //Debug.Log("aa");
             //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
-            if (!having.CheckHadTrap((TrapsInfo.TrapEnum)Enum.ToObject(typeof(TrapsInfo.TrapEnum), i)) || having.HaveTrap[i].itemCount == 0)
+            if (!having.CheckHadTrap((TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), i)) || having.HaveTrap[i].itemCount == 0)
             {
                 continue;
             }
@@ -50,13 +51,13 @@ public class ShowHaveTrap : MonoBehaviour
             {
                 var node = Instantiate(nodePrefab);
                 node.SetActive(false);
-                node.transform.parent = this.gameObject.transform;
+                node.transform.SetParent(this.gameObject.transform);
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new TrapsInfo().trapName[i];
+            nodeNameTextList[listNum].text = new TrapsInfo().trapInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;

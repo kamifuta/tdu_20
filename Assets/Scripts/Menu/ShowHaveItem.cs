@@ -50,7 +50,7 @@ public class ShowHaveItem : MonoBehaviour
             {
                 var node = Instantiate(nodePrefab);
                 node.SetActive(false);
-                node.transform.parent = this.gameObject.transform;
+                node.transform.SetParent(this.gameObject.transform);
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());

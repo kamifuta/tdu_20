@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowExchangePoint : MonoBehaviour
+public class ShowExchangeItem : MonoBehaviour
 {
     public GameObject nodePrefab;
     public Text havePointText;
@@ -26,7 +26,7 @@ public class ShowExchangePoint : MonoBehaviour
         havePointText.text = "赤:" + having.redPoint + "青:" + having.bluePoint + "黄:" + having.yellowPoint + "緑:" + having.greenPoint;
     }
 
-    public void ShowHaveFossil()
+    public void ShowItem()
     {
         listNum = 0;
         foreach (var obj in nodeList)
@@ -34,12 +34,12 @@ public class ShowExchangePoint : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < new FossilInfo().FossilInfoDic.Count; i++)
+        for (int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
-            if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i%3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveItem[i].itemCount == 0)
+            /*if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i / 3), (FossilInfo.FossilColor)Enum.ToObject(typeof(FossilInfo.FossilColor), i % 3)) || having.HaveItem[i].itemCount == 0)
             {
                 continue;
-            }
+            }*/
 
             if (listNum >= nodeList.Count - 1)
             {
@@ -52,20 +52,25 @@ public class ShowExchangePoint : MonoBehaviour
                 nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new FossilInfo().FossilInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + having.HaveFossil[i].itemCount;
-            nodePointTextList[listNum].text = having.HaveFossil[i].point.ToString();
+            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
+            nodeCountTextList[listNum].text = "x" + 0;
+            if (having.HaveItem.ContainsKey(i))
+            {
+                nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
+            }
+           
+            nodePointTextList[listNum].text = new ItemInfo().ItemInfoDic[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
     }
 
-    public void DesidePoint()
+    public void DesideItem()
     {
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_point>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_exchange>().Exchange();
         }
-        ShowHaveFossil();
+        ShowItem();
     }
 }

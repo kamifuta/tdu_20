@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowExchangePoint : MonoBehaviour
+public class ShowExchangeTrap : MonoBehaviour
 {
     public GameObject nodePrefab;
     public Text havePointText;
@@ -26,7 +25,7 @@ public class ShowExchangePoint : MonoBehaviour
         havePointText.text = "赤:" + having.redPoint + "青:" + having.bluePoint + "黄:" + having.yellowPoint + "緑:" + having.greenPoint;
     }
 
-    public void ShowHaveFossil()
+    public void ShowTrap()
     {
         listNum = 0;
         foreach (var obj in nodeList)
@@ -34,12 +33,12 @@ public class ShowExchangePoint : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < new FossilInfo().FossilInfoDic.Count; i++)
+        for (int i = 0; i < new TrapsInfo().trapInfoDic.Count; i++)
         {
-            if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i%3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveItem[i].itemCount == 0)
+            /*if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i / 3), (FossilInfo.FossilColor)Enum.ToObject(typeof(FossilInfo.FossilColor), i % 3)) || having.HaveItem[i].itemCount == 0)
             {
                 continue;
-            }
+            }*/
 
             if (listNum >= nodeList.Count - 1)
             {
@@ -52,20 +51,25 @@ public class ShowExchangePoint : MonoBehaviour
                 nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new FossilInfo().FossilInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + having.HaveFossil[i].itemCount;
-            nodePointTextList[listNum].text = having.HaveFossil[i].point.ToString();
+            nodeNameTextList[listNum].text = new TrapsInfo().trapInfoDic[i].itemName;
+            nodeCountTextList[listNum].text = "x" + 0;
+            if (having.HaveTrap.ContainsKey(i))
+            {
+                nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
+            }
+
+            nodePointTextList[listNum].text = new TrapsInfo().trapInfoDic[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
     }
 
-    public void DesidePoint()
+    public void DesideTrap()
     {
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_point>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_exchangeTrap>().Exchange();
         }
-        ShowHaveFossil();
+        ShowTrap();
     }
 }
