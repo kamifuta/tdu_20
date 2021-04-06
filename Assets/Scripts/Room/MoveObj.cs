@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class MoveObj : MonoBehaviour
 {
@@ -96,9 +97,9 @@ public class MoveObj : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Debug.Log("オブジェクト削除!!!!!!!!!!");
-            //Delete書く//////////////////////////////////////////////////////////////////////////////////////////////////////////
+            DestroyObj((Object)moveObj);//Photon適応
             moveSensorObj.SetActive(true);
-            moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);///
+            moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);
             gameObject.SetActive(false);
         }
 
@@ -137,6 +138,11 @@ public class MoveObj : MonoBehaviour
             }
         }
     }
-
+    //できるかは分かんない
+    [PunRPC]
+    private void DestroyObj(Object destroyObj)
+    {
+        Destroy(destroyObj);
+    }
 
 }
