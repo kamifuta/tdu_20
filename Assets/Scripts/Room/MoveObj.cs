@@ -24,7 +24,7 @@ public class MoveObj : MonoBehaviour
     public void MoveObjSet(GameObject selectObj)
     {
         moveObj = selectObj;
-        for (int i=0; i<3;i++)
+        for (int i=0; i<3;i++)//読み取り専用…
         {
             if (i==0)
             {
@@ -44,7 +44,7 @@ public class MoveObj : MonoBehaviour
                 break;
             }
         }
-        
+        //moveObjCollidersub = moveObj.GetComponent<Collider>();/////////////////////////////
         moveObjCollider.isTrigger = true;
         stayJudge = moveObj.AddComponent<MoveObjTriggerStayJudge>();
         moveObjRigidBody=moveObj.AddComponent<Rigidbody>();

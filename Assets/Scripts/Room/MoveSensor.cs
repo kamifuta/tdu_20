@@ -77,7 +77,12 @@ public class MoveSensor : MonoBehaviour
             {
                 gameObject.SetActive(false);
                 Debug.Log("オブジェクト配置開始!!!!!!!");
+
                 //別スクリプトでオブジェクトの情報引っ張ってきて直でMoveObjに渡す
+                /* moveObjObj.SetActive(true);
+                moveObj.MoveObjSet("置くオブジェクト");
+                selectObjList"置くオブジェクト".transform.position += new Vector3(0.0f, 1.0f, 0.0f);*/
+
             }
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
@@ -137,7 +142,7 @@ public class MoveSensor : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("selectObjList[exitObjCount] = null");
+        Debug.Log("selectObjList[exitObjCount] ="+ other);
         sensorAnimator.SetTrigger("IdleObj");
 
         Debug.Log("ExitJewel");
