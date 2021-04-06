@@ -17,12 +17,6 @@ public class MenuButtonManager : MonoBehaviour
         playerAction = FindObjectOfType<PlayerAction>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OnHavingButton()
     {
         this.gameObject.SetActive(false);
@@ -41,6 +35,7 @@ public class MenuButtonManager : MonoBehaviour
     {
         this.gameObject.SetActive(false);
         playerAction.CanOpenMenu = true;
+        playerAction.IsAction = false;
     }
 
     public void OnItemCloseButton()

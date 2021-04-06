@@ -131,8 +131,12 @@ public class PlayerAction : MonoBehaviour
 
     private void OpenMenu()
     {
-        if (CanOpenMenu) 
+        if (CanOpenMenu)
+        {
             menuePanel.SetActive(true);
+            CanOpenMenu = false;
+            IsAction = true;
+        }
     }
 
     private void SetActionButton(string actionName)
@@ -146,6 +150,7 @@ public class PlayerAction : MonoBehaviour
     {
         Debug.Log(actionText.text);
         IsAction = true;
+        CanOpenMenu = false;
         switch (actionText.text)
         {
             case "話す":

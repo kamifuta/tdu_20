@@ -110,6 +110,7 @@ public class NodeController_exchangeTrap : MonoBehaviour
         {
             having.GetTrap(key);
         }
+        itemCount = 0;
         itemCountText.text = "x" + 0;
     }
 }

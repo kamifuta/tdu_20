@@ -46,6 +46,7 @@ public class TalkPanel : MonoBehaviour
     {
         talkPanel.SetActive(false);
         playerAction.IsAction = false;
+        playerAction.CanOpenMenu = true;
     }
 
     public void CloseExchangePoint()

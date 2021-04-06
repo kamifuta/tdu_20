@@ -40,8 +40,6 @@ public class ShowHaveTrap : MonoBehaviour
 
         for (int i = 0; i < new TrapsInfo().trapInfoDic.Count; i++)
         {
-            //Debug.Log("aa");
-            //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
             if (!having.CheckHadTrap((TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), i)) || having.HaveTrap[i].itemCount == 0)
             {
                 continue;

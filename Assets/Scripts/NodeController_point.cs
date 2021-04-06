@@ -30,6 +30,8 @@ public class NodeController_point : MonoBehaviour
         pair = new FossilInfo().FossilInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
         sizeKey= (FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), pair.Key % 3);
         colorKey = (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), pair.Key/3);
+
+        itemCountText.text = "x" + 0;
     }
 
     public void OnClickCountUpButton()
@@ -68,6 +70,7 @@ public class NodeController_point : MonoBehaviour
         {
             having.ThrowFossil(sizeKey,colorKey);
         }
+        itemCount = 0;
         itemCountText.text = "x" + 0;
     }
 }
