@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//基地に設置可能なオブジェクトの情報
 public class ItemInfo
 {
     public enum Item
@@ -39,9 +40,9 @@ public class ItemInfo
 
     public Dictionary<int, _item> ItemInfoDic = new Dictionary<int, _item>()
     {
-        {0, new _item(Item.A,pointType.red,"A",0,80)},
-        {1, new _item(Item.B,pointType.blue,"B",0,50)},
-        {2, new _item(Item.C, pointType.yellow,"C",0,30)},
+        {0, new _item(Item.A, pointType.red,"A",0,10)},
+        {1, new _item(Item.B, pointType.blue,"B",0,10)},
+        {2, new _item(Item.C, pointType.yellow,"C",0,10)},
         {3, new _item(Item.D, pointType.green,"D",0,10)},
     };
 }

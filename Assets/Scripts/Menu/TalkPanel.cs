@@ -6,6 +6,8 @@ public class TalkPanel : MonoBehaviour
 {
     public GameObject talkPanel;
     public GameObject exchangePointPanel;
+    public GameObject exchangeItemPanel;
+    public GameObject exchangeTrapPanel;
 
     private PlayerAction playerAction;
 
@@ -17,12 +19,9 @@ public class TalkPanel : MonoBehaviour
     private void Start()
     {
         exchangePointPanel.SetActive(false);
+        exchangeItemPanel.SetActive(false);
+        exchangeTrapPanel.SetActive(false);
         talkPanel.SetActive(false);
-    }
-
-    public void CheckHavePoint()
-    {
-
     }
 
     public void ExchacgePoint()
@@ -33,12 +32,14 @@ public class TalkPanel : MonoBehaviour
 
     public void ExchacgeItem()
     {
-
+        talkPanel.SetActive(false);
+        exchangeItemPanel.SetActive(true);
     }
 
     public void ExchangeTrap()
     {
-
+        talkPanel.SetActive(false);
+        exchangeTrapPanel.SetActive(true);
     }
 
     public void StopTalk()
@@ -51,5 +52,17 @@ public class TalkPanel : MonoBehaviour
     {
         talkPanel.SetActive(true);
         exchangePointPanel.SetActive(false);
+    }
+
+    public void CloseExchangeItem()
+    {
+        talkPanel.SetActive(true);
+        exchangeItemPanel.SetActive(false);
+    }
+
+    public void CloseExchangeTrap()
+    {
+        talkPanel.SetActive(true);
+        exchangeTrapPanel.SetActive(false);
     }
 }
