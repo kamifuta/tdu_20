@@ -81,7 +81,7 @@ public class MoveSensor : MonoBehaviour
                 //別スクリプトでオブジェクトの情報引っ張ってきて直でMoveObjに渡す
                 /* moveObjObj.SetActive(true);
                 moveObj.MoveObjSet("置くオブジェクト");
-                selectObjList"置くオブジェクト".transform.position += new Vector3(0.0f, 1.0f, 0.0f);*/
+                selectObjList."置くオブジェクト".transform.position += new Vector3(0.0f, 1.0f, 0.0f);*/
 
             }
         }

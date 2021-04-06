@@ -32,7 +32,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     [SerializeField] private bool isOpen = true;
 
     // 部屋名
-    [SerializeField] private string roomName = "Knohhoso's Room";
+    [SerializeField] private string roomName = "Room";
 
     // ステージ
     [SerializeField] private string stageName = "Stage1";

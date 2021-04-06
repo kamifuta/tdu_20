@@ -7,14 +7,14 @@ public class MoveObjTriggerStayJudge : MonoBehaviour
     [System.NonSerialized] public GameObject stayObj;
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaEnter");
+        Debug.Log("Entertttttttttt");
         stayObj = other.gameObject;
     }
 
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaExit");
+        Debug.Log("Exittttttttttttt");
         stayObj = null;
     }
 }
