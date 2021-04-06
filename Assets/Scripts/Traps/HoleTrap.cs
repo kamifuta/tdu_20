@@ -27,7 +27,8 @@ public class HoleTrap : Trap
                 z = Input.GetAxis("Vertical");
             }
 
-            transform.Translate(new Vector3(-x, 0, -z) * Time.deltaTime); }
+            transform.Translate(new Vector3(-x, 0, -z) * Time.deltaTime);
+        }
     }
 
     protected override void OnAwake()
