@@ -37,4 +37,5 @@ public class IceTrap : Trap
 
         //キャラを動かせなくする
     }
+
 }
