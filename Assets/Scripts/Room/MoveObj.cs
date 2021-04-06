@@ -97,7 +97,7 @@ public class MoveObj : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Debug.Log("オブジェクト削除!!!!!!!!!!");
-            DestroyObj((Object)moveObj);
+            DestroyObj((Object)moveObj);//Photon適応
             moveSensorObj.SetActive(true);
             moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);
             gameObject.SetActive(false);
