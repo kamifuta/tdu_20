@@ -43,7 +43,8 @@ public class NewDigSceneDirector : MonoBehaviour
         Vector3 Flocation = new Vector3(0, 0, 0);
         for(int i = 0; i < RandomGenerateNum; i++)
         {
-            RandomKindNum = Random.Range(0, 12/*13*/);
+            RandomKindNum =0;
+            //RandomKindNum = Random.Range(0, 12/*13*/);
             MemorizeKey[_count] = RandomKindNum;
             
             //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
@@ -53,7 +54,7 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 if (RandomKindNum <= 3)
                 {
-                    Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
+                    Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);//基準左下
                 }
                 else if (RandomKindNum <= 7)
                 {
@@ -61,7 +62,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
                 else if (RandomKindNum <= 11)
                 {
-                    Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
+                    Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);//基準（２，２）
                 }
                 //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
                 FlocationX = (int)Mathf.Floor(Flocation.x); //Flocationのxの小数第一位を切り捨てたもの　配列の値に使う
@@ -84,7 +85,11 @@ public class NewDigSceneDirector : MonoBehaviour
             float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
             tmp.transform.localScale = new Vector3(foo,foo,1);
 
-        }   
+        }
+        for (int i=0;i<_count ;i++)
+        {
+            Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
+        }
     }
     //todo:生成するオブジェクトの種類の比率
     //todo:各エフェクト
@@ -103,21 +108,21 @@ public class NewDigSceneDirector : MonoBehaviour
                     FossilLocation[k + FlocationX, j + FlocationY] = 1;
                     testX = k + FlocationX;
                     testY = j + FlocationY;
-                    Debug.Log(RandomKindNum + "(" + testX + ","+ testY +")");
+                    Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
                 }
                 else if (RandomKindNum <= 7)
                 {
                     testX = k + FlocationX-1;
                     testY = j + FlocationY-1;
                     FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    Debug.Log(RandomKindNum + "(" + testX + "," + testY + ")");
+                    Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
                 }
                 else if (RandomKindNum <= 11)
                 {
                     testX = k + FlocationX-1;
                     testY = j + FlocationY-1;
                     FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    Debug.Log(RandomKindNum+"(" + testX + "," + testY + ")");
+                    Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
                 }
             }
         }
@@ -126,24 +131,34 @@ public class NewDigSceneDirector : MonoBehaviour
     //事前に化石が置かれているか精査
     private IEnumerator CheckLocation(int RandomKindNum,int FlocationX,int FlocationY)
     {
+        Debug.Log("Flocation"+ FlocationX+":"+ FlocationY+":"+ RandomKindNum);
         for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
         {
             for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
             {
-                if (RandomKindNum <= 3 && FossilLocation[k + FlocationX, j + FlocationY] == 1)
+                if (RandomKindNum <= 3)
                 {
-                    CheckOverlap = false;
-                    yield break;
+                    if (FossilLocation[k + FlocationX, j + FlocationY] == 1)
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
                 }
-                else if (RandomKindNum <= 7 && FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1)
+                else if (RandomKindNum <= 7)
                 {
-                    CheckOverlap = false;
-                    yield break;
+                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1) 
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
                 }
-                else if (RandomKindNum <= 11 && FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1)
+                else if (RandomKindNum <= 11)
                 {
-                    CheckOverlap = false;
-                    yield break;
+                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1)
+                    {
+                        CheckOverlap = false;
+                        yield break;
+                    }
                 }
             }
         }
@@ -165,25 +180,37 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void CompareArray(int i)
     {
+        Debug.Log("CompareAray");
         for (int k = 0; k < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); k++)
-        {
+        {      
             for (int j = 0; j < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); j++)
             {
-                if (MemorizeKey[i] <= 3 && Board[k + (int)MemorizeLocation[i].x, j + (int)MemorizeLocation[i].y] > 0)
+                if (MemorizeKey[i] <= 3)
                 {
-                    return;
+                    if (Board[k + (int)MemorizeLocation[i].x, j + (int)MemorizeLocation[i].y] >= 0)
+                    {
+                        return;
+                    }
                 }
-                else if (MemorizeKey[i] <= 7 && Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
-                {                  
-                    return;
+                else if (MemorizeKey[i] <= 7)
+                {
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] >= 0)
+                    {
+                        return;
+                    }
                 }
-                else if (MemorizeKey[i] <= 11 && Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
-                {        
-                    return;
+                else if (MemorizeKey[i] <= 11)
+                {
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] >= 0)
+                    {
+                        return;
+                    }
                 }
             }
         }
-        ExcavationCompletedhs.Add(MemorizeKey[i]);
+        ExcavationCompletedhs.Add(i);
+        Debug.Log("MemorizeKey[i]"+ MemorizeKey[i]);
+        Debug.Log("ExcavationCompletedhs.Count" + ExcavationCompletedhs.Count);
     }
 
     private void IntializeArray()
