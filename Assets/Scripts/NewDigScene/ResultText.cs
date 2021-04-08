@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class ResultText : MonoBehaviour
 {
     public GameObject _ResultText;
-    public Text _resulttext;
+    string [] _resulttext;
     GameObject DigSceneDirector;
     NewDigSceneDirector DigDirectorScript;
     string ObtainFossilName;
+    Text ggg;
     // Start is called before the first frame update
     void Start()
     {
+        ggg = _ResultText.GetComponent<Text>();
         DigSceneDirector = GameObject.Find("NewDigSceneDirector");
         DigDirectorScript = DigSceneDirector.GetComponent<NewDigSceneDirector>();
     }
@@ -22,10 +24,23 @@ public class ResultText : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            int i = 0;
-            ObtainFossilName = DigDirectorScript.FossilDic[i].Fname;
-            _resulttext = _ResultText.GetComponent<Text>();
-            _resulttext.text = ObtainFossilName + "　を手に入れたよ！";
+            int j = DigDirectorScript.ExcavationCompletedhs.Count;
+            _resulttext = new string[j];
+            int aaa=0;
+            foreach (int i in DigDirectorScript.ExcavationCompletedhs)
+            {
+
+                ObtainFossilName = DigDirectorScript.FossilDic[i].Fname;
+                _resulttext[aaa] = ObtainFossilName;
+                aaa++;
+            }
+            //DigDirectorScript.MemorizeKey[];
+            for(int k = 0; k < j; k++)
+            {
+                ggg.text += _resulttext[k];
+                ggg.text += " ";
+            }
+            ggg.text += "　を手に入れたよ！";
         }
     }
 }

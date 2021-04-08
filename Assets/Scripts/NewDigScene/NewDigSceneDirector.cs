@@ -25,10 +25,10 @@ public class NewDigSceneDirector : MonoBehaviour
     private int FlocationX = 0;
     private int FlocationY = 0;
     private bool CheckOverlap = true; //重なりあるか否か
-    private int[] MemorizeKey = new int[4];
+    public int[] MemorizeKey = new int[4];
     private Vector3[] MemorizeLocation = new Vector3[4];
-    private HashSet<int> ExcavationCompletedhs = new HashSet<int>();
-    private Dictionary<int, FossilList> FossilDic;
+    public HashSet<int> ExcavationCompletedhs = new HashSet<int>();
+    public Dictionary<int, FossilList> FossilDic;
     private int _count = 0; //Generator何回ループしているか、memorizeに入れる際使用
     public GameObject Fprefab;
     private int RandomGenerateNum;  //生成する化石の個数
