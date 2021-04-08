@@ -73,7 +73,7 @@ public class MoveSensor : MonoBehaviour
                 OnTriggerExit(selectObjList[exitObjCount].GetComponent<Collider>());
                 gameObject.SetActive(false);
             }
-            else
+            else if(selectObjList.Count - 1 < exitObjCount)
             {
                 gameObject.SetActive(false);
                 Debug.Log("オブジェクト配置開始!!!!!!!");
@@ -83,6 +83,10 @@ public class MoveSensor : MonoBehaviour
                 moveObj.MoveObjSet("置くオブジェクト");
                 selectObjList."置くオブジェクト".transform.position += new Vector3(0.0f, 1.0f, 0.0f);*/
 
+            }
+            else if (selectObjList.Count - 1 > exitObjCount)
+            {
+                Debug.Log("2個以上選択しています。");
             }
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
