@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
+    public GameObject _Canvas;
     public GameObject[] BoardSprite = new GameObject[3];
     public Sprite[] _BoardSprites = new Sprite[3];
     private int[,] Board = new int[13, 10];
@@ -105,6 +106,9 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
             }
             var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
+            tmp.gameObject.transform.SetParent(_Canvas.transform);
+            tmp.gameObject.transform.localPosition = Flocation;
+            
             tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
 
             float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
@@ -119,6 +123,8 @@ public class NewDigSceneDirector : MonoBehaviour
         //todo:生成するオブジェクトの種類の比率
         //todo:各エフェクト
         //todo:終わった後の処理
+        //todo:ハッシュセット　タップごとに全部掘れたか判定
+        //todo:ローカルポジション
     }
 
     //事前に化石が置かれているか精査
@@ -202,7 +208,7 @@ public class NewDigSceneDirector : MonoBehaviour
             }
         }
         ExcavationCompleted[SuccessCNT] = MemorizeKey[i];
-        //Debug.Log("CNT&Key" + SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
+        Debug.Log("CNT&Key" + SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
         SuccessCNT++;
         
     }
@@ -216,7 +222,11 @@ public class NewDigSceneDirector : MonoBehaviour
                 Strength = Random.Range(0, 3);
                 Board[i, j] = Strength;
                 BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
+                BoardImage[i, j].gameObject.transform.SetParent(_Canvas.transform);
+                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
                 SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+
             }
         }
     }
