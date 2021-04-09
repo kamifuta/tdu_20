@@ -23,11 +23,17 @@ public class PlayerController : MonoBehaviour
             rb.velocity = input.moveVec.normalized;
         }
 
+        if (input.PushedDash)
+        {
+            rb.velocity *= 2f;
+        }
+
         if (input.moveVec.x != 0 || input.moveVec.z != 0)
         {
             transform.LookAt(transform.position + input.moveVec);
         }
-        
+
+        rb.angularVelocity = Vector3.zero;
     }
 }
  

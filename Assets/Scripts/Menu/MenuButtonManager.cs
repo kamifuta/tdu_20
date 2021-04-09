@@ -12,6 +12,7 @@ public class MenuButtonManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.gameObject.SetActive(false);
         havingPanel.SetActive(false);
         havingTrapPanel.SetActive(false);
         playerAction = FindObjectOfType<PlayerAction>();

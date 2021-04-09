@@ -6,21 +6,6 @@ using System.Linq;
 
 public class Having : MonoBehaviour
 {
-    
-
-    /*public class _trap
-    {
-        public string itemName;
-        public int itemCount;
-        public _trap(string name, int count)
-        {
-            itemName = name;
-            itemCount = count;
-        }
-    }*/
-
-    
-
     private ItemInfo itemInfo = new ItemInfo();
     private TrapsInfo trapInfo = new TrapsInfo();
    

@@ -1996,7 +1996,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &176245241
 GameObject:
@@ -6407,7 +6407,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &622263637
 PrefabInstance:
@@ -8523,6 +8523,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6536bfcea0c17d44b449b595f9704ef, type: 3}
+--- !u!114 &801600107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1724194587, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8211217531906153606}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 573a0c1c1172cca45a4f4eb9e6593347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &801901288 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5548500831465414566, guid: 57814c1a8f222a14ebd0003fb58c4059,
@@ -10005,7 +10017,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895728100}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d1a0e8cef9bc9f488979c544481666e, type: 3}
   m_Name: 
@@ -10049,7 +10061,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895728100}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76001c3bfd4b2a64293c6913585ce21c, type: 3}
   m_Name: 
@@ -12232,7 +12244,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 895728109}
+      - m_Target: {fileID: 801600107}
         m_MethodName: OnClickActionButton
         m_Mode: 1
         m_Arguments:
@@ -12322,7 +12334,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1120972626
 MonoBehaviour:
@@ -14039,7 +14051,7 @@ RectTransform:
   - {fileID: 646783456}
   - {fileID: 1690671908}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -22520,6 +22532,18 @@ PrefabInstance:
       propertyPath: actionButtonObj
       value: 
       objectReference: {fileID: 1106324047}
+    - target: {fileID: 1724194587, guid: 521ef224bbdc79f4faf0d7fbe060eb9f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1724194588, guid: 521ef224bbdc79f4faf0d7fbe060eb9f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1724194589, guid: 521ef224bbdc79f4faf0d7fbe060eb9f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8538441894604004317, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22558,7 +22582,7 @@ PrefabInstance:
     - target: {fileID: 8538441894604004317, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8538441894604004317, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
         type: 3}
@@ -22579,6 +22603,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player_variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 9022243900355445095, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 521ef224bbdc79f4faf0d7fbe060eb9f, type: 3}

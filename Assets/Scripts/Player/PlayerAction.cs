@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 public class PlayerAction : MonoBehaviour
@@ -40,9 +41,6 @@ public class PlayerAction : MonoBehaviour
     void Start()
     {
         having = GetComponent<Having>();
-
-        menuePanel.SetActive(false);
-        //talkPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -81,8 +79,10 @@ public class PlayerAction : MonoBehaviour
         Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
         Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
         RaycastHit hit;
-        if (Physics.CapsuleCast(p1, p2, collider.radius, transform.forward, out hit, 0.5f, actionLayerMask) && !IsAction)
+
+        if (Physics.CapsuleCast(p1, p2, collider.radius/2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
         {
+            Debug.Log(p1+","+p2);
             switch (hit.collider.gameObject.layer)
             {
                 case 9:
@@ -111,8 +111,10 @@ public class PlayerAction : MonoBehaviour
 
     public void Put(TrapsInfo.Trap key)
     {
-        var trap=Instantiate(trapPrefab, transform.position + transform.forward - Vector3.up * 0.5f, Quaternion.identity);
-        trap.name = new TrapsInfo().trapInfoDic[(int)key].itemName;
+        var trap=Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), transform.position + transform.forward - Vector3.up * 0.5f, Quaternion.Euler(-90,0,0));
+        //trap.name = new TrapsInfo().trapInfoDic[(int)key].itemName;
+        IsAction = false;
+        CanOpenMenu=true;
     }
 
     public void Pick()
@@ -122,6 +124,12 @@ public class PlayerAction : MonoBehaviour
         having.GetTrap(key);
         Destroy(targetTrap);
         IsAction = false;
+        CanOpenMenu = true;
+    }
+
+    public void StartDigScene()
+    {
+
     }
 
     public void StopTalk()
@@ -158,6 +166,9 @@ public class PlayerAction : MonoBehaviour
                 break;
             case "拾う":
                 Pick();
+                break;
+            case "掘る":
+                StartDigScene();
                 break;
         }
     }
