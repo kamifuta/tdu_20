@@ -12,12 +12,13 @@ public class PlayerAction : MonoBehaviour
     public bool IsAction = false;
     public bool CanOpenMenu = true;
 
+    private GameManager gameManager;
     private GameObject menuePanel;
     private GameObject talkPanel;
-    private GameObject trapPrefab;
+    //private GameObject trapPrefab;
     private PlayerInput input;
     private Having having;
-    private MenuButtonManager menuButtonManager;
+    //private MenuButtonManager menuButtonManager;
     private CapsuleCollider collider;
     private Text actionText;
     private GameObject targetTrap;
@@ -27,11 +28,12 @@ public class PlayerAction : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = GameObject.FindObjectOfType<GameManager>();
         input = GetComponent<PlayerInput>();
         menuePanel= GameObject.Find("MenuPanel");
         talkPanel = GameObject.Find("TalkPanel");
-        trapPrefab = Resources.Load<GameObject>("TrapPrefab");
-        menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
+        //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
+        //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
         collider = GetComponent<CapsuleCollider>();
 
         actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
@@ -110,8 +112,9 @@ public class PlayerAction : MonoBehaviour
 
     public void Put(TrapsInfo.Trap key)
     {
-        var trap=Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), transform.position + transform.forward - Vector3.up * 0.5f, Quaternion.Euler(-90,0,0));
-        //trap.name = new TrapsInfo().trapInfoDic[(int)key].itemName;
+        Vector3 pos = transform.position + transform.forward - Vector3.up * 0.5f;
+        var trap=Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
+        SendTrapPos(pos);
         IsAction = false;
         CanOpenMenu=true;
     }
@@ -129,6 +132,11 @@ public class PlayerAction : MonoBehaviour
     public void StartDigScene()
     {
 
+    }
+
+    public void MakeRoomGate()
+    {
+        
     }
 
     public void StopTalk()
@@ -170,5 +178,10 @@ public class PlayerAction : MonoBehaviour
                 StartDigScene();
                 break;
         }
+    }
+
+    public void SendTrapPos(Vector3 pos)
+    {
+        gameManager.trapPos.Add(pos);
     }
 }
