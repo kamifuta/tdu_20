@@ -565,10 +565,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResultTextController: {fileID: 1023620606}
   PanelGenerator: {fileID: 1484350472}
-  BoardSprite:
-  - {fileID: 2241619880598137150, guid: f15c8fbeec7509744912faf43dde59ad, type: 3}
-  - {fileID: 3464137101669281330, guid: 472f4bdc76c8eae40bd660e9aad218cf, type: 3}
-  - {fileID: 6792992669090290479, guid: 26e46652abf3e5f4aa559e8b1df900ab, type: 3}
+  boardSpritePrefab:
+  - {fileID: 4563393797462202912, guid: f15c8fbeec7509744912faf43dde59ad, type: 3}
+  - {fileID: 3340783945241078995, guid: 472f4bdc76c8eae40bd660e9aad218cf, type: 3}
+  - {fileID: 8283031500835370, guid: 26e46652abf3e5f4aa559e8b1df900ab, type: 3}
+  boardSprite0: {fileID: 4563393797462202912, guid: f15c8fbeec7509744912faf43dde59ad,
+    type: 3}
   HammerButton: {fileID: 1278718410}
   PickelButton: {fileID: 1403923595}
   MemorizeKey: 00000000000000000000000000000000

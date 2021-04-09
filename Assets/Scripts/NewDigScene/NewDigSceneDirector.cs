@@ -9,7 +9,8 @@ public class NewDigSceneDirector : MonoBehaviour
     public GameObject ResultTextController;
     public GameObject PanelGenerator;
 
-    public SpriteRenderer[] BoardSprite = new SpriteRenderer[3];
+    private Sprite[] BoardSprite = new Sprite[3];
+    public GameObject[] boardSpritePrefab = new GameObject[3];
     private int[,] Board = new int[13, 10];
     private GameObject[,] BoardImage = new GameObject[13, 10];
     public SpriteRenderer[,] SpriteRenderer = new SpriteRenderer[13, 10];
@@ -38,16 +39,19 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void Awake()
     {
+        for (int i=0; i<3;i++)
+        {
+            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
+        }
         for (int i = 0; i < 13; i++)
         {
             for (int j = 0; j < 10; j++)
             {
-                BoardImage[i, j] = Instantiate(BoardSprite[0].gameObject, new Vector3(i, j, 0), Quaternion.identity);
+                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
                 BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
                 BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
                 BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
                 SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
-                Debug.Log("ddd");
             }
         }
     }
@@ -244,10 +248,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 //BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
                 //BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
                 //SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
-                SpriteRenderer[i, j] = BoardSprite[Strength];
-                Debug.Log("BoardSprite[Strength]" + BoardSprite[Strength]);
-                Debug.Log("SpriteRenderer[i, j]" + SpriteRenderer[i, j]);
-                Debug.Log(BoardImage[i, j]);
+                SpriteRenderer[i, j].sprite = BoardSprite[Strength];
             }
         }
     }
@@ -363,7 +364,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 Board[objPosX + i, objPosY + j] -= 2;
                 if (Board[objPosX+i, objPosY+j] > -1)
                 {
-                    SpriteRenderer[objPosX + i, objPosY + j] = BoardSprite[Board[objPosX + i, objPosY + j]];
+                    SpriteRenderer[objPosX + i, objPosY + j].sprite = BoardSprite[Board[objPosX + i, objPosY + j]];
                 }
                 else
                 {
@@ -386,7 +387,7 @@ public class NewDigSceneDirector : MonoBehaviour
             Board[objPosX, objPosY + j]--;
             if (Board[objPosX , objPosY + j] > -1)
             {
-                SpriteRenderer[objPosX, objPosY + j] = BoardSprite[Board[objPosX, objPosY + j]];
+                SpriteRenderer[objPosX, objPosY + j].sprite = BoardSprite[Board[objPosX, objPosY + j]];
             }
             else
             {
@@ -402,7 +403,7 @@ public class NewDigSceneDirector : MonoBehaviour
             Board[objPosX + j, objPosY]--;
             if (Board[objPosX + j, objPosY ] > -1)
             {
-                SpriteRenderer[objPosX + j, objPosY] = BoardSprite[Board[objPosX + j, objPosY]];
+                SpriteRenderer[objPosX + j, objPosY].sprite = BoardSprite[Board[objPosX + j, objPosY]];
             }
             else
             {
