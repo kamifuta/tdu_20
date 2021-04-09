@@ -6,9 +6,11 @@ using UnityEngine.UI;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
-    public GameObject _Canvas;
-    public GameObject[] BoardSprite = new GameObject[3];
-    public Sprite[] _BoardSprites = new Sprite[3];
+    public GameObject ResultTextController;
+    public GameObject PanelGenerator;
+
+    private Sprite[] BoardSprite = new Sprite[3];
+    public GameObject[] boardSpritePrefab = new GameObject[3];
     private int[,] Board = new int[13, 10];
     private GameObject[,] BoardImage = new GameObject[13, 10];
     public SpriteRenderer[,] SpriteRenderer = new SpriteRenderer[13, 10];
@@ -34,6 +36,25 @@ public class NewDigSceneDirector : MonoBehaviour
     private int RandomGenerateNum;  //生成する化石の個数
     private int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
     public Text FossilKosu;
+
+    private void Awake()
+    {
+        for (int i=0; i<3;i++)
+        {
+            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
+        }
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
+                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+            }
+        }
+    }
     private IEnumerator FossilGenerator()
     {
         RandomGenerateNum = Random.Range(2, 5);
@@ -77,7 +98,7 @@ public class NewDigSceneDirector : MonoBehaviour
             FillFosssilPos();
             
             var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
-            tmp.gameObject.transform.SetParent(_Canvas.transform);
+            tmp.gameObject.transform.SetParent(PanelGenerator.transform);
             tmp.gameObject.transform.localPosition = Flocation;
             
             tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
@@ -88,7 +109,7 @@ public class NewDigSceneDirector : MonoBehaviour
         }
         for (int i=0;i<_count ;i++)
         {
-            Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
+            //Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
         }
     }
     //todo:生成するオブジェクトの種類の比率
@@ -108,21 +129,21 @@ public class NewDigSceneDirector : MonoBehaviour
                     FossilLocation[k + FlocationX, j + FlocationY] = 1;
                     testX = k + FlocationX;
                     testY = j + FlocationY;
-                    Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
                 }
                 else if (RandomKindNum <= 7)
                 {
                     testX = k + FlocationX-1;
                     testY = j + FlocationY-1;
                     FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
                 }
                 else if (RandomKindNum <= 11)
                 {
                     testX = k + FlocationX-1;
                     testY = j + FlocationY-1;
                     FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
+                    //Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
                 }
             }
         }
@@ -131,7 +152,7 @@ public class NewDigSceneDirector : MonoBehaviour
     //事前に化石が置かれているか精査
     private IEnumerator CheckLocation(int RandomKindNum,int FlocationX,int FlocationY)
     {
-        Debug.Log("Flocation"+ FlocationX+":"+ FlocationY+":"+ RandomKindNum);
+        //Debug.Log("Flocation"+ FlocationX+":"+ FlocationY+":"+ RandomKindNum);
         for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
         {
             for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
@@ -180,7 +201,7 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void CompareArray(int i)
     {
-        Debug.Log("CompareAray");
+        //Debug.Log("CompareAray");
         for (int k = 0; k < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); k++)
         {      
             for (int j = 0; j < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); j++)
@@ -209,9 +230,10 @@ public class NewDigSceneDirector : MonoBehaviour
             }
         }
         ExcavationCompletedhs.Add(i);
-        Debug.Log("MemorizeKey[i]"+ MemorizeKey[i]);
-        Debug.Log("ExcavationCompletedhs.Count" + ExcavationCompletedhs.Count);
+        //Debug.Log("MemorizeKey[i]"+ MemorizeKey[i]);
+        //Debug.Log("ExcavationCompletedhs.Count" + ExcavationCompletedhs.Count);
     }
+
 
     private void IntializeArray()
     {
@@ -221,11 +243,12 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 Strength = Random.Range(0, 3);
                 Board[i, j] = Strength;
-                BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
-                BoardImage[i, j].gameObject.transform.SetParent(_Canvas.transform);
-                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
-                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
-                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+                //BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
+                //BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                //BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                //BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                //SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+                SpriteRenderer[i, j].sprite = BoardSprite[Strength];
             }
         }
     }
@@ -256,6 +279,11 @@ public class NewDigSceneDirector : MonoBehaviour
 
         
     }
+    private void CleanPanels()
+    {
+
+    }
+
     bool aaa = true;
     // Update is called once per frame
     void Update()
@@ -264,6 +292,7 @@ public class NewDigSceneDirector : MonoBehaviour
         {
             DigResult();
             aaa = false;
+            ResultTextController.SetActive(true);
             Debug.Log("FINISH!!!");
         }
         if (Input.GetMouseButtonDown(0) && _hp < 30 && ExcavationCompletedhs.Count != RandomGenerateNum)//且つすべての化石が掘り出されていないとき
@@ -288,7 +317,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 if (ExcavationCompletedhs.Count == RandomGenerateNum)
                 {
                     Debug.Log("Completed!!");
-
+                    ResultTextController.SetActive(true);
                 }
 
             }
@@ -335,7 +364,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 Board[objPosX + i, objPosY + j] -= 2;
                 if (Board[objPosX+i, objPosY+j] > -1)
                 {
-                    SpriteRenderer[objPosX + i, objPosY + j].sprite = _BoardSprites[Board[objPosX + i, objPosY + j]];
+                    SpriteRenderer[objPosX + i, objPosY + j].sprite = BoardSprite[Board[objPosX + i, objPosY + j]];
                 }
                 else
                 {
@@ -358,7 +387,7 @@ public class NewDigSceneDirector : MonoBehaviour
             Board[objPosX, objPosY + j]--;
             if (Board[objPosX , objPosY + j] > -1)
             {
-                SpriteRenderer[objPosX, objPosY + j].sprite = _BoardSprites[Board[objPosX, objPosY + j]];
+                SpriteRenderer[objPosX, objPosY + j].sprite = BoardSprite[Board[objPosX, objPosY + j]];
             }
             else
             {
@@ -374,7 +403,7 @@ public class NewDigSceneDirector : MonoBehaviour
             Board[objPosX + j, objPosY]--;
             if (Board[objPosX + j, objPosY ] > -1)
             {
-                SpriteRenderer[objPosX + j, objPosY].sprite = _BoardSprites[Board[objPosX + j, objPosY]];
+                SpriteRenderer[objPosX + j, objPosY].sprite = BoardSprite[Board[objPosX + j, objPosY]];
             }
             else
             {

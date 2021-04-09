@@ -11,29 +11,34 @@ public class ResultText : MonoBehaviour
     NewDigSceneDirector DigDirectorScript;
     string ObtainFossilName;
     Text ggg;
+    int j;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         ggg = _ResultText.GetComponent<Text>();
         DigSceneDirector = GameObject.Find("NewDigSceneDirector");
         DigDirectorScript = DigSceneDirector.GetComponent<NewDigSceneDirector>();
     }
+    private void OnEnable()
+    {
+        j = DigDirectorScript.ExcavationCompletedhs.Count;
+        _resulttext = new string[j];
+        int aaa = 0;
+        foreach (int i in DigDirectorScript.ExcavationCompletedhs)
+        {
 
+            ObtainFossilName = DigDirectorScript.FossilDic[i].Fname;
+            _resulttext[aaa] = ObtainFossilName;
+            aaa++;
+        }
+        
+    }
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            int j = DigDirectorScript.ExcavationCompletedhs.Count;
-            _resulttext = new string[j];
-            int aaa=0;
-            foreach (int i in DigDirectorScript.ExcavationCompletedhs)
-            {
-
-                ObtainFossilName = DigDirectorScript.FossilDic[i].Fname;
-                _resulttext[aaa] = ObtainFossilName;
-                aaa++;
-            }
+            
             //DigDirectorScript.MemorizeKey[];
             for(int k = 0; k < j; k++)
             {
