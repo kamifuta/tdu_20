@@ -82,7 +82,6 @@ public class PlayerAction : MonoBehaviour
 
         if (Physics.CapsuleCast(p1, p2, collider.radius/2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
         {
-            Debug.Log(p1+","+p2);
             switch (hit.collider.gameObject.layer)
             {
                 case 9:
