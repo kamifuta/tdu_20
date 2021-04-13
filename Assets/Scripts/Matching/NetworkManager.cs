@@ -6,21 +6,23 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    private string inputNickName;
+    [SerializeField] private MatchingUIController matchingUIController=null;
     /////////////////////////////////////////////////////////////////////////////////////
     // Field ////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
 
     // 最大人数
-    [SerializeField] private int maxPlayers = 20;
+    private int maxPlayers = 20;
 
     // 公開・非公開
-    [SerializeField] private bool isVisible = true;
+    private bool isVisible = true;
 
     // 入室の可否
-    [SerializeField] private bool isOpen = true;
+    private bool isOpen = true;
 
     // 部屋名
-    [SerializeField] private string roomName = "Room";
+    private string roomName = "Room";
 
 
 
@@ -31,18 +33,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     // Awake
     private void Awake()
     {
-        // シーンの自動同期: 無効
-        PhotonNetwork.AutomaticallySyncScene = false;
-    }
-
-
-    // Start is called before the first frame update
-    private void Start()
-    {
-        // Photonに接続
+        // シーンの自動同期: 有効
+        PhotonNetwork.AutomaticallySyncScene = true;
+        inputNickName = matchingUIController.nickname;
         PhotonNetwork.ConnectUsingSettings();
+        //gameObject.SetActive(false);
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////
     // Connect //////////////////////////////////////////////////////////////////////////
@@ -79,7 +75,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void JoinOrCreateRoom()
     {
         // ルームオプションの基本設定
-        RoomOptions roomOptions = new RoomOptions
+        RoomOptions roomOptions = new RoomOptions()
         {
             // 部屋の最大人数
             MaxPlayers = (byte)maxPlayers,
@@ -88,7 +84,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             IsVisible = isVisible,
 
             // 入室可
-            IsOpen = isOpen
+            IsOpen = isOpen,
+
+            CleanupCacheOnLeave = false,//途中で誰か出てっても大丈夫。
         };
 
         // ルームオプションにカスタムプロパティを設定
@@ -153,7 +151,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("OnConnected");
 
         // ニックネームを付ける
-        SetMyNickName("Knohhoso");
+        SetMyNickName(inputNickName);
+        //SetMyNickName("NAME");
     }
 
 
@@ -179,6 +178,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby");
+        JoinOrCreateRoom();
     }
 
 

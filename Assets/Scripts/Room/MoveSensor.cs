@@ -7,7 +7,7 @@ public class MoveSensor : MonoBehaviour
     Transform sensorObjPos;
     MoveObj moveObj;
     [SerializeField]Animator sensorAnimator=null;
-    [SerializeField] GameObject moveObjObj = null;
+
     private List<GameObject> selectObjList=new List<GameObject>();
 
     private List<float> objRendererList = new List<float>();
@@ -21,7 +21,6 @@ public class MoveSensor : MonoBehaviour
     private void Awake()
     {
         sensorObjPos = gameObject.GetComponent<Transform>();
-        moveObj = moveObjObj.GetComponent<MoveObj>();
         gameObject.SetActive(false);
     }
 
@@ -67,8 +66,8 @@ public class MoveSensor : MonoBehaviour
             if (selectObjList.Count-1== exitObjCount) //nullじゃなかったら
             {
                 Debug.Log("オブジェクト移動開始!!!!!!!");
-                moveObjObj.SetActive(true);
-                moveObj.MoveObjSet(selectObjList[exitObjCount]);
+                moveObj=selectObjList[exitObjCount].AddComponent<MoveObj>();
+                moveObj.MoveObjSet(gameObject);
                 selectObjList[exitObjCount].transform.position += new Vector3(0.0f,1.0f,0.0f);
                 OnTriggerExit(selectObjList[exitObjCount].GetComponent<Collider>());
                 gameObject.SetActive(false);
