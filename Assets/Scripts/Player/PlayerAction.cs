@@ -22,9 +22,9 @@ public class PlayerAction : MonoBehaviour
     private CapsuleCollider collider;
     private Text actionText;
     private GameObject targetTrap;
-    
 
-    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11;
+    private const int wallLayerMask = 1 << 8;
+    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
 
     private void Awake()
     {
@@ -50,17 +50,7 @@ public class PlayerAction : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            having.GetItem(ItemInfo.Item.A);
-        }
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            having.GetItem(ItemInfo.Item.B);
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            having.GetItem(ItemInfo.Item.C);
+            having.GetFossil(FossilInfo.FossilSize.small, ItemInfo.pointType.red);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -76,6 +66,11 @@ public class PlayerAction : MonoBehaviour
         if (input.PushedMenue)
         {
             OpenMenu();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            MakeRoomGate();
         }
 
         Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
@@ -96,6 +91,9 @@ public class PlayerAction : MonoBehaviour
                 case 11:
                     SetActionButton("掘る");
                     break;
+                case 12:
+                    SetActionButton("入る");
+                    break;
             }
         }
         else
@@ -113,7 +111,7 @@ public class PlayerAction : MonoBehaviour
     public void Put(TrapsInfo.Trap key)
     {
         Vector3 pos = transform.position + transform.forward - Vector3.up * 0.5f;
-        var trap=Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
+        Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
         SendTrapPos(pos);
         IsAction = false;
         CanOpenMenu=true;
@@ -134,9 +132,29 @@ public class PlayerAction : MonoBehaviour
 
     }
 
+    public void MoveRoomScene()
+    {
+
+    }
+
     public void MakeRoomGate()
     {
-        
+        if (!CheckCanMakeRoom()) return;
+
+        Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)ItemInfo.Item.RoomMaker].prefabAddress), transform.forward, Quaternion.Euler(-90, 0, 0));
+    }
+
+    public bool CheckCanMakeRoom()
+    {
+        Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
+        Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
+        RaycastHit hit;
+
+        if (Physics.CapsuleCast(p1, p2, collider.radius / 2.0f, transform.forward, out hit, 1.0f, wallLayerMask))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void StopTalk()
@@ -176,6 +194,9 @@ public class PlayerAction : MonoBehaviour
                 break;
             case "掘る":
                 StartDigScene();
+                break;
+            case "入る":
+                MoveRoomScene();
                 break;
         }
     }

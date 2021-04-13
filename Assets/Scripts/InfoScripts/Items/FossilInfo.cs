@@ -11,14 +11,6 @@ public class FossilInfo
         large,
     };
 
-    /*public enum FossilColor
-    {
-        red,
-        blue,
-        yellow,
-        green,
-    };*/
-
     public class Fossil
     {
         public FossilSize fossileSize;

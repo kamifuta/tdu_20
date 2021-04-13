@@ -36,11 +36,6 @@ public class ShowExchangeItem : MonoBehaviour
 
         for (int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
-            /*if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i / 3), (FossilInfo.FossilColor)Enum.ToObject(typeof(FossilInfo.FossilColor), i % 3)) || having.HaveItem[i].itemCount == 0)
-            {
-                continue;
-            }*/
-
             if (listNum >= nodeList.Count - 1)
             {
                 var node = Instantiate(nodePrefab);
@@ -69,7 +64,7 @@ public class ShowExchangeItem : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_exchange>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_item_exchange>().Exchange();
         }
         ShowItem();
     }

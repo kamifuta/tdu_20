@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class TalkPanel : MonoBehaviour
 {
-    public GameObject talkPanel;
     public GameObject exchangePointPanel;
-    public GameObject exchangeItemPanel;
     public GameObject exchangeTrapPanel;
+    public GameObject exchangeGoodsPanel;
 
     private PlayerAction playerAction;
 
@@ -18,52 +17,53 @@ public class TalkPanel : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("aaa");
         exchangePointPanel.SetActive(false);
-        exchangeItemPanel.SetActive(false);
         exchangeTrapPanel.SetActive(false);
-        talkPanel.SetActive(false);
+        exchangeGoodsPanel.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 
-    public void ExchacgePoint()
+    public void OnExchangePointButtont()
     {
-        talkPanel.SetActive(false);
+        this.gameObject.SetActive(false);
         exchangePointPanel.SetActive(true);
     }
 
-    public void ExchacgeItem()
+    public void OnExchangeGoodsButton()
     {
-        talkPanel.SetActive(false);
-        exchangeItemPanel.SetActive(true);
+        this.gameObject.SetActive(false);
+        exchangeGoodsPanel.SetActive(true);
     }
 
-    public void ExchangeTrap()
+    public void OnExchangeTrapButton()
     {
-        talkPanel.SetActive(false);
+        this.gameObject.SetActive(false);
         exchangeTrapPanel.SetActive(true);
     }
 
     public void StopTalk()
     {
-        talkPanel.SetActive(false);
+        this.gameObject.SetActive(false);
         playerAction.IsAction = false;
         playerAction.CanOpenMenu = true;
     }
 
-    public void CloseExchangePoint()
+    public void OnExchangePointCloseButtont()
     {
-        talkPanel.SetActive(true);
+        this.gameObject.SetActive(true);
         exchangePointPanel.SetActive(false);
     }
 
-    public void CloseExchangeItem()
+    public void OnExchangeGoodsCloseButton()
     {
-        talkPanel.SetActive(true);
-        exchangeItemPanel.SetActive(false);
+        this.gameObject.SetActive(true);
+        exchangeGoodsPanel.SetActive(false);
     }
 
-    public void CloseExchangeTrap()
+    public void OnExchangeTrapCloseButton()
     {
-        talkPanel.SetActive(true);
+        this.gameObject.SetActive(true);
         exchangeTrapPanel.SetActive(false);
     }
 }

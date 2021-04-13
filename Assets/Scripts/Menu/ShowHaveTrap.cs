@@ -18,18 +18,6 @@ public class ShowHaveTrap : MonoBehaviour
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void ShowItem()
     {
         listNum = 0;

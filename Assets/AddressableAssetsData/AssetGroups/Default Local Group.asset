@@ -21,9 +21,15 @@ MonoBehaviour:
     m_Address: trap_hole
     m_ReadOnly: 0
     m_SerializedLabels: []
-    m_MainAsset: {fileID: 3682134888728581718, guid: 2befc892938f9e44e8baaba61f6abd13,
+    m_MainAsset: {fileID: 0}
+    m_TargetAsset: {fileID: 0}
+  - m_GUID: 79dfb4eca1bb0c34ab734268346677a5
+    m_Address: RoomGate
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 4166789560042950642, guid: 79dfb4eca1bb0c34ab734268346677a5,
       type: 3}
-    m_TargetAsset: {fileID: 3682134888728581718, guid: 2befc892938f9e44e8baaba61f6abd13,
+    m_TargetAsset: {fileID: 4166789560042950642, guid: 79dfb4eca1bb0c34ab734268346677a5,
       type: 3}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 58b12969fc7e10b4b9c89b35915039e0, type: 2}

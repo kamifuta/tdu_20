@@ -5,17 +5,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NodeController_exchange : MonoBehaviour
+public class NodeController_trap_exchange: MonoBehaviour
 {
     public GameObject countUpButtonObj;
     public GameObject countDownButtonObj;
     public Button countUpButton;
     public Button countDownButton;
     public Text itemCountText;
+    public Text itemPointText;
+    public Text itemHaveCountText;
     private Having having;
-    private ItemInfo.Item key;
-    private KeyValuePair<int, ItemInfo._item> pair;
-    private ItemInfo itemInfo = new ItemInfo();
+    private TrapsInfo.Trap key;
+    private KeyValuePair<int, TrapsInfo._trap> pair;
+    private TrapsInfo trapsInfo = new TrapsInfo();
 
     private int itemCount = 0;
 
@@ -25,13 +27,13 @@ public class NodeController_exchange : MonoBehaviour
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
 
         string itemName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        pair = itemInfo.ItemInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
-        key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), pair.Key);
+        pair = trapsInfo.trapInfoDic.FirstOrDefault(c => c.Value.itemName == itemName);
+        key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
 
         countDownButton.interactable = false;
 
         int havePoint = 0;
-        switch (itemInfo.ItemInfoDic[pair.Key].pointType)
+        switch (trapsInfo.trapInfoDic[pair.Key].pointType)
         {
             case ItemInfo.pointType.red:
                 havePoint = having.redPoint;
@@ -47,20 +49,23 @@ public class NodeController_exchange : MonoBehaviour
                 break;
         }
 
-        if (havePoint < itemInfo.ItemInfoDic[pair.Key].point)
+        if (havePoint < trapsInfo.trapInfoDic[pair.Key].point)
         {
             countUpButton.interactable = false;
         }
+
+        itemPointText.text = pair.Value.point.ToString();
+        itemHaveCountText.text = having.HaveFossil[(int)key].itemCount.ToString();
     }
 
     public void OnClickCountUpButton()
     {
         int havePoint = 0;
         itemCount++;
-        having.LosePoint(itemInfo.ItemInfoDic[pair.Key].pointType, itemInfo.ItemInfoDic[pair.Key].point);
+        having.LosePoint(trapsInfo.trapInfoDic[pair.Key].pointType, trapsInfo.trapInfoDic[pair.Key].point);
         itemCountText.text = "x" + itemCount;
 
-        switch (itemInfo.ItemInfoDic[pair.Key].pointType)
+        switch (trapsInfo.trapInfoDic[pair.Key].pointType)
         {
             case ItemInfo.pointType.red:
                 havePoint = having.redPoint;
@@ -76,7 +81,7 @@ public class NodeController_exchange : MonoBehaviour
                 break;
         }
 
-        if (havePoint < itemInfo.ItemInfoDic[pair.Key].point)
+        if (havePoint < trapsInfo.trapInfoDic[pair.Key].point)
         {
             countUpButton.interactable = false;
         }
@@ -90,7 +95,7 @@ public class NodeController_exchange : MonoBehaviour
     public void OnClickCountDownButton()
     {
         itemCount--;
-        having.GetPoint(itemInfo.ItemInfoDic[pair.Key].pointType, itemInfo.ItemInfoDic[pair.Key].point);
+        having.GetPoint(trapsInfo.trapInfoDic[pair.Key].pointType, trapsInfo.trapInfoDic[pair.Key].point);
         itemCountText.text = "x" + itemCount;
 
         if (itemCount == 0)
@@ -108,7 +113,7 @@ public class NodeController_exchange : MonoBehaviour
     {
         for (int i = 0; i < itemCount; i++)
         {
-            having.GetItem(key);
+            having.GetTrap(key);
         }
         itemCount = 0;
         itemCountText.text = "x" + 0;

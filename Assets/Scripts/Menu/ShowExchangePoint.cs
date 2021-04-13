@@ -36,7 +36,7 @@ public class ShowExchangePoint : MonoBehaviour
 
         for (int i = 0; i < new FossilInfo().FossilInfoDic.Count; i++)
         {
-            if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i%3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveItem[i].itemCount == 0)
+            if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i % 3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveFossil[i].itemCount == 0)
             {
                 continue;
             }
@@ -64,7 +64,7 @@ public class ShowExchangePoint : MonoBehaviour
     {
         for(int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_point>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_fossil_exchange>().Exchange();
         }
         ShowHaveFossil();
     }

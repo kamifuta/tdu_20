@@ -5,13 +5,15 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NodeController_point : MonoBehaviour
+public class NodeController_fossil_exchange : MonoBehaviour
 {
     public GameObject countUpButtonObj;
     public GameObject countDownButtonObj;
     public Button countUpButton;
     public Button countDownButton;
     public Text itemCountText;
+    public Text itemPointText;
+    public Text itemHaveCountText;
     private Having having;
     private FossilInfo.FossilSize sizeKey;
     private ItemInfo.pointType colorKey;
@@ -32,6 +34,8 @@ public class NodeController_point : MonoBehaviour
         colorKey = (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), pair.Key/3);
 
         itemCountText.text = "x" + 0;
+        itemPointText.text = pair.Value.point.ToString();
+        itemHaveCountText.text = having.HaveFossil[(int)sizeKey % 3 + (int)colorKey * 3].itemCount.ToString();
     }
 
     public void OnClickCountUpButton()
@@ -52,7 +56,7 @@ public class NodeController_point : MonoBehaviour
     public void OnClickCountDownButton()
     {
         itemCount--;
-        having.LosePoint(having.HaveFossil[pair.Key].fossilColor, having.HaveItem[pair.Key].point);
+        having.LosePoint(having.HaveFossil[pair.Key].fossilColor, having.HaveFossil[pair.Key].point);
         itemCountText.text = "x" + itemCount;
         if (itemCount == 0)
         {

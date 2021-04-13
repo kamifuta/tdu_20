@@ -68,7 +68,7 @@ public class ShowExchangeTrap : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_exchangeTrap>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_trap_exchange>().Exchange();
         }
         ShowTrap();
     }

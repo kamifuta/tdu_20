@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShowHaveItem : MonoBehaviour
+public class ShowHaveFossil : MonoBehaviour
 {
     public GameObject nodePrefab;
     private List<GameObject> nodeList = new List<GameObject>();
@@ -21,14 +21,14 @@ public class ShowHaveItem : MonoBehaviour
     public void ShowItem()
     {
         listNum = 0;
-        foreach(var obj in nodeList)
+        foreach (var obj in nodeList)
         {
             obj.SetActive(false);
         }
 
-        for(int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
+        for (int i = 0; i < new FossilInfo().FossilInfoDic.Count; i++)
         {
-            if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
+            if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i % 3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveFossil[i].itemCount == 0)
             {
                 continue;
             }
@@ -43,8 +43,8 @@ public class ShowHaveItem : MonoBehaviour
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
+            nodeNameTextList[listNum].text = new FossilInfo().FossilInfoDic[i].itemName;
+            nodeCountTextList[listNum].text = "x" + having.HaveFossil[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;
         }

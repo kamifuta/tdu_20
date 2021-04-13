@@ -25,12 +25,6 @@ public class NodeController_trap : MonoBehaviour
         putButtonObj.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void OnClickItemNode()
     {
         throwButtonObj.SetActive(true);
@@ -45,7 +39,6 @@ public class NodeController_trap : MonoBehaviour
         throwButtonObj.SetActive(false);
         putButtonObj.SetActive(false);
         having.ThrowTrap(key);
-        // trapPanel.SetActive(false);
         showHaveTrap.ShowItem();
     }
 
