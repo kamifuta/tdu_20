@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using ExitGames.Client.Photon.StructWrapping;
 
 public class MoveObj : MonoBehaviour
 {
-    public GameObject moveSensorObj = null;
+    [SerializeField] GameObject moveSensorObj = null;
     //MoveSensor moveSensor;
 
     private float clickposX;
@@ -16,24 +15,30 @@ public class MoveObj : MonoBehaviour
     private Collider moveObjCollider;
     private Collider moveObjCollidersub;
     Rigidbody moveObjRigidBody;
-    PhotonView photonView;
-    //private GameObject moveObj;//MoveSensorからいじる
+    ObjectPosition objectPosition;
 
-    public void MoveObjSet(GameObject moveSensor)
+    private GameObject moveObj;//MoveSensorからいじる
+    private void Awake()
     {
+        //moveSensor = moveSensorObj.GetComponent<MoveSensor>();
+        gameObject.SetActive(false);
+    }
+    public void MoveObjSet(GameObject selectObj)
+    {
+        moveObj = selectObj;
         for (int i=0; i<3;i++)//読み取り専用…
         {
             if (i==0)
             {
-                moveObjCollidersub = GetComponent<BoxCollider>();
+                moveObjCollidersub = moveObj.GetComponent<BoxCollider>();
             }
             else if (i==1)
             {
-                moveObjCollidersub = GetComponent<SphereCollider>();
+                moveObjCollidersub = moveObj.GetComponent<SphereCollider>();
             }
             else if (i==2)
             {
-                moveObjCollidersub = GetComponent<CapsuleCollider>();
+                moveObjCollidersub = moveObj.GetComponent<CapsuleCollider>();
             }
             if (moveObjCollidersub != null)
             {
@@ -42,11 +47,10 @@ public class MoveObj : MonoBehaviour
             }
         }
         //moveObjCollidersub = moveObj.GetComponent<Collider>();/////////////////////////////
+        objectPosition = selectObj.GetComponent<ObjectPosition>();
         moveObjCollider.isTrigger = true;
-        stayJudge = gameObject.AddComponent<MoveObjTriggerStayJudge>();
-        moveObjRigidBody=gameObject.AddComponent<Rigidbody>();
-        photonView = GetComponent<PhotonView>();
-        moveSensorObj = moveSensor;
+        stayJudge = moveObj.AddComponent<MoveObjTriggerStayJudge>();
+        moveObjRigidBody=moveObj.AddComponent<Rigidbody>();
         moveObjRigidBody.useGravity = false;
     }
 
@@ -55,19 +59,19 @@ public class MoveObj : MonoBehaviour
       
         if (Input.GetKeyDown(KeyCode.W))
         {
-            transform.position += new Vector3(0.0f, 0.0f, 1.5f);   
+            moveObj.transform.position += new Vector3(0.0f, 0.0f, 1.5f);   
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            transform.position += new Vector3(0.0f, 0.0f, -1.5f);   
+            moveObj.transform.position += new Vector3(0.0f, 0.0f, -1.5f);   
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            transform.position += new Vector3(-1.5f, 0.0f, 0.0f);
+            moveObj.transform.position += new Vector3(-1.5f, 0.0f, 0.0f);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            transform.position += new Vector3(1.5f, 0.0f, 0.0f);
+            moveObj.transform.position += new Vector3(1.5f, 0.0f, 0.0f);
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -79,16 +83,13 @@ public class MoveObj : MonoBehaviour
             if (stayJudge.stayObj == null)
             {
                 moveSensorObj.SetActive(true);
-                transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-                float posx = transform.position.x;
-                float posz = transform.position.z;
-                Debug.Log(photonView);
-                photonView.RPC(nameof(ObjPosSend), RpcTarget.Others ,transform.position);
-                moveSensorObj.transform.position = new Vector3(posx, moveSensorObj.transform.position.y, posz);////
+                moveObj.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                objectPosition.ObjPosMove();
+                moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);////
                 moveObjCollider.isTrigger = false;
                 Destroy(stayJudge); 
                 Destroy(moveObjRigidBody);
-                Destroy(gameObject.GetComponent<MoveObj>());
+                gameObject.SetActive(false);
             }
             else
             {
@@ -98,10 +99,11 @@ public class MoveObj : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            Debug.Log("オブジェクト削除!!!!!!!!!!");         
+            Debug.Log("オブジェクト削除!!!!!!!!!!");
+            objectPosition.ObjDestroy();
             moveSensorObj.SetActive(true);
-            moveSensorObj.transform.position = new Vector3(transform.position.x, moveSensorObj.transform.position.y, transform.position.z);
-            photonView.RPC(nameof(DestroyObj), RpcTarget.AllViaServer);//Photon適応
+            moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);
+            gameObject.SetActive(false);
         }
 
         if (Input.GetKeyDown(KeyCode.U))
@@ -132,7 +134,7 @@ public class MoveObj : MonoBehaviour
                     Debug.Log("clickposX:" + clickposX);
                     Debug.Log("clickposY:" + clickposZ);
 
-                    transform.position = new Vector3(clickposX, transform.position.y, clickposZ);
+                    moveObj.transform.position = new Vector3(clickposX, moveObj.transform.position.y, clickposZ);
      
                 }
 
@@ -141,13 +143,9 @@ public class MoveObj : MonoBehaviour
     }
     //できるかは分かんない
     [PunRPC]
-    public void DestroyObj(PhotonMessageInfo info)
+    private void DestroyObj(Object destroyObj)
     {
-        Destroy(info.photonView.gameObject);
+        Destroy(destroyObj);
     }
-    [PunRPC]
-    public void ObjPosSend(Vector3 pos, PhotonMessageInfo Info)
-    {
-        Info.photonView.gameObject.transform.position = new Vector3(pos.x,pos.y,pos.z);
-    }
+
 }
