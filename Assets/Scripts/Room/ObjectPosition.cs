@@ -27,9 +27,9 @@ public class ObjectPosition : MonoBehaviour
         info.photonView.transform.position = pos;
     }
 
-    [PunRPC]
+    /*[PunRPC]
     public void ObjDestroySend(PhotonMessageInfo info)
     {
         Destroy(info.photonView.gameObject);
-    }
+    }*/
 }
