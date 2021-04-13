@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HoleTrap : Trap
 {
-    private bool HTrue = false;
+    //private bool HTrue = false;
     // Start is called before the first frame update
     void Start()
     {
