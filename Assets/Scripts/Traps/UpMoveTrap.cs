@@ -13,9 +13,4 @@ public class UpMoveTrap : MonoBehaviour
         rb.AddForce(force, ForceMode.Impulse);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-                 
-    }
 }

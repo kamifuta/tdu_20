@@ -12,9 +12,5 @@ public class RightMoveTrap : MonoBehaviour
         rb.AddForce(force, ForceMode.Impulse);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

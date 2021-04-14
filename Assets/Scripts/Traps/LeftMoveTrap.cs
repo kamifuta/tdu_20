@@ -12,9 +12,5 @@ public class LeftMoveTrap : MonoBehaviour
         rb.AddForce(force, ForceMode.Impulse);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

@@ -121,7 +121,7 @@ public class MoveSensor : MonoBehaviour
 
                     sensorObjPos.position = new Vector3(clickposX, sensorObjPos.position.y, clickposZ);
                 }
-
+               
             }
         }
     }
