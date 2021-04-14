@@ -13,6 +13,7 @@ public class NodeController_trap : MonoBehaviour
     private Having having;
     private ShowHaveTrap showHaveTrap;
     private PlayerAction playerAction;
+    private TrapsInfo trapsInfo = new TrapsInfo();
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +35,7 @@ public class NodeController_trap : MonoBehaviour
     public void OnClickThrowButton()
     {
         string trapName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
+        var pair = trapsInfo.trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
         TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         throwButtonObj.SetActive(false);
         putButtonObj.SetActive(false);
@@ -45,7 +46,7 @@ public class NodeController_trap : MonoBehaviour
     public void OnClickPutButton()
     {
         string trapName = this.gameObject.transform.GetChild(0).GetComponent<Text>().text;
-        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
+        var pair = trapsInfo.trapInfoDic.FirstOrDefault(c => c.Value.itemName == trapName);
         TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         throwButtonObj.SetActive(false);
         putButtonObj.SetActive(false);
