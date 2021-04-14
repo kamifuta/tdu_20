@@ -2,24 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HoleTrap : Trap
+public class UpMoveTrap : MonoBehaviour
 {
-    //private bool HTrue = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        Rigidbody rb = GetComponent<Rigidbody>();
+        Vector3 force = new Vector3(0.0f, 0.0f, Random.Range(10.0f, 20.0f));
+        rb.AddForce(force, ForceMode.Impulse);
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-    }
-
-    protected override void OnAwake()
-    {
-        
-        //後キャラの向きだけかえる
+                 
     }
 }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HoleTrap : Trap
+public class BubbleDes : MonoBehaviour
 {
-    //private bool HTrue = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,12 +13,11 @@ public class HoleTrap : Trap
     // Update is called once per frame
     void Update()
     {
-       
+        
     }
 
-    protected override void OnAwake()
+    private void OnMouseDown()
     {
-        
-        //後キャラの向きだけかえる
+        Destroy(this.gameObject);
     }
 }

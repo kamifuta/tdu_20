@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
-    public GameObject[] BoardSprite = new GameObject[3];
-    public Sprite[] _BoardSprites = new Sprite[3];
+    public GameObject ResultTextController;
+    public GameObject PanelGenerator;
+
+    private Sprite[] BoardSprite = new Sprite[3];
+    public GameObject[] boardSpritePrefab = new GameObject[3];
     private int[,] Board = new int[13, 10];
-    //private int [,] FossilLocation = new int[13,10];
     private GameObject[,] BoardImage = new GameObject[13, 10];
     public SpriteRenderer[,] SpriteRenderer = new SpriteRenderer[13, 10];
     private int Strength = 0;
@@ -19,42 +21,61 @@ public class NewDigSceneDirector : MonoBehaviour
     private int objPosY;
     public Button HammerButton;
     public Button PickelButton;
-    Slider _slider;     //CountBar HP
-    float _hp = 0;
-    //public bool HammerCheck = true;
-    //public bool PickelCheck = true;
+    private Slider _slider;     //CountBar HP
+    private float _hp = 0;
     private int[,] FossilLocation = new int[13, 10];
-    int FlocationX = 0;
-    int FlocationY = 0;
-    bool CheckOverlap = true; //重なりあるか否か
-    int[] MemorizeKey = new int[4];
-    Vector3[] MemorizeLocation = new Vector3[4];
-    int[] ExcavationCompleted = new int[5]; //SuccessCNT++で一つ多くても参照不可にならないように+1
-    Dictionary<int, FossilList> FossilDic;
+    private int FlocationX = 0;
+    private int FlocationY = 0;
+    private bool CheckOverlap = true; //重なりあるか否か
+    public int[] MemorizeKey = new int[4];
+    private Vector3[] MemorizeLocation = new Vector3[4];
+    public HashSet<int> ExcavationCompletedhs = new HashSet<int>();
+    public Dictionary<int, FossilList> FossilDic;
     private int _count = 0; //Generator何回ループしているか、memorizeに入れる際使用
     public GameObject Fprefab;
-    int SuccessCNT = 0; //発掘成功した化石のキー配列（ExcavationCompleted[]）回すため
-    int RandomGenerateNum;  //生成する化石の個数
+    private int RandomGenerateNum;  //生成する化石の個数
+    private int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
+    public Text FossilKosu;
 
+    private void Awake()
+    {
+        for (int i=0; i<3;i++)
+        {
+            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
+        }
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
+                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+            }
+        }
+    }
     private IEnumerator FossilGenerator()
     {
         RandomGenerateNum = Random.Range(2, 5);
-        //Debug.Log("個数＝" + RandomGenerateNum);
-        int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
+        FossilKosu.text = RandomGenerateNum + "コ";
+        Debug.Log("個数＝" + RandomGenerateNum);
+        
         Vector3 Flocation = new Vector3(0, 0, 0);
         for(int i = 0; i < RandomGenerateNum; i++)
         {
-            RandomKindNum = Random.Range(0, 12/*13*/);
+            RandomKindNum =0;
+            //RandomKindNum = Random.Range(0, 12/*13*/);
             MemorizeKey[_count] = RandomKindNum;
             
             //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
 
-            //↓下記のwhileは大きなバグの原因含んでいるので注意！！終わらない可能性あり
+            //↓↓↓下記のwhileは大きなバグの原因含んでいるので注意！！終わらない可能性あり
             while (true)
             {
                 if (RandomKindNum <= 3)
                 {
-                    Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);
+                    Flocation = new Vector3(Random.Range(0, 11) + 0.5f, Random.Range(0, 9) + 0.5f, 0);//基準左下
                 }
                 else if (RandomKindNum <= 7)
                 {
@@ -62,7 +83,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
                 else if (RandomKindNum <= 11)
                 {
-                    Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);
+                    Flocation = new Vector3(Random.Range(1, 10) + 0.5f, Random.Range(1, 7) + 0.5f, 0);//基準（２，２）
                 }
                 //Debug.Log("切り捨て" + Mathf.Floor(Flocation.x));
                 FlocationX = (int)Mathf.Floor(Flocation.x); //Flocationのxの小数第一位を切り捨てたもの　配列の値に使う
@@ -71,59 +92,67 @@ public class NewDigSceneDirector : MonoBehaviour
                 yield return StartCoroutine(CheckLocation(RandomKindNum, FlocationX, FlocationY));
                 if (CheckOverlap) break;
             }
-            MemorizeLocation[_count] = new Vector3(FlocationX,FlocationY,0);//FlocateionXで管理したほうがいい？？？
+            MemorizeLocation[_count] = new Vector3(FlocationX,FlocationY,0);
             _count++;
 
-            int testX = 0;
-            int testY = 0;
-
-            for (int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
-            {
-                for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
-                {
-                    if (RandomKindNum <= 3)
-                    {
-                        FossilLocation[k + FlocationX, j + FlocationY] = 1;
-                        testX = k + FlocationX;
-                        testY = j + FlocationY;
-                        Debug.Log(RandomKindNum+"("+testX+","+testY+")");
-                    }
-                    else if (RandomKindNum <= 7)
-                    {
-                        FossilLocation[k + FlocationX - 1, j + FlocationY -1] = 1;
-                        testX = k + FlocationX-1;
-                        testY = j + FlocationY-1;
-                        Debug.Log(RandomKindNum + "(" + testX + "," + testY + ")");
-                    }
-                    else if (RandomKindNum <= 11)
-                    {
-                        FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                        testX = k + FlocationX-1;
-                        testY = j + FlocationY-1;
-                        Debug.Log(RandomKindNum + "(" + testX + "," + testY + ")");
-                    }
-                }
-            }
+            FillFosssilPos();
+            
             var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
+            tmp.gameObject.transform.SetParent(PanelGenerator.transform);
+            tmp.gameObject.transform.localPosition = Flocation;
+            
             tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
 
             float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
             tmp.transform.localScale = new Vector3(foo,foo,1);
 
         }
-
-        //Generateするのに必要なこと
-        //todo:重ならないように　 →　完了
-        //todo:生成する場所の制限　→　完了
-        //todo:配列の連携　化石掘れたかどうか
-        //todo:生成するオブジェクトの種類の比率
-        //todo:各エフェクト
-        //todo:終わった後の処理
+        for (int i=0;i<_count ;i++)
+        {
+            //Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
+        }
+    }
+    //todo:生成するオブジェクトの種類の比率
+    //todo:各エフェクト
+    //todo:終わった後の処理
+    //todo:コメント追加、終わった後の処理　最初に何個あるか表示
+    public void FillFosssilPos() 
+    {
+        int testX;
+        int testY;
+        for (int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
+        {
+            for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+            {
+                if (RandomKindNum <= 3)
+                {
+                    FossilLocation[k + FlocationX, j + FlocationY] = 1;
+                    testX = k + FlocationX;
+                    testY = j + FlocationY;
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
+                }
+                else if (RandomKindNum <= 7)
+                {
+                    testX = k + FlocationX-1;
+                    testY = j + FlocationY-1;
+                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
+                }
+                else if (RandomKindNum <= 11)
+                {
+                    testX = k + FlocationX-1;
+                    testY = j + FlocationY-1;
+                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
+                    //Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
+                }
+            }
+        }
     }
 
     //事前に化石が置かれているか精査
     private IEnumerator CheckLocation(int RandomKindNum,int FlocationX,int FlocationY)
     {
+        //Debug.Log("Flocation"+ FlocationX+":"+ FlocationY+":"+ RandomKindNum);
         for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
         {
             for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
@@ -138,7 +167,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
                 else if (RandomKindNum <= 7)
                 {
-                    if (FossilLocation[k + FlocationX-1, j + FlocationY-1] == 1)
+                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1) 
                     {
                         CheckOverlap = false;
                         yield break;
@@ -146,7 +175,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
                 else if (RandomKindNum <= 11)
                 {
-                    if (FossilLocation[k + FlocationX-1, j + FlocationY-1] == 1)
+                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1)
                     {
                         CheckOverlap = false;
                         yield break;
@@ -156,14 +185,15 @@ public class NewDigSceneDirector : MonoBehaviour
         }
         CheckOverlap =  true;
     }
+    //化石が掘れたか判定、すべて掘れた時。。。
     private void DigResult()
     {
         for(int i = 0; i < RandomGenerateNum; i++)
         {
             CompareArray(i);
             //Debug.Log(SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
-            //ここまできたらbool型配列ｉ番目をtrueにするとか？
         }
+        
         //生成された化石のキーと生成場所をそれぞれ配列で保存
         //それぞれの配列０番目から見ていく
         //一回タップするごとに呼ばれる　または　壁ｈｐが30以上になったら呼ばれる
@@ -171,41 +201,39 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void CompareArray(int i)
     {
+        //Debug.Log("CompareAray");
         for (int k = 0; k < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); k++)
-        {
+        {      
             for (int j = 0; j < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); j++)
             {
                 if (MemorizeKey[i] <= 3)
                 {
-                    if (Board[k + (int)MemorizeLocation[i].x, j + (int)MemorizeLocation[i].y] > 0)
+                    if (Board[k + (int)MemorizeLocation[i].x, j + (int)MemorizeLocation[i].y] >= 0)
                     {
-                        //Debug.Log("<=3"+k + (int)MemorizeLocation[i].x+","+j + (int)MemorizeLocation[i].y);
                         return;
                     }
                 }
                 else if (MemorizeKey[i] <= 7)
                 {
-                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] >= 0)
                     {
-                        //Debug.Log("<=7" + k + (int)MemorizeLocation[i].x + "," + j + (int)MemorizeLocation[i].y);
                         return;
                     }
                 }
                 else if (MemorizeKey[i] <= 11)
                 {
-                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] > 0)
+                    if (Board[k + (int)MemorizeLocation[i].x - 1, j + (int)MemorizeLocation[i].y - 1] >= 0)
                     {
-                        //Debug.Log("<=11" + k + (int)MemorizeLocation[i].x + "," + j + (int)MemorizeLocation[i].y);
                         return;
                     }
                 }
             }
         }
-        ExcavationCompleted[SuccessCNT] = MemorizeKey[i];
-        //Debug.Log("CNT&Key" + SuccessCNT + "," + ExcavationCompleted[SuccessCNT]);
-        SuccessCNT++;
-        
+        ExcavationCompletedhs.Add(i);
+        //Debug.Log("MemorizeKey[i]"+ MemorizeKey[i]);
+        //Debug.Log("ExcavationCompletedhs.Count" + ExcavationCompletedhs.Count);
     }
+
 
     private void IntializeArray()
     {
@@ -215,14 +243,18 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 Strength = Random.Range(0, 3);
                 Board[i, j] = Strength;
-                BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
-                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+                //BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
+                //BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                //BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                //BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                //SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+                SpriteRenderer[i, j].sprite = BoardSprite[Strength];
             }
         }
     }
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
         IntializeArray();
         _slider = GameObject.Find("CountBar").GetComponent<Slider>();
@@ -242,11 +274,16 @@ public class NewDigSceneDirector : MonoBehaviour
             {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[4,4])},
             {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
         };
+        
+        yield return StartCoroutine(FossilGenerator());
 
-        StartCoroutine(FossilGenerator());
-
+        
+    }
+    private void CleanPanels()
+    {
 
     }
+
     bool aaa = true;
     // Update is called once per frame
     void Update()
@@ -255,16 +292,15 @@ public class NewDigSceneDirector : MonoBehaviour
         {
             DigResult();
             aaa = false;
-            //Debug.Log("FINISH!!!");
+            ResultTextController.SetActive(true);
+            Debug.Log("FINISH!!!");
         }
-        if (Input.GetMouseButtonDown(0) && _hp < 30)//且つすべての化石が掘り出されていないとき
+        if (Input.GetMouseButtonDown(0) && _hp < 30 && ExcavationCompletedhs.Count != RandomGenerateNum)//且つすべての化石が掘り出されていないとき
         {
             SearchMousePosition();
 
             if (objPos.y > -0.5 && objPos.y < 9.5 && objPos.x > -0.5 && objPos.x < 12.5)
             {
-                
-
                 objPosX = (int)Mathf.Round(objPos.x);
                 objPosY = (int)Mathf.Round(objPos.y);
 
@@ -276,9 +312,17 @@ public class NewDigSceneDirector : MonoBehaviour
                 {
                     PickelMode();                    
                 }
-                
+                Debug.Log(ExcavationCompletedhs.Count);
+                DigResult();
+                if (ExcavationCompletedhs.Count == RandomGenerateNum)
+                {
+                    Debug.Log("Completed!!");
+                    ResultTextController.SetActive(true);
+                }
+
             }
         }
+        
     }
     private void SearchMousePosition()
     {
@@ -316,12 +360,11 @@ public class NewDigSceneDirector : MonoBehaviour
                 {
                     continue;
                 }
-                //Destroy(BoardImage[objPosX + i, objPosY + j]);
+
                 Board[objPosX + i, objPosY + j] -= 2;
                 if (Board[objPosX+i, objPosY+j] > -1)
                 {
-                    //BoardImage[objPosX + i, objPosY +j] = Instantiate(BoardSprite[Board[objPosX + i, objPosY + j]], new Vector3(objPosX + i, objPosY + j, 0), Quaternion.identity);
-                    SpriteRenderer[objPosX + i, objPosY + j].sprite = _BoardSprites[Board[objPosX + i, objPosY + j]];
+                    SpriteRenderer[objPosX + i, objPosY + j].sprite = BoardSprite[Board[objPosX + i, objPosY + j]];
                 }
                 else
                 {
@@ -341,12 +384,10 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            //Destroy(BoardImage[objPosX, objPosY + j]);
             Board[objPosX, objPosY + j]--;
             if (Board[objPosX , objPosY + j] > -1)
             {
-                //BoardImage[objPosX, objPosY + j] = Instantiate(BoardSprite[Board[objPosX, objPosY + j]], new Vector3(objPosX, objPosY + j, 0), Quaternion.identity);
-                SpriteRenderer[objPosX, objPosY + j].sprite = _BoardSprites[Board[objPosX, objPosY + j]];
+                SpriteRenderer[objPosX, objPosY + j].sprite = BoardSprite[Board[objPosX, objPosY + j]];
             }
             else
             {
@@ -359,12 +400,10 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            //Destroy(BoardImage[objPosX + j, objPosY]);
             Board[objPosX + j, objPosY]--;
             if (Board[objPosX + j, objPosY ] > -1)
             {
-                //BoardImage[objPosX + j, objPosY] = Instantiate(BoardSprite[Board[objPosX + j, objPosY ]], new Vector3(objPosX + j, objPosY, 0), Quaternion.identity);
-                SpriteRenderer[objPosX + j, objPosY].sprite = _BoardSprites[Board[objPosX + j, objPosY]];
+                SpriteRenderer[objPosX + j, objPosY].sprite = BoardSprite[Board[objPosX + j, objPosY]];
             }
             else
             {

@@ -8,6 +8,7 @@ public class IceTrap : Trap
     public GameObject canvas;
     public GameObject IceImage;
     private int IceHp;
+    public GameObject obj;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +20,7 @@ public class IceTrap : Trap
     void Update()
     {
 
-        GameObject obj = GameObject.Find("IceImage(Clone)");
+        obj = GameObject.Find("IceImage(Clone)");
         if (Input.GetMouseButtonDown(0)) 
         {
             IceHp -= 1;
@@ -34,7 +35,8 @@ public class IceTrap : Trap
     {
         GameObject prefab = (GameObject)Instantiate(IceImage,new Vector3(0.0f,0.0f,0.0f),Quaternion.identity);
         prefab.transform.SetParent(canvas.transform, false);
-
+        
         //キャラを動かせなくする
     }
+
 }

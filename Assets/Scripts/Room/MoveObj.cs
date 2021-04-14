@@ -15,6 +15,7 @@ public class MoveObj : MonoBehaviour
     private Collider moveObjCollider;
     private Collider moveObjCollidersub;
     Rigidbody moveObjRigidBody;
+    ObjectPosition objectPosition;
 
     private GameObject moveObj;//MoveSensorからいじる
     private void Awake()
@@ -46,6 +47,7 @@ public class MoveObj : MonoBehaviour
             }
         }
         //moveObjCollidersub = moveObj.GetComponent<Collider>();/////////////////////////////
+        objectPosition = selectObj.GetComponent<ObjectPosition>();
         moveObjCollider.isTrigger = true;
         stayJudge = moveObj.AddComponent<MoveObjTriggerStayJudge>();
         moveObjRigidBody=moveObj.AddComponent<Rigidbody>();
@@ -82,6 +84,7 @@ public class MoveObj : MonoBehaviour
             {
                 moveSensorObj.SetActive(true);
                 moveObj.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                objectPosition.ObjPosMove();
                 moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);////
                 moveObjCollider.isTrigger = false;
                 Destroy(stayJudge); 
@@ -97,7 +100,7 @@ public class MoveObj : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
             Debug.Log("オブジェクト削除!!!!!!!!!!");
-            DestroyObj((Object)moveObj);//Photon適応
+            objectPosition.ObjDestroy();
             moveSensorObj.SetActive(true);
             moveSensorObj.transform.position = new Vector3(moveObj.transform.position.x, moveSensorObj.transform.position.y, moveObj.transform.position.z);
             gameObject.SetActive(false);
