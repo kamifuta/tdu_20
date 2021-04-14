@@ -8,7 +8,7 @@ public class TrashTrap : Trap
     private void Start()
     {
         Transform playertf = gameObject.transform;
-        playertf.position = new Vector3(playertf.position.x, playertf.position.y+3, playertf.position.z);
+        playertf.position = new Vector3(playertf.position.x, playertf.position.y+2.5f, playertf.position.z);
         Instantiate(trashObj, playertf);
         
     //Rigidbody rb = GetComponent<Rigidbody>();
