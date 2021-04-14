@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
@@ -30,18 +33,106 @@ public class NewDigSceneDirector : MonoBehaviour
     public int[] MemorizeKey = new int[4];
     private Vector3[] MemorizeLocation = new Vector3[4];
     public HashSet<int> ExcavationCompletedhs = new HashSet<int>();
-    public Dictionary<int, FossilList> FossilDic;
+    //public Dictionary<int, FossilList> FossilDic;
     private int _count = 0; //Generator何回ループしているか、memorizeに入れる際使用
     public GameObject Fprefab;
     private int RandomGenerateNum;  //生成する化石の個数
     private int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
     public Text FossilKosu;
+    private FossilInfo fossilInfo = new FossilInfo();
+    private bool aaa = true;
     PhotonView photonView;
 
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+        for (int i = 0; i < 3; i++)
+        {
+            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
+        }
+        _slider = GameObject.Find("CountBar").GetComponent<Slider>();
+    }
 
-   
+    private void Start()
+    {
+        GenerateBoard();
+        IntializeArray();
+        var token = this.GetCancellationTokenOnDestroy();
+        FossilGenerator(token).Forget();
+    }
 
-    private IEnumerator FossilGenerator()
+    void Update()
+    {
+        if (_hp >= 30 && aaa)
+        {
+            DigResult();
+            aaa = false;
+            ResultTextController.SetActive(true);
+            Debug.Log("FINISH!!!");
+        }
+
+        if (Input.GetMouseButtonDown(0) && _hp < 30 && ExcavationCompletedhs.Count != RandomGenerateNum)//且つすべての化石が掘り出されていないとき
+        {
+            SearchMousePosition();
+
+            if (objPos.y > -0.5 && objPos.y < 9.5 && objPos.x > -0.5 && objPos.x < 12.5)
+            {
+                objPosX = (int)Mathf.Round(objPos.x);
+                objPosY = (int)Mathf.Round(objPos.y);
+
+                if (HammerButton.interactable == false)
+                {
+                    HammerMode();
+                }
+                else if (PickelButton.interactable == false)
+                {
+                    PickelMode();
+                }
+                Debug.Log(ExcavationCompletedhs.Count);
+                DigResult();
+                if (ExcavationCompletedhs.Count == RandomGenerateNum)
+                {
+                    Debug.Log("Completed!!");
+                    ResultTextController.SetActive(true);
+                }
+            }
+        }
+    }
+
+    private void GenerateBoard()
+    {
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
+                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+            }
+        }
+    }
+
+    private void IntializeArray()
+    {
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                Strength = Random.Range(0, 3);
+                Board[i, j] = Strength;
+                //BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
+                //BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                //BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                //BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                //SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+                SpriteRenderer[i, j].sprite = BoardSprite[Strength];
+            }
+        }
+    }
+
+    private async UniTask FossilGenerator(CancellationToken token = default)
     {
         RandomGenerateNum = Random.Range(2, 5);
         FossilKosu.text = RandomGenerateNum + "コ";
@@ -75,14 +166,15 @@ public class NewDigSceneDirector : MonoBehaviour
                 FlocationX = (int)Mathf.Floor(Flocation.x); //Flocationのxの小数第一位を切り捨てたもの　配列の値に使う
                 FlocationY = (int)Mathf.Floor(Flocation.y); //Flocationのyの小数第一位を切り捨てたもの　配列の値に使う
 
-                yield return StartCoroutine(CheckLocation(RandomKindNum, FlocationX, FlocationY));
+                await CheckLocation(RandomKindNum, FlocationX, FlocationY);
                 if (CheckOverlap) break;
             }
             MemorizeLocation[_count] = new Vector3(FlocationX,FlocationY,0);
             _count++;
 
-            FillFosssilPos();
             FossilGeneratorSend(Flocation);
+            FillFosssilPos();
+            
             //123456
             //photonView.RPC(nameof(FossilGeneratorSend,));
 
@@ -92,60 +184,14 @@ public class NewDigSceneDirector : MonoBehaviour
             //Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
         }
     }
-    [PunRPC]
-    public void FossilGeneratorSend(Vector3 FlocationS)
-    {
-        var tmp = Instantiate(Fprefab, FlocationS, Quaternion.identity);
-        tmp.gameObject.transform.SetParent(PanelGenerator.transform);
-        tmp.gameObject.transform.localPosition = FlocationS;
-        tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
-        float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
-        tmp.transform.localScale = new Vector3(foo, foo, 1);
-    }
-    //todo:生成するオブジェクトの種類の比率
-    //todo:各エフェクト
-    //todo:終わった後の処理
-    //todo:コメント追加、終わった後の処理　最初に何個あるか表示
-    public void FillFosssilPos() 
-    {
-        int testX;
-        int testY;
-        for (int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
-        {
-            for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
-            {
-                if (RandomKindNum <= 3)
-                {
-                    FossilLocation[k + FlocationX, j + FlocationY] = 1;
-                    testX = k + FlocationX;
-                    testY = j + FlocationY;
-                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
-                }
-                else if (RandomKindNum <= 7)
-                {
-                    testX = k + FlocationX-1;
-                    testY = j + FlocationY-1;
-                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
-                }
-                else if (RandomKindNum <= 11)
-                {
-                    testX = k + FlocationX-1;
-                    testY = j + FlocationY-1;
-                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
-                    //Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
-                }
-            }
-        }
-    }
 
     //事前に化石が置かれているか精査
-    private IEnumerator CheckLocation(int RandomKindNum,int FlocationX,int FlocationY)
+    private IEnumerator CheckLocation(int RandomKindNum, int FlocationX, int FlocationY)
     {
         //Debug.Log("Flocation"+ FlocationX+":"+ FlocationY+":"+ RandomKindNum);
-        for(int k = 0; k < FossilDic[RandomKindNum].Fsize.GetLength(0); k++)
+        for (int k = 0; k < (int)fossilInfo.FossilInfoDic[RandomKindNum].fossileSize + 2; k++)
         {
-            for (int j = 0; j < FossilDic[RandomKindNum].Fsize.GetLength(0); j++)
+            for (int j = 0; j < (int)fossilInfo.FossilInfoDic[RandomKindNum].fossileSize + 2; j++)
             {
                 if (RandomKindNum <= 3)
                 {
@@ -157,7 +203,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
                 else if (RandomKindNum <= 7)
                 {
-                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1) 
+                    if (FossilLocation[k + FlocationX - 1, j + FlocationY - 1] == 1)
                     {
                         CheckOverlap = false;
                         yield break;
@@ -173,8 +219,57 @@ public class NewDigSceneDirector : MonoBehaviour
                 }
             }
         }
-        CheckOverlap =  true;
+        CheckOverlap = true;
     }
+
+    [PunRPC]
+    public void FossilGeneratorSend(Vector3 FlocationS)
+    {
+        var tmp = Instantiate(Fprefab, FlocationS, Quaternion.identity);
+        tmp.gameObject.transform.SetParent(PanelGenerator.transform);
+        tmp.gameObject.transform.localPosition = FlocationS;
+        Addressables.LoadAssetAsync<Sprite>(fossilInfo.FossilInfoDic[(int)RandomKindNum].prefabAddress).Completed += handle =>
+        {
+            // ロードに成功した場合の処理をここに
+            tmp.GetComponent<SpriteRenderer>().sprite = handle.Result;
+        };
+        float foo = 0.25f * ((int)fossilInfo.FossilInfoDic[(int)RandomKindNum].fossileSize + 2);   //正方形化石のscale変えるため
+        tmp.transform.localScale = new Vector3(foo, foo, 1);
+    }
+
+    public void FillFosssilPos()
+    {
+        int testX;
+        int testY;
+        for (int k = 0; k < (int)fossilInfo.FossilInfoDic[RandomKindNum].fossileSize + 2; k++)
+        {
+            for (int j = 0; j < (int)fossilInfo.FossilInfoDic[RandomKindNum].fossileSize + 2; j++)
+            {
+                if (RandomKindNum <= 3)
+                {
+                    FossilLocation[k + FlocationX, j + FlocationY] = 1;
+                    testX = k + FlocationX;
+                    testY = j + FlocationY;
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + ","+ testY +")");
+                }
+                else if (RandomKindNum <= 7)
+                {
+                    testX = k + FlocationX - 1;
+                    testY = j + FlocationY - 1;
+                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
+                    //Debug.Log("RandomKindNum"+RandomKindNum + "(" + testX + "," + testY + ")");
+                }
+                else if (RandomKindNum <= 11)
+                {
+                    testX = k + FlocationX - 1;
+                    testY = j + FlocationY - 1;
+                    FossilLocation[k + FlocationX - 1, j + FlocationY - 1] = 1;
+                    //Debug.Log("RandomKindNum" + RandomKindNum+"(" + testX + "," + testY + ")");
+                }
+            }
+        }
+    }
+
     //化石が掘れたか判定、すべて掘れた時。。。
     private void DigResult()
     {
@@ -189,12 +284,14 @@ public class NewDigSceneDirector : MonoBehaviour
         //一回タップするごとに呼ばれる　または　壁ｈｐが30以上になったら呼ばれる
     }
 
+    
+
     private void CompareArray(int i)
     {
         //Debug.Log("CompareAray");
-        for (int k = 0; k < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); k++)
+        for (int k = 0; k < (int)fossilInfo.FossilInfoDic[MemorizeKey[i]].fossileSize+2; k++)
         {      
-            for (int j = 0; j < FossilDic[MemorizeKey[i]].Fsize.GetLength(0); j++)
+            for (int j = 0; j < (int)fossilInfo.FossilInfoDic[MemorizeKey[i]].fossileSize + 2; j++)
             {
                 if (MemorizeKey[i] <= 3)
                 {
@@ -224,114 +321,6 @@ public class NewDigSceneDirector : MonoBehaviour
         //Debug.Log("ExcavationCompletedhs.Count" + ExcavationCompletedhs.Count);
     }
 
-
-    private void IntializeArray()
-    {
-        for (int i = 0; i < 13; i++)
-        {
-            for (int j = 0; j < 10; j++)
-            {
-                Strength = Random.Range(0, 3);
-                Board[i, j] = Strength;
-                //BoardImage[i,j] = Instantiate(BoardSprite[Strength], new Vector3(i, j, 0), Quaternion.identity);//マスの生成
-                //BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
-                //BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
-                //BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
-                //SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
-                SpriteRenderer[i, j].sprite = BoardSprite[Strength];
-            }
-        }
-    }
-
-    // Start is called before the first frame update
-
-    private void Awake()
-    {
-        photonView = GetComponent<PhotonView>();
-        for (int i = 0; i < 3; i++)
-        {
-            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
-        }
-        for (int i = 0; i < 13; i++)
-        {
-            for (int j = 0; j < 10; j++)
-            {
-                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
-                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
-                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
-                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
-                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
-            }
-        }
-        _slider = GameObject.Find("CountBar").GetComponent<Slider>();
-        FossilDic = new Dictionary<int, FossilList>()
-        {
-            {0,new FossilList("小さい　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[2,2])},
-            {1,new FossilList("小さい　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[2,2])},
-            {2,new FossilList("小さい　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[2,2])},
-            {3,new FossilList("小さい　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[2,2])},
-            {4,new FossilList("大きい　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[3,3])},
-            {5,new FossilList("大きい　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[3,3])},
-            {6,new FossilList("大きい　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[3,3])},
-            {7,new FossilList("大きい　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[3,3])},
-            {8,new FossilList("特大の　赤色の　宝石",Resources.Load<Sprite>("RedGem"),new int[4,4])},
-            {9,new FossilList("特大の　青色の　宝石",Resources.Load<Sprite>("BlueGem"),new int[4,4])},
-            {10,new FossilList("特大の　緑色の　宝石",Resources.Load<Sprite>("GreenGem"),new int[4,4])},
-            {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[4,4])},
-            {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
-        };
-    }
-    IEnumerator Start()
-    {
-        yield return StartCoroutine(FossilGenerator());       
-    }
-
-    private void OnEnable()
-    {
-        IntializeArray();
-    }
-
-    bool aaa = true;
-    // Update is called once per frame
-    void Update()
-    {      
-        if(_hp >= 30 && aaa)
-        {
-            DigResult();
-            aaa = false;
-            ResultTextController.SetActive(true);
-            Debug.Log("FINISH!!!");
-        }
-     
-        if (Input.GetMouseButtonDown(0) && _hp < 30 && ExcavationCompletedhs.Count != RandomGenerateNum)//且つすべての化石が掘り出されていないとき
-        {
-            SearchMousePosition();
-
-            if (objPos.y > -0.5 && objPos.y < 9.5 && objPos.x > -0.5 && objPos.x < 12.5)
-            {
-                objPosX = (int)Mathf.Round(objPos.x);
-                objPosY = (int)Mathf.Round(objPos.y);
-
-                if (HammerButton.interactable == false)
-                {
-                    HammerMode();
-                }
-                else if (PickelButton.interactable == false)
-                {
-                    PickelMode();                    
-                }
-                Debug.Log(ExcavationCompletedhs.Count);
-                DigResult();
-                if (ExcavationCompletedhs.Count == RandomGenerateNum)
-                {
-                    Debug.Log("Completed!!");
-                    ResultTextController.SetActive(true);
-                }
-
-            }
-        }
-        
-    }
     private void SearchMousePosition()
     {
         mousePos = Input.mousePosition;
@@ -339,6 +328,7 @@ public class NewDigSceneDirector : MonoBehaviour
         objPos = Camera.main.ScreenToWorldPoint(mousePos);
         //Debug.Log(objPos);
     }
+
     public void HammerORPickelButton()
     {
         if (HammerButton.interactable == false)
@@ -376,6 +366,7 @@ public class NewDigSceneDirector : MonoBehaviour
         // HPゲージに値を設定
         _slider.value = _hp;
     }
+
     public void HammerModeSend(int i,int j)
     {
         Board[objPosX + i, objPosY + j] -= 2;
@@ -388,6 +379,7 @@ public class NewDigSceneDirector : MonoBehaviour
             BoardImage[objPosX + i, objPosY + j].SetActive(false);
         }
     }
+
     public void PickelMode()
     {
         for (int j = -1; j <= 1; j++)
@@ -414,6 +406,7 @@ public class NewDigSceneDirector : MonoBehaviour
 
         //試行回数hp
     }
+
     [PunRPC]
     public void PickelMode1Send(int j)
     {
@@ -427,6 +420,7 @@ public class NewDigSceneDirector : MonoBehaviour
             BoardImage[objPosX, objPosY + j].SetActive(false);
         }
     }
+
     [PunRPC]
     public void PickelMode2Send(int j)
     {

@@ -27,7 +27,7 @@ public class ResultText : MonoBehaviour
         foreach (int i in DigDirectorScript.ExcavationCompletedhs)
         {
 
-            ObtainFossilName = DigDirectorScript.FossilDic[i].Fname;
+            ObtainFossilName =new FossilInfo().FossilInfoDic[i].itemName;
             _resulttext[aaa] = ObtainFossilName;
             aaa++;
         }
