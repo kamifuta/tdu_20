@@ -17,12 +17,22 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a2f7d9a6767a1574caedb9fc6940a33e
   m_SerializeEntries:
-  - m_GUID: 2befc892938f9e44e8baaba61f6abd13
-    m_Address: trap_hole
+  - m_GUID: 2a14b9526bd31164d990a934eb46f41f
+    m_Address: DownMoveTrap
     m_ReadOnly: 0
     m_SerializedLabels: []
-    m_MainAsset: {fileID: 0}
-    m_TargetAsset: {fileID: 0}
+    m_MainAsset: {fileID: 1343636222507546816, guid: 2a14b9526bd31164d990a934eb46f41f,
+      type: 3}
+    m_TargetAsset: {fileID: 1343636222507546816, guid: 2a14b9526bd31164d990a934eb46f41f,
+      type: 3}
+  - m_GUID: 64d15ef4379c8044c8996d51e54bec17
+    m_Address: IceTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 5857756531891506054, guid: 64d15ef4379c8044c8996d51e54bec17,
+      type: 3}
+    m_TargetAsset: {fileID: 5857756531891506054, guid: 64d15ef4379c8044c8996d51e54bec17,
+      type: 3}
   - m_GUID: 79dfb4eca1bb0c34ab734268346677a5
     m_Address: RoomGate
     m_ReadOnly: 0
@@ -30,6 +40,46 @@ MonoBehaviour:
     m_MainAsset: {fileID: 4166789560042950642, guid: 79dfb4eca1bb0c34ab734268346677a5,
       type: 3}
     m_TargetAsset: {fileID: 4166789560042950642, guid: 79dfb4eca1bb0c34ab734268346677a5,
+      type: 3}
+  - m_GUID: 869c3a488fa1fa640b1ab9e0d84d414c
+    m_Address: HoleTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 3122067449193857125, guid: 869c3a488fa1fa640b1ab9e0d84d414c,
+      type: 3}
+    m_TargetAsset: {fileID: 3122067449193857125, guid: 869c3a488fa1fa640b1ab9e0d84d414c,
+      type: 3}
+  - m_GUID: 913f2a9cad7ad244db1c67c07af1f65e
+    m_Address: LeftMoveTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 7904888919062732380, guid: 913f2a9cad7ad244db1c67c07af1f65e,
+      type: 3}
+    m_TargetAsset: {fileID: 7904888919062732380, guid: 913f2a9cad7ad244db1c67c07af1f65e,
+      type: 3}
+  - m_GUID: bccfd183b4e6eb94db4f30e07bc92bc1
+    m_Address: BubbleTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 3010489089220293734, guid: bccfd183b4e6eb94db4f30e07bc92bc1,
+      type: 3}
+    m_TargetAsset: {fileID: 3010489089220293734, guid: bccfd183b4e6eb94db4f30e07bc92bc1,
+      type: 3}
+  - m_GUID: ec8e387e2015ddc47912dda8cd21dda1
+    m_Address: ConfusionTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 8896007118568264887, guid: ec8e387e2015ddc47912dda8cd21dda1,
+      type: 3}
+    m_TargetAsset: {fileID: 8896007118568264887, guid: ec8e387e2015ddc47912dda8cd21dda1,
+      type: 3}
+  - m_GUID: f154d8e29e7abbf43b5e30f2195aa4b4
+    m_Address: UpMoveTrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_MainAsset: {fileID: 7277000131550619604, guid: f154d8e29e7abbf43b5e30f2195aa4b4,
+      type: 3}
+    m_TargetAsset: {fileID: 7277000131550619604, guid: f154d8e29e7abbf43b5e30f2195aa4b4,
       type: 3}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 58b12969fc7e10b4b9c89b35915039e0, type: 2}

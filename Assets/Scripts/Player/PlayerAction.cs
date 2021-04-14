@@ -65,7 +65,7 @@ public class PlayerAction : MonoBehaviour
 
         if (input.PushedSerch)
         {
-            having.GetTrap(TrapsInfo.Trap.fireTrap);
+            having.GetTrap(TrapsInfo.Trap.LeftMoveTrap);
         }
 
         if (input.PushedMenue)
