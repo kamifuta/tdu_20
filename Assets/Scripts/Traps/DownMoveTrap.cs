@@ -9,4 +9,6 @@ public class DownMoveTrap : Trap
         Vector3 force = new Vector3(0.0f, 0.0f, Random.Range(-10.0f, -20.0f));
         rb.AddForce(force, ForceMode.Impulse);
     }
+
+
 }
