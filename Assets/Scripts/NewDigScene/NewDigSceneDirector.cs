@@ -38,25 +38,9 @@ public class NewDigSceneDirector : MonoBehaviour
     public Text FossilKosu;
     PhotonView photonView;
 
-    private void Awake()
-    {
-        photonView = GetComponent<PhotonView>();
-        for (int i=0; i<3;i++)
-        {
-            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
-        }
-        for (int i = 0; i < 13; i++)
-        {
-            for (int j = 0; j < 10; j++)
-            {
-                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
-                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
-                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
-                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
-                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
-            }
-        }
-    }
+
+   
+
     private IEnumerator FossilGenerator()
     {
         RandomGenerateNum = Random.Range(2, 5);
@@ -98,10 +82,10 @@ public class NewDigSceneDirector : MonoBehaviour
             _count++;
 
             FillFosssilPos();
-
+            FossilGeneratorSend(Flocation);
             //123456
             //photonView.RPC(nameof(FossilGeneratorSend,));
-            
+
         }
         for (int i=0;i<_count ;i++)
         {
@@ -109,11 +93,11 @@ public class NewDigSceneDirector : MonoBehaviour
         }
     }
     [PunRPC]
-    public void FossilGeneratorSend(Vector3 Flocation)
+    public void FossilGeneratorSend(Vector3 FlocationS)
     {
-        var tmp = Instantiate(Fprefab, Flocation, Quaternion.identity);
+        var tmp = Instantiate(Fprefab, FlocationS, Quaternion.identity);
         tmp.gameObject.transform.SetParent(PanelGenerator.transform);
-        tmp.gameObject.transform.localPosition = Flocation;
+        tmp.gameObject.transform.localPosition = FlocationS;
         tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
         float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
         tmp.transform.localScale = new Vector3(foo, foo, 1);
@@ -260,9 +244,25 @@ public class NewDigSceneDirector : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    IEnumerator Start()
+
+    private void Awake()
     {
-        IntializeArray();
+        photonView = GetComponent<PhotonView>();
+        for (int i = 0; i < 3; i++)
+        {
+            BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
+        }
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                BoardImage[i, j] = Instantiate(boardSpritePrefab[0], new Vector3(i, j, 0), Quaternion.identity);
+                BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
+                BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
+                BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
+            }
+        }
         _slider = GameObject.Find("CountBar").GetComponent<Slider>();
         FossilDic = new Dictionary<int, FossilList>()
         {
@@ -280,20 +280,21 @@ public class NewDigSceneDirector : MonoBehaviour
             {11,new FossilList("特大の　黄色の　宝石",Resources.Load<Sprite>("YellowGem"),new int[4,4])},
             {12,new FossilList("珍しいコハク",Resources.Load<Sprite>("SampleGem"),new int[6,8])},
         };
-        
-        yield return StartCoroutine(FossilGenerator());
-
-        
     }
-    private void CleanPanels()
+    IEnumerator Start()
     {
+        yield return StartCoroutine(FossilGenerator());       
+    }
 
+    private void OnEnable()
+    {
+        IntializeArray();
     }
 
     bool aaa = true;
     // Update is called once per frame
     void Update()
-    {
+    {      
         if(_hp >= 30 && aaa)
         {
             DigResult();
@@ -301,6 +302,7 @@ public class NewDigSceneDirector : MonoBehaviour
             ResultTextController.SetActive(true);
             Debug.Log("FINISH!!!");
         }
+     
         if (Input.GetMouseButtonDown(0) && _hp < 30 && ExcavationCompletedhs.Count != RandomGenerateNum)//且つすべての化石が掘り出されていないとき
         {
             SearchMousePosition();
@@ -383,7 +385,7 @@ public class NewDigSceneDirector : MonoBehaviour
         }
         else
         {
-            Destroy(BoardImage[objPosX + i, objPosY + j]);
+            BoardImage[objPosX + i, objPosY + j].SetActive(false);
         }
     }
     public void PickelMode()
@@ -412,6 +414,7 @@ public class NewDigSceneDirector : MonoBehaviour
 
         //試行回数hp
     }
+    [PunRPC]
     public void PickelMode1Send(int j)
     {
         Board[objPosX, objPosY + j]--;
@@ -421,9 +424,10 @@ public class NewDigSceneDirector : MonoBehaviour
         }
         else
         {
-            Destroy(BoardImage[objPosX, objPosY + j]);
+            BoardImage[objPosX, objPosY + j].SetActive(false);
         }
     }
+    [PunRPC]
     public void PickelMode2Send(int j)
     {
         Board[objPosX + j, objPosY]--;
@@ -433,7 +437,7 @@ public class NewDigSceneDirector : MonoBehaviour
         }
         else
         {
-            Destroy(BoardImage[objPosX + j, objPosY]);
+            BoardImage[objPosX + j, objPosY].SetActive(false);
         }
     }
 }
