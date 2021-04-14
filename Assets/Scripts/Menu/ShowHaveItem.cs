@@ -18,18 +18,6 @@ public class ShowHaveItem : MonoBehaviour
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ShowItem()
     {
         listNum = 0;
@@ -40,7 +28,6 @@ public class ShowHaveItem : MonoBehaviour
 
         for(int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
         {
-            //ItemInfo.Item n = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i);
             if (!having.CheckHadItem((ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), i)) || having.HaveItem[i].itemCount == 0)
             {
                 continue;

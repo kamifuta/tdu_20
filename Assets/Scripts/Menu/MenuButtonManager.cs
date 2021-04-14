@@ -4,30 +4,40 @@ using UnityEngine;
 
 public class MenuButtonManager : MonoBehaviour
 {
-    public GameObject havingPanel;
-    public GameObject havingTrapPanel;
+    public GameObject haveFossilPanel;
+    public GameObject haveTrapPanel;
+    public GameObject haveGoodsPanel;
 
     private PlayerAction playerAction;
 
     // Start is called before the first frame update
     void Start()
     {
-        havingPanel.SetActive(false);
-        havingTrapPanel.SetActive(false);
+        haveFossilPanel.SetActive(false);
+        haveTrapPanel.SetActive(false);
+        haveGoodsPanel.SetActive(false);
         playerAction = FindObjectOfType<PlayerAction>();
+        this.gameObject.SetActive(false);
     }
 
-    public void OnHavingButton()
+    public void OnHavFossilButton()
     {
         this.gameObject.SetActive(false);
-        havingPanel.SetActive(true);
+        haveFossilPanel.SetActive(true);
         playerAction.CanOpenMenu = false;
     }
 
-    public void OnHavingTrapButton()
+    public void OnHaveTrapButton()
     {
         this.gameObject.SetActive(false);
-        havingTrapPanel.SetActive(true);
+        haveTrapPanel.SetActive(true);
+        playerAction.CanOpenMenu = false;
+    }
+
+    public void OnHaveGoodsButton()
+    {
+        this.gameObject.SetActive(false);
+        haveGoodsPanel.SetActive(true);
         playerAction.CanOpenMenu = false;
     }
 
@@ -38,16 +48,23 @@ public class MenuButtonManager : MonoBehaviour
         playerAction.IsAction = false;
     }
 
-    public void OnItemCloseButton()
+    public void OnHaveFossilCloseButton()
     {
-        havingPanel.SetActive(false);
+        haveFossilPanel.SetActive(false);
         this.gameObject.SetActive(true);
         playerAction.CanOpenMenu = true;
     }
 
-    public void OnTrapCloseButton()
+    public void OnHaveTrapCloseButton()
     {
-        havingTrapPanel.SetActive(false);
+        haveTrapPanel.SetActive(false);
+        this.gameObject.SetActive(true);
+        playerAction.CanOpenMenu = true;
+    }
+
+    public void OnHaveGoodsCloseButton()
+    {
+        haveGoodsPanel.SetActive(false);
         this.gameObject.SetActive(true);
         playerAction.CanOpenMenu = true;
     }

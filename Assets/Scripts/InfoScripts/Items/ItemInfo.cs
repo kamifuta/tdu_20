@@ -7,10 +7,7 @@ public class ItemInfo
 {
     public enum Item
     {
-        A,
-        B,
-        C,
-        D,
+        RoomMaker,
     };
 
     public enum pointType
@@ -25,13 +22,15 @@ public class ItemInfo
     {
         public Item item;
         public pointType pointType;
+        public string prefabAddress;
         public string itemName;
         public int itemCount;
         public int point;
-        public _item(Item _item, pointType _pointType, string name, int count, int _point)
+        public _item(Item _item, pointType _pointType,　string address, string name, int count, int _point)
         {
             item = _item;
             pointType = _pointType;
+            prefabAddress = address;
             itemName = name;
             itemCount = count;
             point = _point;
@@ -40,9 +39,6 @@ public class ItemInfo
 
     public Dictionary<int, _item> ItemInfoDic = new Dictionary<int, _item>()
     {
-        {0, new _item(Item.A, pointType.red,"A",0,10)},
-        {1, new _item(Item.B, pointType.blue,"B",0,10)},
-        {2, new _item(Item.C, pointType.yellow,"C",0,10)},
-        {3, new _item(Item.D, pointType.green,"D",0,10)},
+        {0, new _item(Item.RoomMaker, pointType.green,"RoomGate", "あなほりドリル",0,10)},
     };
 }

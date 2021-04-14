@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 public class PlayerAction : MonoBehaviour
@@ -11,38 +14,40 @@ public class PlayerAction : MonoBehaviour
     public bool IsAction = false;
     public bool CanOpenMenu = true;
 
+    private GameManager gameManager;
     private GameObject menuePanel;
     private GameObject talkPanel;
-    private GameObject trapPrefab;
+    //private GameObject trapPrefab;
     private PlayerInput input;
     private Having having;
-    private MenuButtonManager menuButtonManager;
+    //private MenuButtonManager menuButtonManager;
     private CapsuleCollider collider;
     private Text actionText;
     private GameObject targetTrap;
-    
+    private CancellationToken token;
 
-    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11;
+    private const int wallLayerMask = 1 << 8;
+    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
 
     private void Awake()
     {
+        gameManager = GameObject.FindObjectOfType<GameManager>();
         input = GetComponent<PlayerInput>();
         menuePanel= GameObject.Find("MenuPanel");
         talkPanel = GameObject.Find("TalkPanel");
-        trapPrefab = Resources.Load<GameObject>("TrapPrefab");
-        menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
+        //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
+        //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
         collider = GetComponent<CapsuleCollider>();
 
         actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
+
+        token = this.GetCancellationTokenOnDestroy();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         having = GetComponent<Having>();
-
-        menuePanel.SetActive(false);
-        //talkPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -50,17 +55,7 @@ public class PlayerAction : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            having.GetItem(ItemInfo.Item.A);
-        }
-
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            having.GetItem(ItemInfo.Item.B);
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            having.GetItem(ItemInfo.Item.C);
+            having.GetItem(ItemInfo.Item.RoomMaker);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -78,10 +73,17 @@ public class PlayerAction : MonoBehaviour
             OpenMenu();
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            MakeRoomGate();
+        }
+
+
         Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
         Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
         RaycastHit hit;
-        if (Physics.CapsuleCast(p1, p2, collider.radius, transform.forward, out hit, 0.5f, actionLayerMask) && !IsAction)
+
+        if (Physics.CapsuleCast(p1, p2, collider.radius/2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
         {
             switch (hit.collider.gameObject.layer)
             {
@@ -95,6 +97,9 @@ public class PlayerAction : MonoBehaviour
                 case 11:
                     SetActionButton("掘る");
                     break;
+                case 12:
+                    SetActionButton("入る");
+                    break;
             }
         }
         else
@@ -102,6 +107,7 @@ public class PlayerAction : MonoBehaviour
             targetTrap = null;
             actionButtonObj.SetActive(false);
         }
+
     }
 
     public void Talk()
@@ -111,8 +117,11 @@ public class PlayerAction : MonoBehaviour
 
     public void Put(TrapsInfo.Trap key)
     {
-        var trap=Instantiate(trapPrefab, transform.position + transform.forward - Vector3.up * 0.5f, Quaternion.identity);
-        trap.name = new TrapsInfo().trapInfoDic[(int)key].itemName;
+        Vector3 pos = transform.position + transform.forward - Vector3.up * 0.5f;
+        Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
+        SendTrapPos(pos);
+        IsAction = false;
+        CanOpenMenu=true;
     }
 
     public void Pick()
@@ -122,6 +131,44 @@ public class PlayerAction : MonoBehaviour
         having.GetTrap(key);
         Destroy(targetTrap);
         IsAction = false;
+        CanOpenMenu = true;
+    }
+
+    public void StartDigScene()
+    {
+
+    }
+
+    public void MoveRoomScene()
+    {
+
+    }
+
+    public async void MakeRoomGate()
+    {
+        if (!CheckCanMakeRoom()) return;
+        if (!await CheckRealyMakeRoom()) return;
+
+        Debug.Log("sss");
+        await Addressables.InstantiateAsync("RoomGate", transform.position+transform.forward*1.5f, Quaternion.Euler(0, 0, 0));
+    }
+
+    public bool CheckCanMakeRoom()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position,transform.forward,out hit,1.0f,wallLayerMask))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async UniTask<bool> CheckRealyMakeRoom()
+    {
+        if (await gameManager.SetTextPanelAsync(token, text: "本当にここに基地を作りますか？")) 
+            return true;
+        return false;
     }
 
     public void StopTalk()
@@ -159,6 +206,17 @@ public class PlayerAction : MonoBehaviour
             case "拾う":
                 Pick();
                 break;
+            case "掘る":
+                StartDigScene();
+                break;
+            case "入る":
+                MoveRoomScene();
+                break;
         }
+    }
+
+    public void SendTrapPos(Vector3 pos)
+    {
+        gameManager.trapPos.Add(pos);
     }
 }

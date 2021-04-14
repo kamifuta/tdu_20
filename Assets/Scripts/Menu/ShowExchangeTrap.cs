@@ -35,11 +35,6 @@ public class ShowExchangeTrap : MonoBehaviour
 
         for (int i = 0; i < new TrapsInfo().trapInfoDic.Count; i++)
         {
-            /*if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i / 3), (FossilInfo.FossilColor)Enum.ToObject(typeof(FossilInfo.FossilColor), i % 3)) || having.HaveItem[i].itemCount == 0)
-            {
-                continue;
-            }*/
-
             if (listNum >= nodeList.Count - 1)
             {
                 var node = Instantiate(nodePrefab);
@@ -48,17 +43,17 @@ public class ShowExchangeTrap : MonoBehaviour
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
-                nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
+                nodePointTextList.Add(node.transform.GetChild(3).GetComponent<Text>());
             }
 
             nodeNameTextList[listNum].text = new TrapsInfo().trapInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + 0;
+            /*nodeCountTextList[listNum].text = "x" + 0;
             if (having.HaveTrap.ContainsKey(i))
             {
                 nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
-            }
+            }*/
 
-            nodePointTextList[listNum].text = new TrapsInfo().trapInfoDic[i].point.ToString();
+            //nodePointTextList[listNum].text = new TrapsInfo().trapInfoDic[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
@@ -68,7 +63,7 @@ public class ShowExchangeTrap : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<NodeController_exchangeTrap>().Exchange();
+            transform.GetChild(i).GetComponent<NodeController_trap_exchange>().Exchange();
         }
         ShowTrap();
     }

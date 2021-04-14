@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UniRx;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,19 +14,26 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+
     // Update is called once per frame
     void Update()
     {
-        if (!playerAction.IsAction)
+        if (input.moveVec != Vector3.zero)
         {
             rb.velocity = input.moveVec.normalized;
+        }
+
+        if (input.PushedDash)
+        {
+            rb.velocity *= 2f;
         }
 
         if (input.moveVec.x != 0 || input.moveVec.z != 0)
         {
             transform.LookAt(transform.position + input.moveVec);
         }
-        
+
+        rb.angularVelocity = Vector3.zero;
     }
 }
  

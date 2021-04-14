@@ -6,21 +6,6 @@ using System.Linq;
 
 public class Having : MonoBehaviour
 {
-    
-
-    /*public class _trap
-    {
-        public string itemName;
-        public int itemCount;
-        public _trap(string name, int count)
-        {
-            itemName = name;
-            itemCount = count;
-        }
-    }*/
-
-    
-
     private ItemInfo itemInfo = new ItemInfo();
     private TrapsInfo trapInfo = new TrapsInfo();
    
@@ -127,30 +112,27 @@ public class Having : MonoBehaviour
     {
         if (CheckHadFossil(size,color))
         {
-            HaveFossil[(int)size + (int)color * 3].itemCount++;
+            HaveFossil[(int)size % 3 + (int)color * 3].itemCount++;
         }
         else
         {
             FossilInfo.Fossil fossil = new FossilInfo().FossilInfoDic[(int)size * 3 + (int)color];
             fossil.itemCount = 1;
-            HaveFossil.Add((int)size + (int)color * 3, fossil);
-            /*HaveItem[key].itemName = new ItemInfo().ItemName[(int)key];
-            HaveItem[key].itemCount = 1;*/
+            HaveFossil.Add((int)size % 3 + (int)color * 3, fossil);
         }
     }
 
     public void ThrowFossil(FossilInfo.FossilSize size, ItemInfo.pointType color)
     {
-        //ItemInfo.Item key = (ItemInfo.Item)Enum.ToObject(typeof(ItemInfo.Item), itemInfo.ItemName.IndexOf(itemName));
-        if (HaveItem[(int)size + (int)color * 3].itemCount > 0)
+        if (HaveFossil[(int)size % 3 + (int)color * 3].itemCount > 0)
         {
-            HaveFossil[(int)size + (int)color * 3].itemCount--;
+            HaveFossil[(int)size % 3 + (int)color * 3].itemCount--;
         }
     }
 
     public bool CheckHadFossil(FossilInfo.FossilSize size, ItemInfo.pointType color)
     {
-        if (HaveFossil.ContainsKey((int)size + (int)color * 3))
+        if (HaveFossil.ContainsKey((int)size % 3 + (int)color * 3))
         {
             return true;
         }

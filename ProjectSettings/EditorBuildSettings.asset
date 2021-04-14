@@ -4,11 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/MatchingScene.unity
-    guid: 5e69291a22d23194295814abb3e15b56
-  - enabled: 1
-    path: Assets/Scenes/RoomScene.unity
-    guid: b9676201f425f60479ac1f19bdd206cd
-  m_configObjects: {}
+
+  m_Scenes: []
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: f85a5198bb37f794d8549f4b962d005b,
+      type: 2}
+
