@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Photon.Pun;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
@@ -36,9 +36,11 @@ public class NewDigSceneDirector : MonoBehaviour
     private int RandomGenerateNum;  //生成する化石の個数
     private int RandomKindNum;  //ディクショナリのキーの数字をランダムに生成
     public Text FossilKosu;
+    PhotonView photonView;
 
     private void Awake()
     {
+        photonView = GetComponent<PhotonView>();
         for (int i=0; i<3;i++)
         {
             BoardSprite[i] = boardSpritePrefab[i].GetComponent<SpriteRenderer>().sprite;
@@ -64,8 +66,8 @@ public class NewDigSceneDirector : MonoBehaviour
         Vector3 Flocation = new Vector3(0, 0, 0);
         for(int i = 0; i < RandomGenerateNum; i++)
         {
-            RandomKindNum =0;
-            //RandomKindNum = Random.Range(0, 12/*13*/);
+            //RandomKindNum =0;
+            RandomKindNum = Random.Range(0, 12/*13*/);
             MemorizeKey[_count] = RandomKindNum;
             
             //Debug.Log(FossilDic[RandomKindNum].Fname + RandomKindNum);
@@ -96,21 +98,25 @@ public class NewDigSceneDirector : MonoBehaviour
             _count++;
 
             FillFosssilPos();
-            
-            var tmp = Instantiate(Fprefab,Flocation,Quaternion.identity);
-            tmp.gameObject.transform.SetParent(PanelGenerator.transform);
-            tmp.gameObject.transform.localPosition = Flocation;
-            
-            tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
 
-            float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
-            tmp.transform.localScale = new Vector3(foo,foo,1);
-
+            //123456
+            //photonView.RPC(nameof(FossilGeneratorSend,));
+            
         }
         for (int i=0;i<_count ;i++)
         {
             //Debug.Log("MemorizeLocation[i]" + MemorizeLocation[i]+":"+ MemorizeKey[i]);
         }
+    }
+    [PunRPC]
+    public void FossilGeneratorSend(Vector3 Flocation)
+    {
+        var tmp = Instantiate(Fprefab, Flocation, Quaternion.identity);
+        tmp.gameObject.transform.SetParent(PanelGenerator.transform);
+        tmp.gameObject.transform.localPosition = Flocation;
+        tmp.GetComponent<SpriteRenderer>().sprite = FossilDic[RandomKindNum].Fsprite;
+        float foo = 0.25f * FossilDic[RandomKindNum].Fsize.GetLength(0);  //正方形化石のscale変えるため
+        tmp.transform.localScale = new Vector3(foo, foo, 1);
     }
     //todo:生成するオブジェクトの種類の比率
     //todo:各エフェクト
@@ -360,21 +366,25 @@ public class NewDigSceneDirector : MonoBehaviour
                 {
                     continue;
                 }
-
-                Board[objPosX + i, objPosY + j] -= 2;
-                if (Board[objPosX+i, objPosY+j] > -1)
-                {
-                    SpriteRenderer[objPosX + i, objPosY + j].sprite = BoardSprite[Board[objPosX + i, objPosY + j]];
-                }
-                else
-                {
-                    Destroy(BoardImage[objPosX + i, objPosY + j]);
-                }
+                //123456
+                HammerModeSend(i,j);
             }
         }
         _hp += 2;
         // HPゲージに値を設定
         _slider.value = _hp;
+    }
+    public void HammerModeSend(int i,int j)
+    {
+        Board[objPosX + i, objPosY + j] -= 2;
+        if (Board[objPosX + i, objPosY + j] > -1)
+        {
+            SpriteRenderer[objPosX + i, objPosY + j].sprite = BoardSprite[Board[objPosX + i, objPosY + j]];
+        }
+        else
+        {
+            Destroy(BoardImage[objPosX + i, objPosY + j]);
+        }
     }
     public void PickelMode()
     {
@@ -384,15 +394,8 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            Board[objPosX, objPosY + j]--;
-            if (Board[objPosX , objPosY + j] > -1)
-            {
-                SpriteRenderer[objPosX, objPosY + j].sprite = BoardSprite[Board[objPosX, objPosY + j]];
-            }
-            else
-            {
-                Destroy(BoardImage[objPosX, objPosY + j]);
-            }
+            //123456
+            PickelMode1Send(j);
         }
         for (int j = -1; j <= 1; j++)
         {
@@ -400,20 +403,37 @@ public class NewDigSceneDirector : MonoBehaviour
             {
                 continue;
             }
-            Board[objPosX + j, objPosY]--;
-            if (Board[objPosX + j, objPosY ] > -1)
-            {
-                SpriteRenderer[objPosX + j, objPosY].sprite = BoardSprite[Board[objPosX + j, objPosY]];
-            }
-            else
-            {
-                Destroy(BoardImage[objPosX + j, objPosY]);
-            }
+            //123456
+            PickelMode2Send(j);
         }
         _hp++;
         // HPゲージに値を設定
         _slider.value = _hp;
 
         //試行回数hp
+    }
+    public void PickelMode1Send(int j)
+    {
+        Board[objPosX, objPosY + j]--;
+        if (Board[objPosX, objPosY + j] > -1)
+        {
+            SpriteRenderer[objPosX, objPosY + j].sprite = BoardSprite[Board[objPosX, objPosY + j]];
+        }
+        else
+        {
+            Destroy(BoardImage[objPosX, objPosY + j]);
+        }
+    }
+    public void PickelMode2Send(int j)
+    {
+        Board[objPosX + j, objPosY]--;
+        if (Board[objPosX + j, objPosY] > -1)
+        {
+            SpriteRenderer[objPosX + j, objPosY].sprite = BoardSprite[Board[objPosX + j, objPosY]];
+        }
+        else
+        {
+            Destroy(BoardImage[objPosX + j, objPosY]);
+        }
     }
 }
