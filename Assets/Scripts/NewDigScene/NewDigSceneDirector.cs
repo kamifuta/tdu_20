@@ -6,12 +6,14 @@ using Photon.Pun;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using UniRx;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
     public GameObject ResultTextController;
     public GameObject PanelGenerator;
 
+    private GameManager gameManager;
     private Sprite[] BoardSprite = new Sprite[3];
     public GameObject[] boardSpritePrefab = new GameObject[3];
     private int[,] Board = new int[13, 10];
@@ -45,6 +47,7 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         photonView = GetComponent<PhotonView>();
         for (int i = 0; i < 3; i++)
         {
@@ -55,10 +58,16 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void Start()
     {
-        GenerateBoard();
-        IntializeArray();
-        var token = this.GetCancellationTokenOnDestroy();
-        FossilGenerator(token).Forget();
+        gameManager.ObserveEveryValueChanged(x => x.isDigScene)
+            .Where(x=>x==true)
+            .Subscribe(_ =>
+            {
+                GenerateBoard();
+                IntializeArray();
+                var token = this.GetCancellationTokenOnDestroy();
+                FossilGenerator(token).Forget();
+            })
+            .AddTo(this);
     }
 
     void Update()

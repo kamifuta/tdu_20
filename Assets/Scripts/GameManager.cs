@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public List<Vector3> trapPos = new List<Vector3>();
     public GameObject textPanel;
     public Text checkText;
+    public bool isDigScene;
+    public bool isRoomScene;
 
     private bool YES;
     private bool NO;
