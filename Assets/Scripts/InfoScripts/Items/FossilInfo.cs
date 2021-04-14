@@ -41,8 +41,8 @@ public class FossilInfo
         {6, new Fossil(FossilSize.small,ItemInfo.pointType.yellow,"YellowGem","小さい　黄色の　宝石",0,10)},
         {7, new Fossil(FossilSize.big,ItemInfo.pointType.yellow,"YellowGem","大きい　黄色の　宝石",0,30)},
         {8, new Fossil(FossilSize.large,ItemInfo.pointType.yellow,"YellowGem","特大の　黄色の　宝石",0,50)},
-        {9, new Fossil(FossilSize.small,ItemInfo.pointType.green,"YellowGem","小さい　緑色の　宝石",0,10)},
-        {10, new Fossil(FossilSize.big,ItemInfo.pointType.green,"YellowGem","大きい　緑色の　宝石",0,30)},
-        {11, new Fossil(FossilSize.large,ItemInfo.pointType.green,"YellowGem","特大の　緑色の　宝石",0,50)},
+        {9, new Fossil(FossilSize.small,ItemInfo.pointType.green,"GreenGem","小さい　緑色の　宝石",0,10)},
+        {10, new Fossil(FossilSize.big,ItemInfo.pointType.green,"GreenGem","大きい　緑色の　宝石",0,30)},
+        {11, new Fossil(FossilSize.large,ItemInfo.pointType.green,"GreenGem","特大の　緑色の　宝石",0,50)},
     };
 }
