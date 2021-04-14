@@ -17,7 +17,6 @@ public class TalkPanel : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("aaa");
         exchangePointPanel.SetActive(false);
         exchangeTrapPanel.SetActive(false);
         exchangeGoodsPanel.SetActive(false);

@@ -35,7 +35,7 @@ public class NodeController_fossil_exchange : MonoBehaviour
 
         itemCountText.text = "x" + 0;
         itemPointText.text = pair.Value.point.ToString();
-        itemHaveCountText.text = having.HaveFossil[(int)sizeKey % 3 + (int)colorKey * 3].itemCount.ToString();
+        itemHaveCountText.text = "x" + having.HaveFossil[(int)sizeKey % 3 + (int)colorKey * 3].itemCount.ToString();
     }
 
     public void OnClickCountUpButton()
@@ -74,7 +74,9 @@ public class NodeController_fossil_exchange : MonoBehaviour
         {
             having.ThrowFossil(sizeKey,colorKey);
         }
+        countDownButton.interactable = false;
         itemCount = 0;
         itemCountText.text = "x" + 0;
+        itemHaveCountText.text = "x" + having.HaveFossil[(int)sizeKey % 3 + (int)colorKey * 3].itemCount.ToString();
     }
 }

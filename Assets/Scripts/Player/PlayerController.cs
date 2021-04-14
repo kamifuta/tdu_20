@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UniRx;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,10 +14,11 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+
     // Update is called once per frame
     void Update()
     {
-        if (!playerAction.IsAction)
+        if (input.moveVec != Vector3.zero)
         {
             rb.velocity = input.moveVec.normalized;
         }

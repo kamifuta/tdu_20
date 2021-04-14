@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -22,6 +24,7 @@ public class PlayerAction : MonoBehaviour
     private CapsuleCollider collider;
     private Text actionText;
     private GameObject targetTrap;
+    private CancellationToken token;
 
     private const int wallLayerMask = 1 << 8;
     private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
@@ -37,6 +40,8 @@ public class PlayerAction : MonoBehaviour
         collider = GetComponent<CapsuleCollider>();
 
         actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
+
+        token = this.GetCancellationTokenOnDestroy();
     }
 
     // Start is called before the first frame update
@@ -50,7 +55,7 @@ public class PlayerAction : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            having.GetFossil(FossilInfo.FossilSize.small, ItemInfo.pointType.red);
+            having.GetItem(ItemInfo.Item.RoomMaker);
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -72,6 +77,7 @@ public class PlayerAction : MonoBehaviour
         {
             MakeRoomGate();
         }
+
 
         Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
         Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
@@ -101,6 +107,7 @@ public class PlayerAction : MonoBehaviour
             targetTrap = null;
             actionButtonObj.SetActive(false);
         }
+
     }
 
     public void Talk()
@@ -137,23 +144,30 @@ public class PlayerAction : MonoBehaviour
 
     }
 
-    public void MakeRoomGate()
+    public async void MakeRoomGate()
     {
         if (!CheckCanMakeRoom()) return;
+        if (!await CheckRealyMakeRoom()) return;
 
-        Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)ItemInfo.Item.RoomMaker].prefabAddress), transform.forward, Quaternion.Euler(-90, 0, 0));
+        Debug.Log("sss");
+        await Addressables.InstantiateAsync("RoomGate", transform.position+transform.forward*1.5f, Quaternion.Euler(0, 0, 0));
     }
 
     public bool CheckCanMakeRoom()
     {
-        Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
-        Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
         RaycastHit hit;
 
-        if (Physics.CapsuleCast(p1, p2, collider.radius / 2.0f, transform.forward, out hit, 1.0f, wallLayerMask))
+        if (Physics.Raycast(transform.position,transform.forward,out hit,1.0f,wallLayerMask))
         {
             return true;
         }
+        return false;
+    }
+
+    public async UniTask<bool> CheckRealyMakeRoom()
+    {
+        if (await gameManager.SetTextPanelAsync(token, text: "本当にここに基地を作りますか？")) 
+            return true;
         return false;
     }
 

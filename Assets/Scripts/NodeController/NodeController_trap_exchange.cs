@@ -54,8 +54,13 @@ public class NodeController_trap_exchange: MonoBehaviour
             countUpButton.interactable = false;
         }
 
+        itemCountText.text = "x" + 0;
         itemPointText.text = pair.Value.point.ToString();
-        itemHaveCountText.text = having.HaveFossil[(int)key].itemCount.ToString();
+        itemHaveCountText.text = "x" + 0;
+        if (having.HaveTrap.ContainsKey((int)key))
+        {
+            itemHaveCountText.text = "x" + having.HaveFossil[(int)key].itemCount.ToString();
+        }
     }
 
     public void OnClickCountUpButton()
@@ -115,7 +120,9 @@ public class NodeController_trap_exchange: MonoBehaviour
         {
             having.GetTrap(key);
         }
+        countDownButton.interactable = false;
         itemCount = 0;
         itemCountText.text = "x" + 0;
+        itemHaveCountText.text = "x" + having.HaveTrap[(int)key].itemCount.ToString();
     }
 }

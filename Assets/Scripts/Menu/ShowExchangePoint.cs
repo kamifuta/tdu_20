@@ -10,8 +10,8 @@ public class ShowExchangePoint : MonoBehaviour
     public Text havePointText;
     private List<GameObject> nodeList = new List<GameObject>();
     private List<Text> nodeNameTextList = new List<Text>();
-    private List<Text> nodeCountTextList = new List<Text>();
-    private List<Text> nodePointTextList = new List<Text>();
+    //private List<Text> nodeCountTextList = new List<Text>();
+    //private List<Text> nodePointTextList = new List<Text>();
     private Having having;
     private int listNum = 0;
 
@@ -48,13 +48,11 @@ public class ShowExchangePoint : MonoBehaviour
                 node.transform.SetParent(this.gameObject.transform);
                 nodeList.Add(node);
                 nodeNameTextList.Add(node.transform.GetChild(0).GetComponent<Text>());
-                nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
-                nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
+                //nodeCountTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
+                //nodePointTextList.Add(node.transform.GetChild(3).GetComponent<Text>());
             }
 
             nodeNameTextList[listNum].text = new FossilInfo().FossilInfoDic[i].itemName;
-            nodeCountTextList[listNum].text = "x" + having.HaveFossil[i].itemCount;
-            nodePointTextList[listNum].text = having.HaveFossil[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
