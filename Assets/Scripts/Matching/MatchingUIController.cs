@@ -11,11 +11,10 @@ public class MatchingUIController : MonoBehaviour
     [SerializeField] GameObject titleIMage=null;
     [SerializeField] GameObject networkManagerObj=null;
     [System.NonSerialized] public string nickname;
-    PhotonView photonview;
-    private void Awake()
+    /*private void Awake()
     {
         photonview = GetComponent<PhotonView>();
-    }
+    }*/
 
     public void NameInput(string name)
     {
