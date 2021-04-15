@@ -138,7 +138,7 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
-
+        gameManager.isDigScene = true;
     }
 
     public void MoveRoomScene()

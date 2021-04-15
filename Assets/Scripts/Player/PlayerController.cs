@@ -21,11 +21,10 @@ public class PlayerController : MonoBehaviour
         if (input.moveVec != Vector3.zero)
         {
             rb.velocity = input.moveVec.normalized;
-        }
-
-        if (input.PushedDash)
-        {
-            rb.velocity *= 2f;
+            if (input.PushedDash)
+            {
+                rb.velocity = input.moveVec.normalized * 2;
+            }
         }
 
         if (input.moveVec.x != 0 || input.moveVec.z != 0)
