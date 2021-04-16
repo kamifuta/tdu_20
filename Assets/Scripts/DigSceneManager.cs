@@ -237,7 +237,14 @@ public class DigSceneManager : MonoBehaviour
                 if (Physics.Raycast(ray, out hit, 100f, clickTriggerLayermask))
                 {
                     clickPos = hit.collider.transform.localPosition;
-                    Dig();
+                    if (isPickel)
+                    {
+                        Dig((int)DigMode.pickel, clickPos);
+                    }
+                    else if (isHummer)
+                    {
+                        Dig((int)DigMode.hummer, clickPos);
+                    }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
                 }
@@ -256,18 +263,18 @@ public class DigSceneManager : MonoBehaviour
 
     }
 
-    private void Dig()
+    private void Dig(int mode, Vector3 clickPos)
     {
-        if (isPickel)
+        if (mode == (int)DigMode.pickel)
         {
-            DecreaseHP((int)DigMode.pickel);
+            DecreaseHP(DigMode.pickel);
             for (int i = -1; i <= 1; i++)
             {
                 if (clickPos.x + i < 0 || 12 < clickPos.x + i)
                 {
                     continue;
                 }
-                ChangeCount((int)clickPos.x + i, (int)clickPos.y);
+                ChangeCount(DigMode.pickel, (int)clickPos.x + i, (int)clickPos.y);
             }
             for (int i = -1; i <= 1; i++)
             {
@@ -275,12 +282,12 @@ public class DigSceneManager : MonoBehaviour
                 {
                     continue;
                 }
-                ChangeCount((int)clickPos.x, (int)clickPos.y + i);
+                ChangeCount(DigMode.pickel, (int)clickPos.x, (int)clickPos.y + i);
             }
         }
-        else if (isHummer)
+        else if (mode == (int)DigMode.hummer)
         {
-            DecreaseHP((int)DigMode.hummer);
+            DecreaseHP(DigMode.hummer);
             for (int i = -1; i <= 1; i++)
             {
                 if (clickPos.x + i < 0 || 12 < clickPos.x + i)
@@ -293,19 +300,19 @@ public class DigSceneManager : MonoBehaviour
                     {
                         continue;
                     }
-                    ChangeCount((int)clickPos.x + i, (int)clickPos.y + j);
+                    ChangeCount(DigMode.hummer, (int)clickPos.x + i, (int)clickPos.y + j);
                 }
             }
         }
     }
 
-    private void DecreaseHP(int mode)
+    private void DecreaseHP(DigMode key)
     {
-        if (mode==(int)DigMode.pickel)
+        if (key==DigMode.pickel)
         {
             hp--;
         }
-        else if (mode == (int)DigMode.hummer)
+        else if (key == DigMode.hummer)
         {
             hp -= 2;
         }
@@ -313,13 +320,13 @@ public class DigSceneManager : MonoBehaviour
         hpBar.value = (float)hp / 30f;
     }
 
-    private void ChangeCount(int x, int y)
+    private void ChangeCount(DigMode key, int x, int y)
     {
-        if (isPickel)
+        if (key == DigMode.pickel)
         {
             panelCount[x, y]--;
         }
-        else if(isHummer)
+        else if(key == DigMode.hummer)
         {
             panelCount[x, y] -= 2;
         }
