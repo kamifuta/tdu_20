@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -50,6 +51,15 @@ public class PlayerAction : MonoBehaviour
     void Start()
     {
         having = GetComponent<Having>();
+
+        gameManager.ObserveEveryValueChanged(x => x.isDigScene)
+            .Where(x => x == false)
+            .Subscribe(_ =>
+            {
+                CanOpenMenu = true;
+                IsAction = false;
+            })
+            .AddTo(this);
     }
 
     // Update is called once per frame
@@ -139,7 +149,6 @@ public class PlayerAction : MonoBehaviour
     public void StartDigScene()
     {
         gameManager.isDigScene = true;
-        IsAction = false;
     }
 
     public void MoveRoomScene()
