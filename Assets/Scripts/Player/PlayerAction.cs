@@ -25,6 +25,8 @@ public class PlayerAction : MonoBehaviour
     private Text actionText;
     private GameObject targetTrap;
     private CancellationToken token;
+    private TrapsInfo trapsInfo = new TrapsInfo();
+    private ItemInfo itemInfo = new ItemInfo();
 
     private const int wallLayerMask = 1 << 8;
     private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
@@ -118,7 +120,7 @@ public class PlayerAction : MonoBehaviour
     public void Put(TrapsInfo.Trap key)
     {
         Vector3 pos = transform.position + transform.forward - Vector3.up * 0.5f;
-        Addressables.InstantiateAsync((new TrapsInfo().trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
+        Addressables.InstantiateAsync((trapsInfo.trapInfoDic[(int)key].prefabAddress), pos, Quaternion.Euler(-90,0,0));
         SendTrapPos(pos);
         IsAction = false;
         CanOpenMenu=true;
@@ -126,7 +128,7 @@ public class PlayerAction : MonoBehaviour
 
     public void Pick()
     {
-        var pair = new TrapsInfo().trapInfoDic.FirstOrDefault(c => c.Value.itemName == targetTrap.name);
+        var pair = trapsInfo.trapInfoDic.FirstOrDefault(c => c.Value.itemName == targetTrap.name);
         TrapsInfo.Trap key = (TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), pair.Key);
         having.GetTrap(key);
         Destroy(targetTrap);
@@ -136,7 +138,8 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
-
+        gameManager.isDigScene = true;
+        IsAction = false;
     }
 
     public void MoveRoomScene()
@@ -149,8 +152,8 @@ public class PlayerAction : MonoBehaviour
         if (!CheckCanMakeRoom()) return;
         if (!await CheckRealyMakeRoom()) return;
 
-        Debug.Log("sss");
         await Addressables.InstantiateAsync("RoomGate", transform.position+transform.forward*1.5f, Quaternion.Euler(0, 0, 0));
+        having.ThrowItem(ItemInfo.Item.RoomMaker);
     }
 
     public bool CheckCanMakeRoom()
@@ -195,7 +198,6 @@ public class PlayerAction : MonoBehaviour
 
     public void OnClickActionButton()
     {
-        Debug.Log(actionText.text);
         IsAction = true;
         CanOpenMenu = false;
         switch (actionText.text)

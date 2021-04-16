@@ -11,6 +11,7 @@ public class ShowHaveFossil : MonoBehaviour
     private List<Text> nodeNameTextList = new List<Text>();
     private List<Text> nodeCountTextList = new List<Text>();
     private Having having;
+    private FossilInfo fossilInfo = new FossilInfo();
     private int listNum = 0;
 
     private void Awake()
@@ -26,7 +27,7 @@ public class ShowHaveFossil : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < new FossilInfo().FossilInfoDic.Count; i++)
+        for (int i = 0; i < fossilInfo.FossilInfoDic.Count; i++)
         {
             if (!having.CheckHadFossil((FossilInfo.FossilSize)Enum.ToObject(typeof(FossilInfo.FossilSize), i % 3), (ItemInfo.pointType)Enum.ToObject(typeof(ItemInfo.pointType), i / 3)) || having.HaveFossil[i].itemCount == 0)
             {
@@ -43,7 +44,7 @@ public class ShowHaveFossil : MonoBehaviour
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new FossilInfo().FossilInfoDic[i].itemName;
+            nodeNameTextList[listNum].text = fossilInfo.FossilInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + having.HaveFossil[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;

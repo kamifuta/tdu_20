@@ -11,6 +11,7 @@ public class ShowHaveTrap : MonoBehaviour
     private List<Text> nodeNameTextList = new List<Text>();
     private List<Text> nodeCountTextList = new List<Text>();
     private Having having;
+    private TrapsInfo trapsInfo = new TrapsInfo();
     private int listNum = 0;
 
     private void Awake()
@@ -26,7 +27,7 @@ public class ShowHaveTrap : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < new TrapsInfo().trapInfoDic.Count; i++)
+        for (int i = 0; i < trapsInfo.trapInfoDic.Count; i++)
         {
             if (!having.CheckHadTrap((TrapsInfo.Trap)Enum.ToObject(typeof(TrapsInfo.Trap), i)) || having.HaveTrap[i].itemCount == 0)
             {
@@ -43,7 +44,7 @@ public class ShowHaveTrap : MonoBehaviour
                 nodeCountTextList.Add(node.transform.GetChild(1).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new TrapsInfo().trapInfoDic[i].itemName;
+            nodeNameTextList[listNum].text = trapsInfo.trapInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
             nodeList[listNum].SetActive(true);
             listNum++;
