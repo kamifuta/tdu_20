@@ -66,6 +66,22 @@ public class DigSceneManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        for (int i = 0; i < Count_h; i++)
+        {
+            for (int j = 0; j < Count_v; j++)
+            {
+                var panel = Instantiate(panelPrefab);
+                var trigger = Instantiate(clickTrigger);
+                panel.transform.SetParent(panelParent.transform);
+                panel.transform.localPosition = new Vector3(i, j, 0);
+                trigger.transform.SetParent(panelParent.transform);
+                trigger.transform.localPosition = new Vector3(i, j, 0);
+                panelsList.Add(panel);
+                triggersList.Add(trigger);
+                panelSpriteRenderer[i, j] = panel.GetComponent<SpriteRenderer>();
+            }
+        }
+
         gameManager.ObserveEveryValueChanged(x => x.isDigScene)
             .Where(x => x == true)
             .Subscribe(_ =>
@@ -115,7 +131,7 @@ public class DigSceneManager : MonoBehaviour
             {
                 int count = Random.Range(1, 4);
                 panelCount[i, j] = count;
-                if (first)
+                /*if (first)
                 {
                     var panel = Instantiate(panelPrefab);
                     var trigger = Instantiate(clickTrigger);
@@ -126,7 +142,7 @@ public class DigSceneManager : MonoBehaviour
                     panelsList.Add(panel);
                     triggersList.Add(trigger);
                     panelSpriteRenderer[i, j] = panel.GetComponent<SpriteRenderer>();
-                }
+                }*/
                 foreach(var a in panelsList)
                 {
                     a.SetActive(true);
