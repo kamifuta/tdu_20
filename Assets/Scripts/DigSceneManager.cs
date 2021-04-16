@@ -42,6 +42,7 @@ public class DigSceneManager : MonoBehaviour
     private Vector3 clickPos;
     private int tryCount=0;
     private int hp = 30;
+    private int fossilNum;
     private bool isPickel = false;
     private bool isHummer = true;
     private bool first = true;
@@ -78,7 +79,7 @@ public class DigSceneManager : MonoBehaviour
         
         while (generateFossilList.Count < 2)
         {
-            await GenerateFossil(token);
+            await GetFossilGeneratePos(token);
         }
         fossilCountText.text = generateFossilList.Count + "個";
 
@@ -116,13 +117,13 @@ public class DigSceneManager : MonoBehaviour
         }
     }
 
-    public async UniTask GenerateFossil(CancellationToken token = default)
+    public async UniTask GetFossilGeneratePos(CancellationToken token = default)
     {
         int fossilCount = Random.Range(3, maxFossilCount);
         for(int i = 0; i < fossilCount; i++)
         {
             tryCount = 0;
-            int fossilNum = Random.Range(0, fossilInfo.FossilInfoDic.Count);
+            fossilNum = Random.Range(0, fossilInfo.FossilInfoDic.Count);
             
             switch (fossilNum)
             {
@@ -165,21 +166,26 @@ public class DigSceneManager : MonoBehaviour
             }
 
             if (tryCount > maxTryCount) continue;
-            generateFossilNumList.Add(fossilNum);
-
-            var fossil = Instantiate(fossilPrefab);
-            float size = 0.25f * ((int)fossilInfo.FossilInfoDic[(int)fossilNum].fossileSize + 2);
-            fossil.transform.SetParent(panelParent.transform);
-            fossil.transform.localPosition = generatePos;
-            fossil.transform.localScale = new Vector3(size, size, 1);
-            Addressables.LoadAssetAsync<Sprite>(fossilInfo.FossilInfoDic[(int)fossilNum].prefabAddress).Completed += handle =>
-            {
-                // ロードに成功した場合の処理をここに
-                fossil.GetComponent<SpriteRenderer>().sprite = handle.Result;
-            };
-
-            generateFossilList.Add(fossil);
+            GenerateFossil();
         }
+    }
+    
+    private void GenerateFossil()
+    {
+        generateFossilNumList.Add(fossilNum);
+
+        var fossil = Instantiate(fossilPrefab);
+        float size = 0.25f * ((int)fossilInfo.FossilInfoDic[(int)fossilNum].fossileSize + 2);
+        fossil.transform.SetParent(panelParent.transform);
+        fossil.transform.localPosition = generatePos;
+        fossil.transform.localScale = new Vector3(size, size, 1);
+        Addressables.LoadAssetAsync<Sprite>(fossilInfo.FossilInfoDic[(int)fossilNum].prefabAddress).Completed += handle =>
+        {
+            // ロードに成功した場合の処理をここに
+            fossil.GetComponent<SpriteRenderer>().sprite = handle.Result;
+        };
+
+        generateFossilList.Add(fossil);
     }
     
     public bool CheckGeneratePos(float halfFossilSize)
