@@ -12,7 +12,7 @@ public class DigSceneManager : MonoBehaviour
     private const int Count_h = 13;
     private const int Count_v = 10;
     private const int maxTryCount = 20;
-    private const int maxFossilCount = 4;
+    private const int maxFossilCount = 5;
     private const int panelLayermask = 1 << 13;
     private const int fossilLayermask = 1 << 14;
     private const int clickTriggerLayermask = 1 << 15;
@@ -42,6 +42,7 @@ public class DigSceneManager : MonoBehaviour
     private Vector3 clickPos;
     private int tryCount=0;
     private int hp = 30;
+    private int fossilNum;
     private bool isPickel = false;
     private bool isHummer = true;
     private bool first = true;
@@ -78,7 +79,7 @@ public class DigSceneManager : MonoBehaviour
         
         while (generateFossilList.Count < 2)
         {
-            await GenerateFossil(token);
+            await GetFossilGeneratePos(token);
         }
         fossilCountText.text = generateFossilList.Count + "個";
 
@@ -116,13 +117,13 @@ public class DigSceneManager : MonoBehaviour
         }
     }
 
-    public async UniTask GenerateFossil(CancellationToken token = default)
+    public async UniTask GetFossilGeneratePos(CancellationToken token = default)
     {
         int fossilCount = Random.Range(3, maxFossilCount);
         for(int i = 0; i < fossilCount; i++)
         {
             tryCount = 0;
-            int fossilNum = Random.Range(0, fossilInfo.FossilInfoDic.Count);
+            fossilNum = Random.Range(0, fossilInfo.FossilInfoDic.Count);
             
             switch (fossilNum)
             {
@@ -164,22 +165,27 @@ public class DigSceneManager : MonoBehaviour
                     break;
             }
 
-            if (tryCount > 10) continue;
-            generateFossilNumList.Add(fossilNum);
-
-            var fossil = Instantiate(fossilPrefab);
-            float size = 0.25f * ((int)fossilInfo.FossilInfoDic[(int)fossilNum].fossileSize + 2);
-            fossil.transform.SetParent(panelParent.transform);
-            fossil.transform.localPosition = generatePos;
-            fossil.transform.localScale = new Vector3(size, size, 1);
-            Addressables.LoadAssetAsync<Sprite>(fossilInfo.FossilInfoDic[(int)fossilNum].prefabAddress).Completed += handle =>
-            {
-                // ロードに成功した場合の処理をここに
-                fossil.GetComponent<SpriteRenderer>().sprite = handle.Result;
-            };
-
-            generateFossilList.Add(fossil);
+            if (tryCount > maxTryCount) continue;
+            GenerateFossil();
         }
+    }
+    
+    private void GenerateFossil()
+    {
+        generateFossilNumList.Add(fossilNum);
+
+        var fossil = Instantiate(fossilPrefab);
+        float size = 0.25f * ((int)fossilInfo.FossilInfoDic[(int)fossilNum].fossileSize + 2);
+        fossil.transform.SetParent(panelParent.transform);
+        fossil.transform.localPosition = generatePos;
+        fossil.transform.localScale = new Vector3(size, size, 1);
+        Addressables.LoadAssetAsync<Sprite>(fossilInfo.FossilInfoDic[(int)fossilNum].prefabAddress).Completed += handle =>
+        {
+            // ロードに成功した場合の処理をここに
+            fossil.GetComponent<SpriteRenderer>().sprite = handle.Result;
+        };
+
+        generateFossilList.Add(fossil);
     }
     
     public bool CheckGeneratePos(float halfFossilSize)
@@ -227,7 +233,7 @@ public class DigSceneManager : MonoBehaviour
 
     private async UniTask Dig(CancellationToken token = default)
     {
-        DecreaseHP(token);
+        DecreaseHP();
 
         if (isPickel)
         {
@@ -268,7 +274,7 @@ public class DigSceneManager : MonoBehaviour
         }
     }
 
-    private void DecreaseHP(CancellationToken token = default)
+    private void DecreaseHP()
     {
         if (isPickel)
         {
@@ -348,7 +354,6 @@ public class DigSceneManager : MonoBehaviour
         {
             Debug.Log(fossilInfo.FossilInfoDic[getFossilNumList[i]].itemName + "を手に入れた");
         }
-        Debug.Log("aaa");
         gameManager.isDigScene = false;
         playerCamera.gameObject.SetActive(true);
         mainCamera.gameObject.SetActive(false);
