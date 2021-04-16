@@ -13,6 +13,7 @@ public class ShowExchangeItem : MonoBehaviour
     private List<Text> nodeCountTextList = new List<Text>();
     private List<Text> nodePointTextList = new List<Text>();
     private Having having;
+    private ItemInfo itemInfo = new ItemInfo();
     private int listNum = 0;
 
     private void Awake()
@@ -34,7 +35,7 @@ public class ShowExchangeItem : MonoBehaviour
             obj.SetActive(false);
         }
 
-        for (int i = 0; i < new ItemInfo().ItemInfoDic.Count; i++)
+        for (int i = 0; i < itemInfo.ItemInfoDic.Count; i++)
         {
             if (listNum >= nodeList.Count - 1)
             {
@@ -47,14 +48,14 @@ public class ShowExchangeItem : MonoBehaviour
                 nodePointTextList.Add(node.transform.GetChild(2).GetComponent<Text>());
             }
 
-            nodeNameTextList[listNum].text = new ItemInfo().ItemInfoDic[i].itemName;
+            nodeNameTextList[listNum].text = itemInfo.ItemInfoDic[i].itemName;
             nodeCountTextList[listNum].text = "x" + 0;
             if (having.HaveItem.ContainsKey(i))
             {
                 nodeCountTextList[listNum].text = "x" + having.HaveItem[i].itemCount;
             }
            
-            nodePointTextList[listNum].text = new ItemInfo().ItemInfoDic[i].point.ToString();
+            nodePointTextList[listNum].text = itemInfo.ItemInfoDic[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }

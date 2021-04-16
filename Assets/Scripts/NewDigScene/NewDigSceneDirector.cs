@@ -6,12 +6,14 @@ using Photon.Pun;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using UniRx;
 
 public class NewDigSceneDirector : MonoBehaviour
 {
     public GameObject ResultTextController;
     public GameObject PanelGenerator;
 
+    private GameManager gameManager;
     private Sprite[] BoardSprite = new Sprite[3];
     public GameObject[] boardSpritePrefab = new GameObject[3];
     private int[,] Board = new int[13, 10];
@@ -45,6 +47,7 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         photonView = GetComponent<PhotonView>();
         for (int i = 0; i < 3; i++)
         {
@@ -55,10 +58,16 @@ public class NewDigSceneDirector : MonoBehaviour
 
     private void Start()
     {
-        GenerateBoard();
-        IntializeArray();
-        var token = this.GetCancellationTokenOnDestroy();
-        FossilGenerator(token).Forget();
+        gameManager.ObserveEveryValueChanged(x => x.isDigScene)
+            .Where(x=>x==true)
+            .Subscribe(_ =>
+            {
+                GenerateBoard();
+                IntializeArray();
+                var token = this.GetCancellationTokenOnDestroy();
+                FossilGenerator(token).Forget();
+            })
+            .AddTo(this);
     }
 
     void Update()
@@ -109,6 +118,7 @@ public class NewDigSceneDirector : MonoBehaviour
                 BoardImage[i, j].gameObject.transform.SetParent(PanelGenerator.transform);
                 BoardImage[i, j].gameObject.transform.localPosition = new Vector3(i, j, 0);
                 BoardImage[i, j].gameObject.transform.localScale = new Vector3(1, 1, 1);
+                BoardImage[i, j].name = i+","+j;
                 SpriteRenderer[i, j] = BoardImage[i, j].GetComponent<SpriteRenderer>();
             }
         }
@@ -324,8 +334,18 @@ public class NewDigSceneDirector : MonoBehaviour
     private void SearchMousePosition()
     {
         mousePos = Input.mousePosition;
-        mousePos.z = 10.0f;                   //役割何？
-        objPos = Camera.main.ScreenToWorldPoint(mousePos);
+        mousePos.z = 30.0f;                   //役割何？
+        //objPos = Camera.main.ScreenToWorldPoint(mousePos) - new Vector3(79, 88, 0);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit2d = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
+
+        if (hit2d)
+        {
+            Debug.Log((Vector2)ray.origin+","+(Vector2)ray.direction);
+            Debug.Log(hit2d.collider.gameObject.name);
+            objPos = hit2d.transform.position;
+        }
+
         //Debug.Log(objPos);
     }
 

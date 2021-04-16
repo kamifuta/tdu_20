@@ -47,13 +47,6 @@ public class ShowExchangeTrap : MonoBehaviour
             }
 
             nodeNameTextList[listNum].text = new TrapsInfo().trapInfoDic[i].itemName;
-            /*nodeCountTextList[listNum].text = "x" + 0;
-            if (having.HaveTrap.ContainsKey(i))
-            {
-                nodeCountTextList[listNum].text = "x" + having.HaveTrap[i].itemCount;
-            }*/
-
-            //nodePointTextList[listNum].text = new TrapsInfo().trapInfoDic[i].point.ToString();
             nodeList[listNum].SetActive(true);
             listNum++;
         }
