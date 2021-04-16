@@ -12,7 +12,7 @@ public class DigSceneManager : MonoBehaviour
     private const int Count_h = 13;
     private const int Count_v = 10;
     private const int maxTryCount = 20;
-    private const int maxFossilCount = 4;
+    private const int maxFossilCount = 5;
     private const int panelLayermask = 1 << 13;
     private const int fossilLayermask = 1 << 14;
     private const int clickTriggerLayermask = 1 << 15;
@@ -164,7 +164,7 @@ public class DigSceneManager : MonoBehaviour
                     break;
             }
 
-            if (tryCount > 10) continue;
+            if (tryCount > maxTryCount) continue;
             generateFossilNumList.Add(fossilNum);
 
             var fossil = Instantiate(fossilPrefab);
@@ -227,7 +227,7 @@ public class DigSceneManager : MonoBehaviour
 
     private async UniTask Dig(CancellationToken token = default)
     {
-        DecreaseHP(token);
+        DecreaseHP();
 
         if (isPickel)
         {
@@ -268,7 +268,7 @@ public class DigSceneManager : MonoBehaviour
         }
     }
 
-    private void DecreaseHP(CancellationToken token = default)
+    private void DecreaseHP()
     {
         if (isPickel)
         {
@@ -348,7 +348,6 @@ public class DigSceneManager : MonoBehaviour
         {
             Debug.Log(fossilInfo.FossilInfoDic[getFossilNumList[i]].itemName + "を手に入れた");
         }
-        Debug.Log("aaa");
         gameManager.isDigScene = false;
         playerCamera.gameObject.SetActive(true);
         mainCamera.gameObject.SetActive(false);

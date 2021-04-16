@@ -6577,6 +6577,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8a8d540f4c098004eba18aa6918be11f, type: 3}
   - {fileID: 21300000, guid: e9d0f57092329914d9758a6563a8eda0, type: 3}
   - {fileID: 21300000, guid: 338851ca2d9deaa429076afa919b5676, type: 3}
+  fossilCountText: {fileID: 2068950269}
 --- !u!4 &509841607
 Transform:
   m_ObjectHideFlags: 0
