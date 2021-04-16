@@ -139,6 +139,7 @@ public class PlayerAction : MonoBehaviour
     public void StartDigScene()
     {
         gameManager.isDigScene = true;
+        IsAction = false;
     }
 
     public void MoveRoomScene()
