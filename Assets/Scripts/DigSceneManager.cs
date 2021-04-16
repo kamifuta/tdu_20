@@ -24,12 +24,18 @@ public class DigSceneManager : MonoBehaviour
     public GameObject panelPrefab;
     public GameObject fossilPrefab;
     public GameObject clickTrigger;
+    public GameObject mainSceneCanvas;
+    public GameObject digSceneCanvas;
+    public GameObject getTextObj;
     public Button pickelButton;
     public Button hummerButton;
     public Sprite[] panelSprites = new Sprite[4];
+    public Slider hpBar;
     public Text fossilCountText;
+    public Text getText;
     public int[,] panelCount = new int[Count_h, Count_v];
 
+    private Having having;
     private FossilInfo fossilInfo = new FossilInfo();
     private SpriteRenderer[,] panelSpriteRenderer = new SpriteRenderer[Count_h, Count_v];
     private List<int> generateFossilNumList = new List<int>();
@@ -46,6 +52,16 @@ public class DigSceneManager : MonoBehaviour
     private bool isPickel = false;
     private bool isHummer = true;
     private bool first = true;
+    private enum DigMode
+    {
+        pickel,
+        hummer,
+    }
+
+    private void Awake()
+    {
+        having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -62,7 +78,11 @@ public class DigSceneManager : MonoBehaviour
 
     private async UniTask Initialization(CancellationToken token = default)
     {
+        mainSceneCanvas.SetActive(false);
+        digSceneCanvas.SetActive(true);
         hp = 30;
+        hpBar.value = 1;
+        getTextObj.SetActive(false);
         generateFossilNumList.Clear();
         getFossilNumList.Clear();
         foreach(var x in generateFossilList)
@@ -204,46 +224,50 @@ public class DigSceneManager : MonoBehaviour
     {
         while (true)
         {
-            await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: token);
+            var result = await UniTask.WhenAny(
+                UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: token),
+                UniTask.WaitUntil(() => hp <= 0 || generateFossilList.Count <= 0)
+                );
 
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit = new RaycastHit();
-
-            if (Physics.Raycast(ray, out hit, 100f, clickTriggerLayermask))
+            if (result == 0)
             {
-                clickPos = hit.collider.transform.localPosition;
-                await Dig(token);
-                await CheckGetFossil(token);
+                Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit = new RaycastHit();
+
+                if (Physics.Raycast(ray, out hit, 100f, clickTriggerLayermask))
+                {
+                    clickPos = hit.collider.transform.localPosition;
+                    Dig();
+                    await UniTask.DelayFrame(1);
+                    await CheckGetFossil(token);
+                }
             }
-            else
+            else if (result == 1)
             {
-                continue;
-            }
+                Debug.Log(hp);
 
-            Debug.Log(hp);
-
-            if (hp <= 0 || generateFossilList.Count <= 0)
-            {
-                break;
+                if (hp <= 0 || generateFossilList.Count <= 0)
+                {
+                    break;
+                }
             }
         }
-        BackMainScene();
+        BackMainScene(token).Forget();
 
     }
 
-    private async UniTask Dig(CancellationToken token = default)
+    private void Dig()
     {
-        DecreaseHP();
-
         if (isPickel)
         {
+            DecreaseHP((int)DigMode.pickel);
             for (int i = -1; i <= 1; i++)
             {
                 if (clickPos.x + i < 0 || 12 < clickPos.x + i)
                 {
                     continue;
                 }
-                await ChangeCount((int)clickPos.x + i, (int)clickPos.y, token);
+                ChangeCount((int)clickPos.x + i, (int)clickPos.y);
             }
             for (int i = -1; i <= 1; i++)
             {
@@ -251,11 +275,12 @@ public class DigSceneManager : MonoBehaviour
                 {
                     continue;
                 }
-                await ChangeCount((int)clickPos.x, (int)clickPos.y + i, token);
+                ChangeCount((int)clickPos.x, (int)clickPos.y + i);
             }
         }
         else if (isHummer)
         {
+            DecreaseHP((int)DigMode.hummer);
             for (int i = -1; i <= 1; i++)
             {
                 if (clickPos.x + i < 0 || 12 < clickPos.x + i)
@@ -268,25 +293,27 @@ public class DigSceneManager : MonoBehaviour
                     {
                         continue;
                     }
-                    await ChangeCount((int)clickPos.x + i, (int)clickPos.y + j, token);
+                    ChangeCount((int)clickPos.x + i, (int)clickPos.y + j);
                 }
             }
         }
     }
 
-    private void DecreaseHP()
+    private void DecreaseHP(int mode)
     {
-        if (isPickel)
+        if (mode==(int)DigMode.pickel)
         {
             hp--;
         }
-        else if (isHummer)
+        else if (mode == (int)DigMode.hummer)
         {
             hp -= 2;
         }
+
+        hpBar.value = (float)hp / 30f;
     }
 
-    private async UniTask ChangeCount(int x, int y, CancellationToken token = default)
+    private void ChangeCount(int x, int y)
     {
         if (isPickel)
         {
@@ -303,11 +330,8 @@ public class DigSceneManager : MonoBehaviour
         }
         else
         {
-            //panelSpriteRenderer[x, y].sprite = null;
             panelSpriteRenderer[x, y].gameObject.SetActive(false);
         }
-
-        await UniTask.DelayFrame(1);
     }
 
     private async UniTask CheckGetFossil(CancellationToken token = default)
@@ -324,7 +348,6 @@ public class DigSceneManager : MonoBehaviour
             {
                 getFossilList.Add(generateFossilList[i]);
                 getFossilNumList.Add(generateFossilNumList[i]);
-                //Debug.Log(fossilInfo.FossilInfoDic[generateFossilNumList[i]].itemName + "を手に入れた");
                 generateFossilNumList.RemoveAt(i);
                 generateFossilList.RemoveAt(i);
             }
@@ -348,13 +371,24 @@ public class DigSceneManager : MonoBehaviour
         isPickel = false;
     }
 
-    public void BackMainScene()
+    public async UniTask BackMainScene(CancellationToken token = default)
     {
+        getTextObj.SetActive(true);
         for(int i = 0; i < getFossilNumList.Count; i++)
         {
-            Debug.Log(fossilInfo.FossilInfoDic[getFossilNumList[i]].itemName + "を手に入れた");
+            getText.text=fossilInfo.FossilInfoDic[getFossilNumList[i]].itemName + "を手に入れた";
+            having.GetFossil(fossilInfo.FossilInfoDic[getFossilNumList[i]].fossileSize, fossilInfo.FossilInfoDic[getFossilNumList[i]].fossilColor);
+            await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: token);
         }
+
+        if (getFossilNumList.Count == 0)
+        {
+            await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: token);
+        }
+        
         gameManager.isDigScene = false;
+        mainSceneCanvas.SetActive(true);
+        digSceneCanvas.SetActive(false);
         playerCamera.gameObject.SetActive(true);
         mainCamera.gameObject.SetActive(false);
     }
