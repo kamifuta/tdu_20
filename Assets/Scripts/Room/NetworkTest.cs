@@ -40,7 +40,8 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     // 難易度
     [SerializeField] private string stageDifficulty = "Easy";
 
-
+    int[] num = { 1, 2, 3, 4 };
+    int[,] num2 = { { 1, 2 }, { 3, 4 } };
     /////////////////////////////////////////////////////////////////////////////////////
     // Awake & Start ////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
@@ -64,25 +65,39 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            //photonView.Group = 1;
             photonView.RPC("AAA",RpcTarget.AllViaServer);
         }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            photonView.Group = 1;
+            Debug.Log("GroupSets");
+            //photonView.RPC("BBB", RpcTarget.AllViaServer);
+        }
     }
+
     [PunRPC]
     public void AAA()
     {
-        Debug.Log("ttttttttttttttttttttttttttttttttttttttttt");
+        Debug.Log("!!!!!!!!!!!!!!!!!");
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    // Connect //////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////
+    /*[PunRPC]
+    public void BBB()
+    {
+        
+    }*/
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Connect //////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////
 
-    // Photonに接続する
+        // Photonに接続する
 
 
 
-    // ニックネームを付ける
-    private void SetMyNickName(string nickName)
+        // ニックネームを付ける
+        private void SetMyNickName(string nickName)
     {
         if (PhotonNetwork.IsConnected)
         {

@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -44,6 +45,7 @@ public class DigSceneManager : MonoBehaviour
     private List<GameObject> getFossilList = new List<GameObject>();
     private List<GameObject> panelsList = new List<GameObject>();
     private List<GameObject> triggersList = new List<GameObject>();
+    private PhotonView photonView;
     private Vector3 generatePos;
     private Vector3 clickPos;
     private int tryCount=0;
@@ -51,7 +53,9 @@ public class DigSceneManager : MonoBehaviour
     private int fossilNum;
     private bool isPickel = false;
     private bool isHummer = true;
-    private bool first = true;
+    //private bool first = true;
+    int[] translatePanelCount = new int[Count_h* Count_v];
+
     private enum DigMode
     {
         pickel,
@@ -61,6 +65,7 @@ public class DigSceneManager : MonoBehaviour
     private void Awake()
     {
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        photonView = GetComponent<PhotonView>();
     }
 
     // Start is called before the first frame update
@@ -84,10 +89,19 @@ public class DigSceneManager : MonoBehaviour
 
         gameManager.ObserveEveryValueChanged(x => x.isDigScene)
             .Where(x => x == true)
-            .Subscribe(_ =>
+            .Subscribe(async _ =>
             {
                 var token = this.GetCancellationTokenOnDestroy();
-                Initialization(token).Forget();
+                await Initialization(token);
+                /*if ()//最初の人
+                {
+                    await Fossil(token);
+                    ClickAsync(token).Forget();
+                }
+                else
+                {
+                    photonView.RPC(nameof(ResieveFossilPosInfo),//最初の人);
+                }*/
             })
             .AddTo(this);
     }
@@ -111,26 +125,59 @@ public class DigSceneManager : MonoBehaviour
         }
         generateFossilList.Clear();
         getFossilList.Clear();
-        await GeneratePanels(token);
         
+        //first = false;
+    }
+    private async UniTask Fossil(CancellationToken token = default)//最初に入った人
+    {
+        await GeneratePanels(token);
         while (generateFossilList.Count < 2)
         {
             await GetFossilGeneratePos(token);
+            fossilCountText.text = generateFossilList.Count + "個";
         }
-        fossilCountText.text = generateFossilList.Count + "個";
-
-        ClickAsync(token).Forget();
-        first = false;
     }
+
+    [PunRPC]
+    public void SendFossilPosInfo(PhotonMessageInfo info)
+    {
+        photonView.RPC(nameof(ResieveFossilPosInfo), info.Sender, translatePanelCount);
+    }
+
+
+    [PunRPC]
+    public void ResieveFossilPosInfo(int[] panelCountRecieve)
+    {
+        int count = 0;
+        for (int i = 0; i < Count_h; i++)
+        {
+            for (int j = 0; j < Count_v; j++)
+            {
+                panelCount[i, j] = panelCountRecieve[count];
+
+                foreach (var a in panelsList)
+                {
+                    a.SetActive(true);
+                }
+                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRecieve[count]];
+   
+            }
+        }
+        ClickAsync(default).Forget();
+    }
+
+
 
     public async UniTask GeneratePanels(CancellationToken token = default)
     {
+        int k = 0;
         for(int i = 0; i < Count_h; i++)
         {
             for(int j = 0; j < Count_v; j++)
             {
                 int count = Random.Range(1, 4);
                 panelCount[i, j] = count;
+                translatePanelCount[k] = count;
                 /*if (first)
                 {
                     var panel = Instantiate(panelPrefab);
@@ -143,7 +190,7 @@ public class DigSceneManager : MonoBehaviour
                     triggersList.Add(trigger);
                     panelSpriteRenderer[i, j] = panel.GetComponent<SpriteRenderer>();
                 }*/
-                foreach(var a in panelsList)
+                foreach(var a in panelsList)//??????
                 {
                     a.SetActive(true);
                 }
@@ -255,11 +302,11 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        Dig((int)DigMode.pickel, clickPos);
+                        photonView.RPC(nameof(Dig),RpcTarget.AllViaServer,((int)DigMode.pickel, clickPos));
                     }
                     else if (isHummer)
                     {
-                        Dig((int)DigMode.hummer, clickPos);
+                        photonView.RPC(nameof(Dig), RpcTarget.AllViaServer,((int)DigMode.hummer, clickPos));
                     }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
@@ -278,7 +325,7 @@ public class DigSceneManager : MonoBehaviour
         BackMainScene(token).Forget();
 
     }
-
+    [PunRPC]
     private void Dig(int mode, Vector3 clickPos)
     {
         if (mode == (int)DigMode.pickel)
