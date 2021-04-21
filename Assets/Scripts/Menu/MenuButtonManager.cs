@@ -7,6 +7,7 @@ public class MenuButtonManager : MonoBehaviour
     public GameObject haveFossilPanel;
     public GameObject haveTrapPanel;
     public GameObject haveGoodsPanel;
+    public GameObject mapPanel;
 
     private PlayerAction playerAction;
 
@@ -16,6 +17,7 @@ public class MenuButtonManager : MonoBehaviour
         haveFossilPanel.SetActive(false);
         haveTrapPanel.SetActive(false);
         haveGoodsPanel.SetActive(false);
+        mapPanel.SetActive(false);
         playerAction = FindObjectOfType<PlayerAction>();
         this.gameObject.SetActive(false);
     }
@@ -41,6 +43,13 @@ public class MenuButtonManager : MonoBehaviour
         playerAction.CanOpenMenu = false;
     }
 
+    public void OnMapButton()
+    {
+        this.gameObject.SetActive(false);
+        mapPanel.SetActive(true);
+        playerAction.CanOpenMenu = false;
+    }
+
     public void OnMenuCloseButton()
     {
         this.gameObject.SetActive(false);
@@ -58,6 +67,13 @@ public class MenuButtonManager : MonoBehaviour
     public void OnHaveTrapCloseButton()
     {
         haveTrapPanel.SetActive(false);
+        this.gameObject.SetActive(true);
+        playerAction.CanOpenMenu = true;
+    }
+
+    public void OnMapCloseButton()
+    {
+        mapPanel.SetActive(false);
         this.gameObject.SetActive(true);
         playerAction.CanOpenMenu = true;
     }
