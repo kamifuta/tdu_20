@@ -126,7 +126,7 @@ public class DigSceneManager : MonoBehaviour
         }
         generateFossilList.Clear();
         getFossilList.Clear();
-        
+        await UniTask.DelayFrame(1);
         //first = false;
     }
     private async UniTask Fossil(CancellationToken token = default)//最初に入った人
