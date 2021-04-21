@@ -176,12 +176,12 @@ public class NetworkTest : MonoBehaviourPunCallbacks
         };
 
         // ルームオプションにカスタムプロパティを設定
-        ExitGames.Client.Photon.Hashtable customRoomProperties = new ExitGames.Client.Photon.Hashtable
+        /*ExitGames.Client.Photon.Hashtable customRoomProperties = new ExitGames.Client.Photon.Hashtable
         {
             { "Stage", stageName },
             { "Difficulty", stageDifficulty }
         };
-        roomOptions.CustomRoomProperties = customRoomProperties;
+        roomOptions.CustomRoomProperties = customRoomProperties;*/
 
         // ロビーに公開するカスタムプロパティを指定
         roomOptions.CustomRoomPropertiesForLobby = new string[] { "Stage", "Difficulty" };
@@ -265,6 +265,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby");
+        JoinOrCreateRoom();
     }
 
 
