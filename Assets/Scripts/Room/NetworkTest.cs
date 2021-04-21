@@ -65,7 +65,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            photonView.Group = 1;
+            //photonView.Group = 1;
             photonView.RPC("AAA",RpcTarget.AllViaServer);
         }
 
@@ -80,7 +80,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     [PunRPC]
     public void AAA()
     {
-        Debug.Log("Sendd!!");
+        Debug.Log("!!!!!!!!!!!!!!!!!");
     }
 
     /*[PunRPC]

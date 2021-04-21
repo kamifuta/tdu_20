@@ -302,11 +302,11 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        Dig((int)DigMode.pickel, clickPos);
+                        photonView.RPC(nameof(Dig),RpcTarget.AllViaServer,((int)DigMode.pickel, clickPos));
                     }
                     else if (isHummer)
                     {
-                        Dig((int)DigMode.hummer, clickPos);
+                        photonView.RPC(nameof(Dig), RpcTarget.AllViaServer,((int)DigMode.hummer, clickPos));
                     }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
@@ -325,7 +325,7 @@ public class DigSceneManager : MonoBehaviour
         BackMainScene(token).Forget();
 
     }
-
+    [PunRPC]
     private void Dig(int mode, Vector3 clickPos)
     {
         if (mode == (int)DigMode.pickel)
