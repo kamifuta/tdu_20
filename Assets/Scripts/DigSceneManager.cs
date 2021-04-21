@@ -19,6 +19,7 @@ public class DigSceneManager : MonoBehaviour
     private const int clickTriggerLayermask = 1 << 15;
 
     public GameManager gameManager;
+    public RPCGroupSettings groupSettings;
     public Camera mainCamera;
     public Camera playerCamera;
     public GameObject panelParent;
@@ -136,18 +137,22 @@ public class DigSceneManager : MonoBehaviour
             await GetFossilGeneratePos(token);
             fossilCountText.text = generateFossilList.Count + "個";
         }
+        
+        photonView.Group= groupSettings.RandomAddGroup();
     }
 
     [PunRPC]
     public void SendFossilPosInfo(PhotonMessageInfo info)
     {
-        photonView.RPC(nameof(ResieveFossilPosInfo), info.Sender, translatePanelCount);
+        photonView.RPC(nameof(ResieveFossilPosInfo), info.Sender, photonView.Group, translatePanelCount);
     }
 
 
     [PunRPC]
-    public void ResieveFossilPosInfo(int[] panelCountRecieve)
+    public void ResieveFossilPosInfo(byte groupNum, int[] panelCountRecieve)
     {
+        groupSettings.AddGroup(groupNum);
+        photonView.Group = groupNum;
         int count = 0;
         for (int i = 0; i < Count_h; i++)
         {
@@ -302,11 +307,11 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        photonView.RPC(nameof(Dig),RpcTarget.AllViaServer,((int)DigMode.pickel, clickPos));
+                        photonView.RPC(nameof(Dig),RpcTarget.AllViaServer,((int)DigMode.pickel, clickPos));//123456
                     }
                     else if (isHummer)
                     {
-                        photonView.RPC(nameof(Dig), RpcTarget.AllViaServer,((int)DigMode.hummer, clickPos));
+                        photonView.RPC(nameof(Dig), RpcTarget.AllViaServer,((int)DigMode.hummer, clickPos));//123456
                     }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
@@ -443,6 +448,7 @@ public class DigSceneManager : MonoBehaviour
 
     public async UniTask BackMainScene(CancellationToken token = default)
     {
+
         getTextObj.SetActive(true);
         for(int i = 0; i < getFossilNumList.Count; i++)
         {

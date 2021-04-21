@@ -65,15 +65,15 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            //photonView.Group = 1;
+            photonView.Group = 1;
             photonView.RPC("AAA",RpcTarget.AllViaServer);
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            photonView.Group = 1;
+            PhotonNetwork.SetInterestGroups(Aray)
             Debug.Log("GroupSets");
-            //photonView.RPC("BBB", RpcTarget.AllViaServer);
+            
         }
     }
 
