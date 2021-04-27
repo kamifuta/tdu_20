@@ -14,12 +14,15 @@ public class PlayerAction : MonoBehaviour
     public GameObject actionButtonObj;
     public bool IsAction = false;
     public bool CanOpenMenu = true;
+    public bool IsMining = false;
+    public bool entered = false;
 
     private GameManager gameManager;
     private GameObject menuePanel;
     private GameObject talkPanel;
     //private GameObject trapPrefab;
     private PlayerInput input;
+    private PlayerAction targetPlayerAction;
     private Having having;
     //private MenuButtonManager menuButtonManager;
     private CapsuleCollider collider;
@@ -97,6 +100,11 @@ public class PlayerAction : MonoBehaviour
 
         if (Physics.CapsuleCast(p1, p2, collider.radius/2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
         {
+            if (targetPlayerAction == null)
+            {
+                targetPlayerAction = hit.collider.gameObject.GetComponent<PlayerAction>();
+            }
+
             switch (hit.collider.gameObject.layer)
             {
                 case 9:
@@ -116,6 +124,7 @@ public class PlayerAction : MonoBehaviour
         }
         else
         {
+            targetPlayerAction = null;
             targetTrap = null;
             actionButtonObj.SetActive(false);
         }
@@ -148,6 +157,11 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
+        if (targetPlayerAction.IsMining)
+        {
+            targetPlayerAction.entered = true;
+        }
+        IsMining = true;
         gameManager.isDigScene = true;
     }
 
