@@ -37,6 +37,7 @@ public class DigSceneManager : MonoBehaviour
     public Text getText;
     public int[,] panelCount = new int[Count_h, Count_v];
 
+    private PlayerAction playerAction;
     private Having having;
     private FossilInfo fossilInfo = new FossilInfo();
     private SpriteRenderer[,] panelSpriteRenderer = new SpriteRenderer[Count_h, Count_v];
@@ -106,6 +107,15 @@ public class DigSceneManager : MonoBehaviour
                 //話しかけた時点でGroupSetするのもありかな？
             })
             .AddTo(this);
+    }
+
+    private void Update()
+    {
+        if (playerAction.entered)
+        {
+            playerAction.entered = false;
+            //ここに入ってきた人に必要な情報を送る処理
+        }
     }
 
     private async UniTask Initialization(CancellationToken token = default)
