@@ -2813,6 +2813,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_variant Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 9022243900355445095, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 521ef224bbdc79f4faf0d7fbe060eb9f, type: 3}
 --- !u!1 &1113199406

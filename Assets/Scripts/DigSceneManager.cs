@@ -100,10 +100,11 @@ public class DigSceneManager : MonoBehaviour
                     await Fossil(token);
                     ClickAsync(token).Forget();
                 }
-                else
+                else//後から入ってきた人
                 {
                     photonView.RPC(nameof(ResieveFossilPosInfo),//最初の人);
                 }*/
+                //話しかけた時点でGroupSetするのもありかな？
             })
             .AddTo(this);
     }
@@ -317,11 +318,11 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        photonView.RPC(nameof(Dig),RpcTarget.AllViaServer,((int)DigMode.pickel, clickPos));//123456
+                        photonView.RPC(nameof(Dig),RpcTarget.All,((int)DigMode.pickel, clickPos));//123456
                     }
                     else if (isHummer)
                     {
-                        photonView.RPC(nameof(Dig), RpcTarget.AllViaServer,((int)DigMode.hummer, clickPos));//123456
+                        photonView.RPC(nameof(Dig), RpcTarget.All,((int)DigMode.hummer, clickPos));//123456
                     }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
