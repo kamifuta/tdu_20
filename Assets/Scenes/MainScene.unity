@@ -11271,6 +11271,8 @@ MonoBehaviour:
   actionButtonObj: {fileID: 0}
   IsAction: 0
   CanOpenMenu: 1
+  IsMining: 0
+  entered: 0
 --- !u!114 &895728112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27190,7 +27192,7 @@ PrefabInstance:
     - target: {fileID: 8538441894604004317, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8538441894604004317, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
         type: 3}
