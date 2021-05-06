@@ -66,6 +66,7 @@ public class DigSceneManager : MonoBehaviour
 
     private void Awake()
     {
+        playerAction= GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAction>();
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
         photonView = GetComponent<PhotonView>();
     }
