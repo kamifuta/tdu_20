@@ -157,7 +157,7 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
-        if (targetPlayerAction.IsMining)
+        if (targetPlayerAction!=null&&targetPlayerAction.IsMining)
         {
             targetPlayerAction.entered = true;
         }
