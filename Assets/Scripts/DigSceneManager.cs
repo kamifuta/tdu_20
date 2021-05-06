@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -54,6 +55,7 @@ public class DigSceneManager : MonoBehaviour
     private int fossilNum;
     private bool isPickel = false;
     private bool isHummer = true;
+    private bool first = false;
     //private bool first = true;
     int[] translatePanelCount = new int[Count_h* Count_v];
 
@@ -96,6 +98,7 @@ public class DigSceneManager : MonoBehaviour
                 await Initialization(token);
                 /*if ()//最初の人
                 {
+                    first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
                 }
@@ -112,6 +115,7 @@ public class DigSceneManager : MonoBehaviour
     {
         mainSceneCanvas.SetActive(false);
         digSceneCanvas.SetActive(true);
+        first = false;
         hp = 30;
         hpBar.value = 1;
         getTextObj.SetActive(false);
@@ -138,8 +142,8 @@ public class DigSceneManager : MonoBehaviour
             await GetFossilGeneratePos(token);
             fossilCountText.text = generateFossilList.Count + "個";
         }
-        
-        photonView.Group= groupSettings.RandomAddGroup();
+        groupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
+        photonView.Group= (byte)PhotonNetwork.LocalPlayer.ActorNumber;
     }
 
     [PunRPC]
@@ -154,19 +158,19 @@ public class DigSceneManager : MonoBehaviour
     {
         groupSettings.AddGroup(groupNum);
         photonView.Group = groupNum;
-        int count = 0;
+        int k = 0;
         for (int i = 0; i < Count_h; i++)
         {
             for (int j = 0; j < Count_v; j++)
             {
-                panelCount[i, j] = panelCountRecieve[count];
+                panelCount[i, j] = panelCountRecieve[k];
 
                 foreach (var a in panelsList)
                 {
                     a.SetActive(true);
                 }
-                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRecieve[count]];
-   
+                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRecieve[k]];
+                k++;
             }
         }
         ClickAsync(default).Forget();
@@ -201,7 +205,9 @@ public class DigSceneManager : MonoBehaviour
                     a.SetActive(true);
                 }
                 panelSpriteRenderer[i, j].sprite = panelSprites[count];
+                k++;
                 await UniTask.DelayFrame(1);
+                
             }
         }
     }
@@ -394,10 +400,12 @@ public class DigSceneManager : MonoBehaviour
         if (key == DigMode.pickel)
         {
             panelCount[x, y]--;
+            translatePanelCount[Count_h * x + y]--;//あってるかな？？
         }
         else if(key == DigMode.hummer)
         {
             panelCount[x, y] -= 2;
+            translatePanelCount[Count_h * x + y]-=2;//あってるかな？？
         }
 
         if (panelCount[x,y] > 0)
@@ -449,7 +457,10 @@ public class DigSceneManager : MonoBehaviour
 
     public async UniTask BackMainScene(CancellationToken token = default)
     {
-
+        if (first)
+        {
+            groupSettings.RemoveGroup(PhotonNetwork.LocalPlayer.ActorNumber);
+        }
         getTextObj.SetActive(true);
         for(int i = 0; i < getFossilNumList.Count; i++)
         {
