@@ -21,6 +21,8 @@ public class DigSceneManager : MonoBehaviour
 
     public GameManager gameManager;
     public RPCGroupSettings groupSettings;
+    public SetCustomPropertiesManager propertiesManager;
+    public PropertiesKeyList propertiesKeyList;
     public Camera mainCamera;
     public Camera playerCamera;
     public GameObject panelParent;
@@ -58,7 +60,7 @@ public class DigSceneManager : MonoBehaviour
     private bool isHummer = true;
     private bool first = false;
     //private bool first = true;
-    int[] translatePanelCount = new int[Count_h* Count_v];
+    int[] translatedPanelCount = new int[Count_h* Count_v];
 
     private enum DigMode
     {
@@ -103,10 +105,11 @@ public class DigSceneManager : MonoBehaviour
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
+                    //ここで掘り始めた判定つける(他の人が入って来れるようにする)
                 }
                 else//後から入ってきた人
                 {
-                    photonView.RPC(nameof(ResieveFossilPosInfo),//最初の人);
+                    ResieveFossilPosInfo(byte diggroup←先に入ってた人のActorNumber);//
                 }*/
                 //話しかけた時点でGroupSetするのもありかな？
             })
@@ -145,7 +148,14 @@ public class DigSceneManager : MonoBehaviour
         await UniTask.DelayFrame(1);
         //first = false;
     }
-    private async UniTask Fossil(CancellationToken token = default)//最初に入った人
+
+
+    /// <summary>
+    /// 最初に掘り始めた人の処理
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async UniTask Fossil(CancellationToken token = default)
     {
         await GeneratePanels(token);
         while (generateFossilList.Count < 2)
@@ -157,16 +167,10 @@ public class DigSceneManager : MonoBehaviour
         photonView.Group= (byte)PhotonNetwork.LocalPlayer.ActorNumber;
     }
 
-    [PunRPC]
-    public void SendFossilPosInfo(PhotonMessageInfo info)
-    {
-        photonView.RPC(nameof(ResieveFossilPosInfo), info.Sender, photonView.Group, translatePanelCount);
-    }
 
-
-    [PunRPC]
-    public void ResieveFossilPosInfo(byte groupNum, int[] panelCountRecieve)
+    public void ResieveFossilPosInfo(byte groupNum)
     {
+        int[] panelCountRPC=(int[])PhotonNetwork.CurrentRoom.CustomProperties[propertiesKeyList.panelListKey+groupNum.ToString()];
         groupSettings.AddGroup(groupNum);
         photonView.Group = groupNum;
         int k = 0;
@@ -174,13 +178,13 @@ public class DigSceneManager : MonoBehaviour
         {
             for (int j = 0; j < Count_v; j++)
             {
-                panelCount[i, j] = panelCountRecieve[k];
+                panelCount[i, j] = panelCountRPC[k];
 
                 foreach (var a in panelsList)
                 {
                     a.SetActive(true);
                 }
-                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRecieve[k]];
+                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRPC[k]];
                 k++;
             }
         }
@@ -198,7 +202,7 @@ public class DigSceneManager : MonoBehaviour
             {
                 int count = Random.Range(1, 4);
                 panelCount[i, j] = count;
-                translatePanelCount[k] = count;
+                translatedPanelCount[k] = count;
                 /*if (first)
                 {
                     var panel = Instantiate(panelPrefab);
@@ -221,6 +225,7 @@ public class DigSceneManager : MonoBehaviour
                 
             }
         }
+        propertiesManager.SetPunCustomProperties(translatedPanelCount,propertiesKeyList.panelListKey+ PhotonNetwork.LocalPlayer.ActorNumber.ToString());
     }
 
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)
@@ -411,12 +416,12 @@ public class DigSceneManager : MonoBehaviour
         if (key == DigMode.pickel)
         {
             panelCount[x, y]--;
-            translatePanelCount[Count_h * x + y]--;//あってるかな？？
+            translatedPanelCount[Count_h * x + y]--;//あってるかな？？
         }
         else if(key == DigMode.hummer)
         {
             panelCount[x, y] -= 2;
-            translatePanelCount[Count_h * x + y]-=2;//あってるかな？？
+            translatedPanelCount[Count_h * x + y]-=2;//あってるかな？？
         }
 
         if (panelCount[x,y] > 0)

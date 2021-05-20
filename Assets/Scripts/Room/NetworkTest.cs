@@ -78,6 +78,26 @@ public class NetworkTest : MonoBehaviourPunCallbacks
             photonView.Group = 1;
             Debug.Log("photonView.Group");
         }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            ExitGames.Client.Photon.Hashtable customRoomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            customRoomProperties["k"] = num;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(customRoomProperties);
+            Debug.Log("set");
+        }
+        if (Input.GetKeyDown(KeyCode.E)) {
+            int[,] tmp = (int[,])PhotonNetwork.CurrentRoom.CustomProperties["k"];
+
+            for (int i=0; i<2;i++)
+            {
+                for (int j=0; j<2;j++)
+                {
+                    Debug.Log(tmp[i, j]);
+                }
+
+            }
+            Debug.Log("get");
+        }
     }
 
     [PunRPC]
