@@ -100,30 +100,27 @@ public class DigSceneManager : MonoBehaviour
             {
                 var token = this.GetCancellationTokenOnDestroy();
                 await Initialization(token);
-                /*if ()//最初の人
+                //int a = PhotonNetwork.LocalPlayer.ActorNumber;
+                groupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
+                photonView.Group = (byte)PhotonNetwork.LocalPlayer.ActorNumber;
+
+                if (!playerAction.digMaster)//最初の人
                 {
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
-                    //ここで掘り始めた判定つける(他の人が入って来れるようにする)
+                    propertiesManager.SetPunCustomProperties(true,propertiesKeyList.digKey);
                 }
                 else//後から入ってきた人
                 {
-                    ResieveFossilPosInfo(byte diggroup←先に入ってた人のActorNumber);//
-                }*/
-                //話しかけた時点でGroupSetするのもありかな？
+                    ResieveFossilPosInfo((byte)playerAction.talkToPlayer.ActorNumber);//
+                }
+
             })
             .AddTo(this);
     }
 
-    private void Update()
-    {
-        if (playerAction.entered)
-        {
-            playerAction.entered = false;
-            //ここに入ってきた人に必要な情報を送る処理
-        }
-    }
+
 
     private async UniTask Initialization(CancellationToken token = default)
     {
@@ -163,8 +160,6 @@ public class DigSceneManager : MonoBehaviour
             await GetFossilGeneratePos(token);
             fossilCountText.text = generateFossilList.Count + "個";
         }
-        groupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
-        photonView.Group= (byte)PhotonNetwork.LocalPlayer.ActorNumber;
     }
 
 

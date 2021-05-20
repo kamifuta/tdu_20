@@ -61,7 +61,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -98,7 +98,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
             }
             Debug.Log("get");
         }
-    }
+    }*/
 
     [PunRPC]
     public void AAA()
