@@ -18,6 +18,7 @@ public class PlayerAction : MonoBehaviour
     public bool CanOpenMenu = true;
     //public bool IsMining = false;
 
+    public CameraController cameraController;
     private GameManager gameManager;
     private GameObject menuePanel;
     private GameObject talkPanel;
@@ -27,7 +28,7 @@ public class PlayerAction : MonoBehaviour
     private Having having;
     //private MenuButtonManager menuButtonManager;
     private CapsuleCollider collider;
-    private Text actionText;
+    public Text actionText;
     private GameObject targetTrap;
     private CancellationToken token;
     private TrapsInfo trapsInfo = new TrapsInfo();
@@ -41,6 +42,7 @@ public class PlayerAction : MonoBehaviour
 
     private void Awake()
     {
+        actionButtonObj = GameObject.Find("ActionButton");
         gameManager = GameObject.FindObjectOfType<GameManager>();
         input = GetComponent<PlayerInput>();
         menuePanel= GameObject.Find("MenuPanel");
@@ -48,9 +50,10 @@ public class PlayerAction : MonoBehaviour
         //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
         //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
         collider = GetComponent<CapsuleCollider>();
-
+        //Debug.Log(actionButtonObj.transform.GetChild(0));
         actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
-
+        cameraController = GameObject.Find("Player Camera").GetComponent<CameraController>();
+        cameraController.enabled = true;
         token = this.GetCancellationTokenOnDestroy();
     }
 
@@ -252,6 +255,9 @@ public class PlayerAction : MonoBehaviour
     {
         IsAction = true;
         CanOpenMenu = false;
+        Debug.Log(actionText);
+        Debug.Log(actionText.text);
+
         switch (actionText.text)
         {
             case "NPCに話す":
