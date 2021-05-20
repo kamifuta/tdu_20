@@ -1,4 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,8 +16,7 @@ public class PlayerAction : MonoBehaviour
     public GameObject actionButtonObj;
     public bool IsAction = false;
     public bool CanOpenMenu = true;
-    public bool IsMining = false;
-    public bool entered = false;
+    //public bool IsMining = false;
 
     private GameManager gameManager;
     private GameObject menuePanel;
@@ -31,9 +32,12 @@ public class PlayerAction : MonoBehaviour
     private CancellationToken token;
     private TrapsInfo trapsInfo = new TrapsInfo();
     private ItemInfo itemInfo = new ItemInfo();
-
+    public PropertiesKeyList propertiesKeyList;
     private const int wallLayerMask = 1 << 8;
-    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
+    private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12|1<<16;
+    public bool digMaster=false;
+    public GameObject talkToPlayerObj;
+    public Player talkToPlayer;
 
     private void Awake()
     {
@@ -104,11 +108,15 @@ public class PlayerAction : MonoBehaviour
             {
                 targetPlayerAction = hit.collider.gameObject.GetComponent<PlayerAction>();
             }
+            if (talkToPlayerObj==null)
+            {
+                talkToPlayerObj = hit.collider.gameObject;
+            }
 
             switch (hit.collider.gameObject.layer)
             {
                 case 9:
-                    SetActionButton("話す");
+                    SetActionButton("NPCに話す");
                     break;
                 case 10:
                     targetTrap = hit.collider.gameObject;
@@ -120,6 +128,9 @@ public class PlayerAction : MonoBehaviour
                 case 12:
                     SetActionButton("入る");
                     break;
+                case 16:
+                    SetActionButton("話す");
+                    break;
             }
         }
         else
@@ -127,8 +138,9 @@ public class PlayerAction : MonoBehaviour
             targetPlayerAction = null;
             targetTrap = null;
             actionButtonObj.SetActive(false);
+            talkToPlayerObj = null;
         }
-
+       
     }
 
     public void Talk()
@@ -157,12 +169,29 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
-        if (targetPlayerAction!=null&&targetPlayerAction.IsMining)
-        {
-            targetPlayerAction.entered = true;
-        }
-        IsMining = true;
+        digMaster = false;
+        talkToPlayer = null;
         gameManager.isDigScene = true;
+    }
+
+    public void TalkToOtherPlayer()
+    {
+        talkToPlayer= talkToPlayerObj.GetComponent<PhotonView>().Owner;
+        digMaster = (bool)talkToPlayer.CustomProperties[propertiesKeyList.digKey];
+
+        //旗を持っていたら
+        /*if ()
+        {
+            //旗取る
+        }*/
+        
+        if(targetPlayerAction != null && digMaster)
+        {
+            gameManager.isDigScene = true;
+        }
+
+
+        
     }
 
     public void MoveRoomScene()
@@ -225,7 +254,7 @@ public class PlayerAction : MonoBehaviour
         CanOpenMenu = false;
         switch (actionText.text)
         {
-            case "話す":
+            case "NPCに話す":
                 Talk();
                 break;
             case "拾う":
@@ -237,6 +266,10 @@ public class PlayerAction : MonoBehaviour
             case "入る":
                 MoveRoomScene();
                 break;
+            case "話す":
+                TalkToOtherPlayer();
+                break;
+            
         }
     }
 

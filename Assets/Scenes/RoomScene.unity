@@ -487,6 +487,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Emperor penguin
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a29ce3b210662b3488992dd0869b19df,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a29ce3b210662b3488992dd0869b19df, type: 3}
 --- !u!1 &98543086 stripped
@@ -522,6 +527,50 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 1.9999998, z: 1.893193}
   m_Center: {x: 3.7945403e-16, y: 0, z: -0.0534034}
+--- !u!1 &162772620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 162772621}
+  - component: {fileID: 162772622}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &162772621
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162772620}
+  m_LocalRotation: {x: 0.08454746, y: 0, z: 0, w: 0.9964195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1603105415}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 9.7, y: 0, z: 0}
+--- !u!65 &162772622
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162772620}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.25, y: 0.1, z: 1.65}
+  m_Center: {x: 0, y: -0.48, z: 0}
 --- !u!1 &177021388 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1c6be892d5592b14ca5b5f42ec61277b,
@@ -1415,6 +1464,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340485878}
   m_CullTransparentMesh: 0
+--- !u!1 &373063967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 373063968}
+  - component: {fileID: 373063969}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &373063968
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373063967}
+  m_LocalRotation: {x: -0.08454746, y: 0, z: 0, w: 0.9964195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1603105415}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -9.7, y: 0, z: 0}
+--- !u!65 &373063969
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373063967}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.25, y: 0.1, z: 1.65}
+  m_Center: {x: 0, y: 0.48, z: 0}
 --- !u!1 &388842262 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 005bca0d4d57d4840b2afe24063ddca0,
@@ -1437,19 +1530,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &388842264
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388842262}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.9, y: 0.1, z: 1.9}
-  m_Center: {x: 0, y: -0.9, z: 0}
 --- !u!65 &388842265
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1461,47 +1541,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.9, y: 1.9, z: 0.1}
-  m_Center: {x: 0, y: 0, z: -0.9}
---- !u!65 &388842266
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388842262}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.9, y: 0.1, z: 1.9}
-  m_Center: {x: 0, y: 0.9, z: 0}
---- !u!65 &388842267
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388842262}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.1, y: 1.9, z: 1.9}
-  m_Center: {x: -0.9, y: 0, z: 0}
---- !u!65 &388842268
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388842262}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.1, y: 1.9, z: 1.9}
-  m_Center: {x: 0.9, y: 0, z: 0}
+  m_Size: {x: 1, y: 1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: -0.94}
 --- !u!1 &526709021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,6 +1978,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Emperor penguin (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a29ce3b210662b3488992dd0869b19df,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a29ce3b210662b3488992dd0869b19df, type: 3}
@@ -4139,7 +4185,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.3
+      value: 2.79
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
@@ -4189,17 +4235,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.7
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.7
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.7
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 005bca0d4d57d4840b2afe24063ddca0,
         type: 3}
@@ -4208,6 +4254,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 005bca0d4d57d4840b2afe24063ddca0, type: 3}
+--- !u!4 &1603105415 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 005bca0d4d57d4840b2afe24063ddca0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1603105414}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1606689516
 GameObject:
   m_ObjectHideFlags: 0
@@ -5106,6 +5158,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1970390135}
   m_CullTransparentMesh: 0
+--- !u!1 &1990599803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1990599804}
+  - component: {fileID: 1990599805}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1990599804
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990599803}
+  m_LocalRotation: {x: 0, y: -0.08454746, z: 0, w: 0.9964195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1603105415}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: -9.7, z: 0}
+--- !u!65 &1990599805
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990599803}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1.25, z: 1.65}
+  m_Center: {x: -0.48, y: 0, z: 0.03}
 --- !u!1 &1992471780
 GameObject:
   m_ObjectHideFlags: 0
@@ -5280,6 +5376,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Emperor penguin (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a29ce3b210662b3488992dd0869b19df,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a29ce3b210662b3488992dd0869b19df, type: 3}
 --- !u!1 &2007384136 stripped
@@ -5336,6 +5437,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58ad9477668e7d4992a364ed956c43d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2056001100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2056001101}
+  - component: {fileID: 2056001102}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2056001101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056001100}
+  m_LocalRotation: {x: 0, y: 0.08454746, z: 0, w: 0.9964195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1603105415}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 9.7, z: 0}
+--- !u!65 &2056001102
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056001100}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 1.25, z: 1.65}
+  m_Center: {x: 0.48, y: 0, z: 0}
 --- !u!1 &2059394948
 GameObject:
   m_ObjectHideFlags: 0
