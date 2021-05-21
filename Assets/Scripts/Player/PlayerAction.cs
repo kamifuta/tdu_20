@@ -176,7 +176,7 @@ public class PlayerAction : MonoBehaviour
 
     public void StartDigScene()
     {
-        digMaster = false;
+        //digMaster = false;
         talkToPlayer = null;
         gameManager.isDigScene = true;
     }
@@ -188,6 +188,7 @@ public class PlayerAction : MonoBehaviour
         if (talkToPlayer.CustomProperties[propertiesManager.digKey]is bool digbool)
         {
             digMaster = digbool;
+            Debug.Log("digMaster" + digMaster);
         }
         
 

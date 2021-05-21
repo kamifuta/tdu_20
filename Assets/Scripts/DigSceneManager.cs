@@ -107,6 +107,7 @@ public class DigSceneManager : MonoBehaviour
                 //int a = PhotonNetwork.LocalPlayer.ActorNumber;
                 groupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
                 photonView.Group = (byte)PhotonNetwork.LocalPlayer.ActorNumber;
+                Debug.Log("playerAction.digMaster: "+playerAction.digMaster);
 
                 if (!playerAction.digMaster)//最初の人
                 {
