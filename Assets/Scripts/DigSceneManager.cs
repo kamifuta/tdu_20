@@ -183,7 +183,14 @@ public class DigSceneManager : MonoBehaviour
                 {
                     a.SetActive(true);
                 }
-                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRPC[k]];
+                if (panelCountRPC[k]<0)
+                {
+                    panelSpriteRenderer[i, j].gameObject.SetActive(false);
+                }
+                else
+                {
+                    panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRPC[k]];
+                }   
                 k++;
             }
         }
@@ -420,7 +427,7 @@ public class DigSceneManager : MonoBehaviour
             if (0 <= index && index < 130)
             {
                 panelCount[x, y]--;
-                translatedPanelCount[Count_h * x + y]--;
+                translatedPanelCount[Count_v * x + y]--;
             }
         }
         else if(key == DigMode.hummer)
@@ -428,7 +435,7 @@ public class DigSceneManager : MonoBehaviour
             panelCount[x, y] -= 2;
             if (0<=index&&index<130)
             {
-                translatedPanelCount[Count_h * x + y] -= 2;
+                translatedPanelCount[Count_v * x + y] -= 2;
             }
             
         }
