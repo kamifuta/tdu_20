@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Photon.Pun;
+using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +23,6 @@ public class DigSceneManager : MonoBehaviour
     public GameManager gameManager;
     public RPCGroupSettings groupSettings;
     public SetCustomPropertiesManager propertiesManager;
-    public PropertiesKeyList propertiesKeyList;
     public Camera mainCamera;
     public Camera playerCamera;
     public GameObject panelParent;
@@ -40,7 +40,7 @@ public class DigSceneManager : MonoBehaviour
     public Text getText;
     public int[,] panelCount = new int[Count_h, Count_v];
 
-    private PlayerAction playerAction;
+    public PlayerAction playerAction;
     private Having having;
     private FossilInfo fossilInfo = new FossilInfo();
     private SpriteRenderer[,] panelSpriteRenderer = new SpriteRenderer[Count_h, Count_v];
@@ -52,7 +52,7 @@ public class DigSceneManager : MonoBehaviour
     private List<GameObject> triggersList = new List<GameObject>();
     private PhotonView photonView;
     private Vector3 generatePos;
-    private Vector3 clickPos;
+    private Vector2 clickPos;
     private int tryCount=0;
     private int hp = 30;
     private int fossilNum;
@@ -70,7 +70,10 @@ public class DigSceneManager : MonoBehaviour
 
     private void Awake()
     {
-        playerAction= GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAction>();
+
+    }
+    private void OnEnable()
+    {
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
         photonView = GetComponent<PhotonView>();
     }
@@ -103,24 +106,23 @@ public class DigSceneManager : MonoBehaviour
                 //int a = PhotonNetwork.LocalPlayer.ActorNumber;
                 groupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
                 photonView.Group = (byte)PhotonNetwork.LocalPlayer.ActorNumber;
+                Debug.Log("playerAction.digMaster: "+playerAction.digMaster);
 
                 if (!playerAction.digMaster)//最初の人
                 {
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
-                    propertiesManager.SetPunCustomProperties(true,propertiesKeyList.digKey);
+                    propertiesManager.PlayerCustomPropertiesSettings(true,propertiesManager.digKey,PhotonNetwork.LocalPlayer);
                 }
                 else//後から入ってきた人
                 {
-                    ResieveFossilPosInfo((byte)playerAction.talkToPlayer.ActorNumber);//
+                    ResieveFossilPosInfo(playerAction.talkToPlayer);//
                 }
 
             })
             .AddTo(this);
     }
-
-
 
     private async UniTask Initialization(CancellationToken token = default)
     {
@@ -163,11 +165,16 @@ public class DigSceneManager : MonoBehaviour
     }
 
 
-    public void ResieveFossilPosInfo(byte groupNum)
+    public void ResieveFossilPosInfo(Player player)
     {
-        int[] panelCountRPC=(int[])PhotonNetwork.CurrentRoom.CustomProperties[propertiesKeyList.panelListKey+groupNum.ToString()];
-        groupSettings.AddGroup(groupNum);
-        photonView.Group = groupNum;
+        int hpRPC = (int)player.CustomProperties[propertiesManager.hpKey];
+        int[] panelCountRPC=(int[])player.CustomProperties[propertiesManager.panelListKey];
+
+        groupSettings.AddGroup((byte)player.ActorNumber);
+        photonView.Group = (byte)player.ActorNumber;
+
+        hp = hpRPC;
+        hpBar.value = hp/30;
         int k = 0;
         for (int i = 0; i < Count_h; i++)
         {
@@ -179,10 +186,18 @@ public class DigSceneManager : MonoBehaviour
                 {
                     a.SetActive(true);
                 }
-                panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRPC[k]];
+                if (panelCountRPC[k]<0)
+                {
+                    panelSpriteRenderer[i, j].sprite = panelSprites[0];
+                }
+                else
+                {
+                    panelSpriteRenderer[i, j].sprite = panelSprites[panelCountRPC[k]];
+                }   
                 k++;
             }
         }
+
         ClickAsync(default).Forget();
     }
 
@@ -220,7 +235,7 @@ public class DigSceneManager : MonoBehaviour
                 
             }
         }
-        propertiesManager.SetPunCustomProperties(translatedPanelCount,propertiesKeyList.panelListKey+ PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount,propertiesManager.panelListKey, PhotonNetwork.LocalPlayer);
     }
 
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)
@@ -325,12 +340,15 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        photonView.RPC(nameof(Dig),RpcTarget.All,((int)DigMode.pickel, clickPos));//123456
+                        photonView.RPC(nameof(Dig),RpcTarget.All,(int)DigMode.pickel, clickPos.x,clickPos.y);//123456
                     }
                     else if (isHummer)
                     {
-                        photonView.RPC(nameof(Dig), RpcTarget.All,((int)DigMode.hummer, clickPos));//123456
+                        photonView.RPC(nameof(Dig), RpcTarget.All,(int)DigMode.hummer, clickPos.x,clickPos.y);//123456
                     }
+                    propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount, propertiesManager.panelListKey, PhotonNetwork.LocalPlayer);
+                    propertiesManager.PlayerCustomPropertiesSettings(hp, propertiesManager.hpKey, PhotonNetwork.LocalPlayer);
+                    
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
                 }
@@ -349,26 +367,26 @@ public class DigSceneManager : MonoBehaviour
 
     }
     [PunRPC]
-    private void Dig(int mode, Vector3 clickPos)
+    private void Dig(int mode, float clickPosx, float clickPosy)
     {
         if (mode == (int)DigMode.pickel)
         {
             DecreaseHP(DigMode.pickel);
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.x + i < 0 || 12 < clickPos.x + i)
+                if (clickPosx + i < 0 || 12 < clickPosx + i)
                 {
                     continue;
                 }
-                ChangeCount(DigMode.pickel, (int)clickPos.x + i, (int)clickPos.y);
+                ChangeCount(DigMode.pickel, (int)clickPosx + i, (int)clickPosy);
             }
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.y + i < 0 || 9 < clickPos.y + i)
+                if (clickPosy + i < 0 || 9 < clickPosy + i)
                 {
                     continue;
                 }
-                ChangeCount(DigMode.pickel, (int)clickPos.x, (int)clickPos.y + i);
+                ChangeCount(DigMode.pickel, (int)clickPosx, (int)clickPosy + i);
             }
         }
         else if (mode == (int)DigMode.hummer)
@@ -376,17 +394,17 @@ public class DigSceneManager : MonoBehaviour
             DecreaseHP(DigMode.hummer);
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.x + i < 0 || 12 < clickPos.x + i)
+                if (clickPosx + i < 0 || 12 < clickPosx + i)
                 {
                     continue;
                 }
                 for (int j = -1; j <= 1; j++)
                 {
-                    if (clickPos.y + j < 0 || 9 < clickPos.y + j)
+                    if (clickPosy + j < 0 || 9 < clickPosy + j)
                     {
                         continue;
                     }
-                    ChangeCount(DigMode.hummer, (int)clickPos.x + i, (int)clickPos.y + j);
+                    ChangeCount(DigMode.hummer, (int)clickPosx + i, (int)clickPosy + j);
                 }
             }
         }
@@ -408,15 +426,23 @@ public class DigSceneManager : MonoBehaviour
 
     private void ChangeCount(DigMode key, int x, int y)
     {
+        int index = Count_v * x + y;
         if (key == DigMode.pickel)
         {
-            panelCount[x, y]--;
-            translatedPanelCount[Count_h * x + y]--;//あってるかな？？
+            if (0 <= index && index < 150)//???
+            {
+                panelCount[x, y]--;
+                translatedPanelCount[Count_v * x + y]--;
+            }
         }
         else if(key == DigMode.hummer)
         {
-            panelCount[x, y] -= 2;
-            translatedPanelCount[Count_h * x + y]-=2;//あってるかな？？
+            if (0<=index&&index<150)//???
+            {
+                panelCount[x, y] -= 2;
+                translatedPanelCount[Count_v * x + y] -= 2;
+            }
+            
         }
 
         if (panelCount[x,y] > 0)
