@@ -369,6 +369,7 @@ MonoBehaviour:
   propertiesManager: {fileID: 0}
   digMaster: 0
   talkToPlayerObj: {fileID: 0}
+  digSceneManagerObj: {fileID: 0}
   digSceneManager: {fileID: 0}
 --- !u!114 &1724194588
 MonoBehaviour:

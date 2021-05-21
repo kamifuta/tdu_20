@@ -124,11 +124,6 @@ public class DigSceneManager : MonoBehaviour
             .AddTo(this);
     }
 
-    public void Update()
-    {
-        Debug.Log("hp"+hp);
-    }
-
     private async UniTask Initialization(CancellationToken token = default)
     {
         mainSceneCanvas.SetActive(false);
@@ -364,7 +359,6 @@ public class DigSceneManager : MonoBehaviour
 
                 if (hp <= 0 || generateFossilList.Count <= 0)
                 {
-                    Debug.Log("");
                     break;
                 }
             }
