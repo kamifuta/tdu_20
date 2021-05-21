@@ -70,7 +70,11 @@ public class DigSceneManager : MonoBehaviour
 
     private void Awake()
     {
-        playerAction= GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAction>();
+
+    }
+    private void OnEnable()
+    {
+        playerAction = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerAction>();
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
         photonView = GetComponent<PhotonView>();
     }
@@ -109,7 +113,7 @@ public class DigSceneManager : MonoBehaviour
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
-                    propertiesManager.SetPunCustomProperties(true,propertiesKeyList.digKey);
+                    propertiesManager.RoomCustomPropertiesSettings(true,propertiesKeyList.digKey);
                 }
                 else//後から入ってきた人
                 {
@@ -220,7 +224,7 @@ public class DigSceneManager : MonoBehaviour
                 
             }
         }
-        propertiesManager.SetPunCustomProperties(translatedPanelCount,propertiesKeyList.panelListKey+ PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        propertiesManager.RoomCustomPropertiesSettings(translatedPanelCount,propertiesKeyList.panelListKey+ PhotonNetwork.LocalPlayer.ActorNumber.ToString());
     }
 
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)
