@@ -169,9 +169,13 @@ public class DigSceneManager : MonoBehaviour
 
     public void ResieveFossilPosInfo(Player player)
     {
+        int hpRPC = (int)player.CustomProperties[propertiesManager.hpKey];
         int[] panelCountRPC=(int[])player.CustomProperties[propertiesManager.panelListKey];
+
         groupSettings.AddGroup((byte)player.ActorNumber);
         photonView.Group = (byte)player.ActorNumber;
+
+        hp = hpRPC;
         int k = 0;
         for (int i = 0; i < Count_h; i++)
         {
@@ -183,9 +187,9 @@ public class DigSceneManager : MonoBehaviour
                 {
                     a.SetActive(true);
                 }
-                if (panelCountRPC[k]<=0)
+                if (panelCountRPC[k]<0)
                 {
-                    panelSpriteRenderer[i, j].gameObject.SetActive(false);
+                    panelSpriteRenderer[i, j].sprite = panelSprites[0];
                 }
                 else
                 {
@@ -194,6 +198,7 @@ public class DigSceneManager : MonoBehaviour
                 k++;
             }
         }
+
         ClickAsync(default).Forget();
     }
 
@@ -343,6 +348,8 @@ public class DigSceneManager : MonoBehaviour
                         photonView.RPC(nameof(Dig), RpcTarget.All,(int)DigMode.hummer, clickPos.x,clickPos.y);//123456
                     }
                     propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount, propertiesManager.panelListKey, PhotonNetwork.LocalPlayer);
+                    propertiesManager.PlayerCustomPropertiesSettings(hp, propertiesManager.hpKey, PhotonNetwork.LocalPlayer);
+                    
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
                 }

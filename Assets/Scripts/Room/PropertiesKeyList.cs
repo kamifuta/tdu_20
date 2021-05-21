@@ -24,4 +24,9 @@ public class PropertiesKeyList : MonoBehaviour
     /// </summary>
     public string flagKey { get => "flag"; }
 
+    /// <summary>
+    /// 化石堀のときのHP
+    /// </summary>
+   public string hpKey { get => "hp"; }
+
 }
