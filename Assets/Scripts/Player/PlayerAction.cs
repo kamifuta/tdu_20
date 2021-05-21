@@ -58,7 +58,7 @@ public class PlayerAction : MonoBehaviour
         cameraController.enabled = true;
         propertiesManager = FindObjectOfType<SetCustomPropertiesManager>();
         digSceneManagerObj = GameObject.Find("DigSceneManager");
-        digSceneManager.GetComponent<DigSceneManager>();
+        digSceneManager= digSceneManagerObj.GetComponent<DigSceneManager>();
         digSceneManager.enabled = true;
         digSceneManager.playerAction = GetComponent<PlayerAction>();
         token = this.GetCancellationTokenOnDestroy();
