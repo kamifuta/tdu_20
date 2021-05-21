@@ -39,7 +39,8 @@ public class PlayerAction : MonoBehaviour
     public bool digMaster=false;
     public GameObject talkToPlayerObj;
     public Player talkToPlayer;
-    public GameObject digSceneManager;
+    public GameObject digSceneManagerObj;
+    public DigSceneManager digSceneManager;
 
     private void Awake()
     {
@@ -56,8 +57,10 @@ public class PlayerAction : MonoBehaviour
         cameraController = GameObject.Find("Player Camera").GetComponent<CameraController>();
         cameraController.enabled = true;
         propertiesManager = FindObjectOfType<SetCustomPropertiesManager>();
-        digSceneManager = GameObject.Find("DigSceneManager");
-        digSceneManager.GetComponent<DigSceneManager>().enabled=true;
+        digSceneManagerObj = GameObject.Find("DigSceneManager");
+        digSceneManager.GetComponent<DigSceneManager>();
+        digSceneManager.enabled = true;
+        digSceneManager.playerAction = GetComponent<PlayerAction>();
         token = this.GetCancellationTokenOnDestroy();
     }
 
