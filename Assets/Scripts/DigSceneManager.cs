@@ -428,10 +428,10 @@ public class DigSceneManager : MonoBehaviour
 
     private void ChangeCount(DigMode key, int x, int y)
     {
-        int index = Count_h * x + y;
+        int index = Count_v * x + y;
         if (key == DigMode.pickel)
         {
-            if (0 <= index && index < 130)
+            if (0 <= index && index < 150)
             {
                 panelCount[x, y]--;
                 translatedPanelCount[Count_v * x + y]--;
@@ -439,9 +439,9 @@ public class DigSceneManager : MonoBehaviour
         }
         else if(key == DigMode.hummer)
         {
-            panelCount[x, y] -= 2;
-            if (0<=index&&index<130)
+            if (0<=index&&index<150)
             {
+                panelCount[x, y] -= 2;
                 translatedPanelCount[Count_v * x + y] -= 2;
             }
             
