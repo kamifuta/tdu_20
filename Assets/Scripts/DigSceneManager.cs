@@ -335,6 +335,7 @@ public class DigSceneManager : MonoBehaviour
                     {
                         photonView.RPC(nameof(Dig), RpcTarget.All,(int)DigMode.hummer, clickPos.x,clickPos.y);//123456
                     }
+                    propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount, propertiesManager.panelListKey, PhotonNetwork.LocalPlayer);
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
                 }
