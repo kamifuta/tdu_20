@@ -6711,7 +6711,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509841605}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74b09c2849a90244097a1f8b9896d74e, type: 3}
   m_Name: 
@@ -8517,7 +8517,7 @@ GameObject:
   - component: {fileID: 674007084}
   - component: {fileID: 674007083}
   m_Layer: 0
-  m_Name: DigSceneManager
+  m_Name: oldDigSceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9722,6 +9722,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6536bfcea0c17d44b449b595f9704ef, type: 3}
+--- !u!1 &793428550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9022243900355445095, guid: 521ef224bbdc79f4faf0d7fbe060eb9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 8211217531906153606}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &793428551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793428550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!4 &801901288 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5548500831465414566, guid: 57814c1a8f222a14ebd0003fb58c4059,
@@ -11211,6 +11233,7 @@ MonoBehaviour:
   propertiesKeyList: {fileID: 0}
   digMaster: 0
   talkToPlayerObj: {fileID: 0}
+  digSceneManager: {fileID: 0}
 --- !u!114 &895728112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20842,7 +20865,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7b23ec51388284a96d21b39c7b8028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  digKey: dig
 --- !u!4 &1643878715
 Transform:
   m_ObjectHideFlags: 0
