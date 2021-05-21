@@ -52,7 +52,7 @@ public class DigSceneManager : MonoBehaviour
     private List<GameObject> triggersList = new List<GameObject>();
     private PhotonView photonView;
     private Vector3 generatePos;
-    private Vector3 clickPos;
+    private Vector2 clickPos;
     private int tryCount=0;
     private int hp = 30;
     private int fossilNum;
@@ -329,11 +329,11 @@ public class DigSceneManager : MonoBehaviour
                     clickPos = hit.collider.transform.localPosition;
                     if (isPickel)
                     {
-                        photonView.RPC(nameof(Dig),RpcTarget.All,((int)DigMode.pickel, clickPos));//123456
+                        photonView.RPC(nameof(Dig),RpcTarget.All,(int)DigMode.pickel, clickPos.x,clickPos.y);//123456
                     }
                     else if (isHummer)
                     {
-                        photonView.RPC(nameof(Dig), RpcTarget.All,((int)DigMode.hummer, clickPos));//123456
+                        photonView.RPC(nameof(Dig), RpcTarget.All,(int)DigMode.hummer, clickPos.x,clickPos.y);//123456
                     }
                     await UniTask.DelayFrame(1);
                     await CheckGetFossil(token);
@@ -345,6 +345,7 @@ public class DigSceneManager : MonoBehaviour
 
                 if (hp <= 0 || generateFossilList.Count <= 0)
                 {
+                    Debug.Log("");
                     break;
                 }
             }
@@ -353,26 +354,26 @@ public class DigSceneManager : MonoBehaviour
 
     }
     [PunRPC]
-    private void Dig(int mode, Vector3 clickPos)
+    private void Dig(int mode, float clickPosx, float clickPosy)
     {
         if (mode == (int)DigMode.pickel)
         {
             DecreaseHP(DigMode.pickel);
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.x + i < 0 || 12 < clickPos.x + i)
+                if (clickPosx + i < 0 || 12 < clickPosx + i)
                 {
                     continue;
                 }
-                ChangeCount(DigMode.pickel, (int)clickPos.x + i, (int)clickPos.y);
+                ChangeCount(DigMode.pickel, (int)clickPosx + i, (int)clickPosy);
             }
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.y + i < 0 || 9 < clickPos.y + i)
+                if (clickPosy + i < 0 || 9 < clickPosy + i)
                 {
                     continue;
                 }
-                ChangeCount(DigMode.pickel, (int)clickPos.x, (int)clickPos.y + i);
+                ChangeCount(DigMode.pickel, (int)clickPosx, (int)clickPosy + i);
             }
         }
         else if (mode == (int)DigMode.hummer)
@@ -380,17 +381,17 @@ public class DigSceneManager : MonoBehaviour
             DecreaseHP(DigMode.hummer);
             for (int i = -1; i <= 1; i++)
             {
-                if (clickPos.x + i < 0 || 12 < clickPos.x + i)
+                if (clickPosx + i < 0 || 12 < clickPosx + i)
                 {
                     continue;
                 }
                 for (int j = -1; j <= 1; j++)
                 {
-                    if (clickPos.y + j < 0 || 9 < clickPos.y + j)
+                    if (clickPosy + j < 0 || 9 < clickPosy + j)
                     {
                         continue;
                     }
-                    ChangeCount(DigMode.hummer, (int)clickPos.x + i, (int)clickPos.y + j);
+                    ChangeCount(DigMode.hummer, (int)clickPosx + i, (int)clickPosy + j);
                 }
             }
         }
