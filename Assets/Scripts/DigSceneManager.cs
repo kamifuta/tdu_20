@@ -183,7 +183,7 @@ public class DigSceneManager : MonoBehaviour
                 {
                     a.SetActive(true);
                 }
-                if (panelCountRPC[k]<0)
+                if (panelCountRPC[k]<=0)
                 {
                     panelSpriteRenderer[i, j].gameObject.SetActive(false);
                 }
