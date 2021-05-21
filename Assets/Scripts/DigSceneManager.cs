@@ -124,7 +124,10 @@ public class DigSceneManager : MonoBehaviour
             .AddTo(this);
     }
 
-
+    public void Update()
+    {
+        Debug.Log("hp"+hp);
+    }
 
     private async UniTask Initialization(CancellationToken token = default)
     {
@@ -176,6 +179,7 @@ public class DigSceneManager : MonoBehaviour
         photonView.Group = (byte)player.ActorNumber;
 
         hp = hpRPC;
+        hpBar.value = hp/30;
         int k = 0;
         for (int i = 0; i < Count_h; i++)
         {
@@ -431,7 +435,7 @@ public class DigSceneManager : MonoBehaviour
         int index = Count_v * x + y;
         if (key == DigMode.pickel)
         {
-            if (0 <= index && index < 150)
+            if (0 <= index && index < 150)//???
             {
                 panelCount[x, y]--;
                 translatedPanelCount[Count_v * x + y]--;
@@ -439,7 +443,7 @@ public class DigSceneManager : MonoBehaviour
         }
         else if(key == DigMode.hummer)
         {
-            if (0<=index&&index<150)
+            if (0<=index&&index<150)//???
             {
                 panelCount[x, y] -= 2;
                 translatedPanelCount[Count_v * x + y] -= 2;
