@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class SetCustomPropertiesManager : MonoBehaviour
+public class SetCustomPropertiesManager : PropertiesKeyList
 {
     public void RoomCustomPropertiesSettings<T>(T properties,string name)
     {

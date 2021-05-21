@@ -23,7 +23,6 @@ public class DigSceneManager : MonoBehaviour
     public GameManager gameManager;
     public RPCGroupSettings groupSettings;
     public SetCustomPropertiesManager propertiesManager;
-    public PropertiesKeyList propertiesKeyList;
     public Camera mainCamera;
     public Camera playerCamera;
     public GameObject panelParent;
@@ -114,7 +113,7 @@ public class DigSceneManager : MonoBehaviour
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
-                    propertiesManager.PlayerCustomPropertiesSettings(true,propertiesKeyList.digKey,PhotonNetwork.LocalPlayer);
+                    propertiesManager.PlayerCustomPropertiesSettings(true,propertiesManager.digKey,PhotonNetwork.LocalPlayer);
                 }
                 else//後から入ってきた人
                 {
@@ -170,7 +169,7 @@ public class DigSceneManager : MonoBehaviour
 
     public void ResieveFossilPosInfo(Player player)
     {
-        int[] panelCountRPC=(int[])player.CustomProperties[propertiesKeyList.panelListKey];
+        int[] panelCountRPC=(int[])player.CustomProperties[propertiesManager.panelListKey];
         groupSettings.AddGroup((byte)player.ActorNumber);
         photonView.Group = (byte)player.ActorNumber;
         int k = 0;
@@ -225,7 +224,7 @@ public class DigSceneManager : MonoBehaviour
                 
             }
         }
-        propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount,propertiesKeyList.panelListKey, PhotonNetwork.LocalPlayer);
+        propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount,propertiesManager.panelListKey, PhotonNetwork.LocalPlayer);
     }
 
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)

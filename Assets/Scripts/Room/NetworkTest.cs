@@ -372,7 +372,13 @@ public class NetworkTest : MonoBehaviourPunCallbacks
         Debug.Log("OnRoomPropertiesUpdate");
     }
 
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
 
+        Debug.Log("property: "+changedProps);
+        Debug.Log("targetPlayer: " + targetPlayer);
+    }
 
     // フレンドリストに更新があった時
     public override void OnFriendListUpdate(List<FriendInfo> friendList)
