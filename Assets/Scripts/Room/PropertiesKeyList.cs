@@ -5,7 +5,7 @@ using UnityEngine;
 public class PropertiesKeyList : MonoBehaviour
 {
     /// <summary>
-    /// 自分のActorNumberを追加して使う()
+    /// Panel情報(int[])
     /// </summary>
     public string panelListKey { get => "panel"; }
 

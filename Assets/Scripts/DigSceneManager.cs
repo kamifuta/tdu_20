@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Photon.Pun;
+using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
@@ -113,11 +114,11 @@ public class DigSceneManager : MonoBehaviour
                     first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
-                    propertiesManager.RoomCustomPropertiesSettings(true,propertiesKeyList.digKey);
+                    propertiesManager.PlayerCustomPropertiesSettings(true,propertiesKeyList.digKey,PhotonNetwork.LocalPlayer);
                 }
                 else//後から入ってきた人
                 {
-                    ResieveFossilPosInfo((byte)playerAction.talkToPlayer.ActorNumber);//
+                    ResieveFossilPosInfo(playerAction.talkToPlayer);//
                 }
 
             })
@@ -167,11 +168,11 @@ public class DigSceneManager : MonoBehaviour
     }
 
 
-    public void ResieveFossilPosInfo(byte groupNum)
+    public void ResieveFossilPosInfo(Player player)
     {
-        int[] panelCountRPC=(int[])PhotonNetwork.CurrentRoom.CustomProperties[propertiesKeyList.panelListKey+groupNum.ToString()];
-        groupSettings.AddGroup(groupNum);
-        photonView.Group = groupNum;
+        int[] panelCountRPC=(int[])player.CustomProperties[propertiesKeyList.panelListKey];
+        groupSettings.AddGroup((byte)player.ActorNumber);
+        photonView.Group = (byte)player.ActorNumber;
         int k = 0;
         for (int i = 0; i < Count_h; i++)
         {
@@ -224,7 +225,7 @@ public class DigSceneManager : MonoBehaviour
                 
             }
         }
-        propertiesManager.RoomCustomPropertiesSettings(translatedPanelCount,propertiesKeyList.panelListKey+ PhotonNetwork.LocalPlayer.ActorNumber.ToString());
+        propertiesManager.PlayerCustomPropertiesSettings(translatedPanelCount,propertiesKeyList.panelListKey, PhotonNetwork.LocalPlayer);
     }
 
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)

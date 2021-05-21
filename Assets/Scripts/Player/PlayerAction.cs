@@ -183,7 +183,12 @@ public class PlayerAction : MonoBehaviour
     public void TalkToOtherPlayer()
     {
         talkToPlayer= talkToPlayerObj.GetComponent<PhotonView>().Owner;
-        digMaster = (bool)talkToPlayer.CustomProperties[propertiesKeyList.digKey];
+        Debug.Log("talkToPlayer: "+ talkToPlayer);
+        if (talkToPlayer.CustomProperties[propertiesKeyList.digKey] is bool)
+        {
+            digMaster = (bool)talkToPlayer.CustomProperties[propertiesKeyList.digKey];
+        }
+        
 
         //旗を持っていたら
         /*if ()
