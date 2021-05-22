@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PropertiesKeyList : MonoBehaviour
+/// <summary>
+/// カスタムプロパティで使うKey(string)一覧
+/// </summary>
+public class PropertiesKeyList 
 {
     /// <summary>
     /// Panel情報(int[])

@@ -366,7 +366,7 @@ MonoBehaviour:
   CanOpenMenu: 1
   cameraController: {fileID: 0}
   actionText: {fileID: 0}
-  propertiesManager: {fileID: 0}
+  punSettings: {fileID: 0}
   digMaster: 0
   talkToPlayerObj: {fileID: 0}
   digSceneManagerObj: {fileID: 0}

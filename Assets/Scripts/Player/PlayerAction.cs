@@ -33,7 +33,7 @@ public class PlayerAction : MonoBehaviour
     private CancellationToken token;
     private TrapsInfo trapsInfo = new TrapsInfo();
     private ItemInfo itemInfo = new ItemInfo();
-    public SetCustomPropertiesManager propertiesManager;
+    public PunSettings punSettings;
     private const int wallLayerMask = 1 << 8;
     private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12|1<<16;
     public bool digMaster=false;
@@ -56,7 +56,7 @@ public class PlayerAction : MonoBehaviour
         actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
         cameraController = GameObject.Find("Player Camera").GetComponent<CameraController>();
         cameraController.enabled = true;
-        propertiesManager = FindObjectOfType<SetCustomPropertiesManager>();
+        //punSettings = FindObjectOfType<PunSettings>();
         digSceneManagerObj = GameObject.Find("DigSceneManager");
         digSceneManager= digSceneManagerObj.GetComponent<DigSceneManager>();
         digSceneManager.enabled = true;
@@ -188,7 +188,7 @@ public class PlayerAction : MonoBehaviour
     {
         talkToPlayer= talkToPlayerObj.GetComponent<PhotonView>().Owner;
         Debug.Log("talkToPlayer: "+ talkToPlayer);
-        if (talkToPlayer.CustomProperties[propertiesManager.digKey]is bool digbool)
+        if (talkToPlayer.CustomProperties[punSettings.propertiesKeyList.digKey]is bool digbool)
         {
             digMaster = digbool;
             Debug.Log("digMaster" + digMaster);
