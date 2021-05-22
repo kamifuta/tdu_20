@@ -4,8 +4,14 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class SetCustomPropertiesManager : PropertiesKeyList
+public class SetCustomPropertiesManager 
 {
+    /// <summary>
+    /// ルームカスタムプロパティ
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="properties"></param>
+    /// <param name="name"></param>
     public void RoomCustomPropertiesSettings<T>(T properties,string name)
     {
         ExitGames.Client.Photon.Hashtable customRoomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
@@ -14,6 +20,13 @@ public class SetCustomPropertiesManager : PropertiesKeyList
         Debug.Log("SetRoomCustomProperties");
     }
 
+    /// <summary>
+    /// プレイヤーカスタムプロパティ
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="properties"></param>
+    /// <param name="name"></param>
+    /// <param name="player"></param>
     public void PlayerCustomPropertiesSettings<T>(T properties, string name,Player player)
     {
         ExitGames.Client.Photon.Hashtable customPlayerProperties = player.CustomProperties;

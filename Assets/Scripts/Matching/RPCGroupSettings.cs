@@ -4,7 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RPCGroupSettings:MonoBehaviour
+/// <summary>
+/// 化石堀りのときのグループ設定
+/// </summary>
+public class RPCGroupSettings
 {
     public void AddGroup(int groupNum)
     {
