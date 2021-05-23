@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,10 +16,10 @@ public class PropertiesKeyList
     /// <summary>
     /// 化石掘りの最中かどうか(bool)
     /// </summary>
-    public string digKey { get => "dig"; }//初回追加
+    public string digKey { get => "dig"; }
 
     /// <summary>
-    /// 今旗をもっているかどうか
+    /// 今もっている旗の数(int)
     /// </summary>
     public string nowFlagKey { get => "nflag"; }
 
@@ -32,4 +33,20 @@ public class PropertiesKeyList
     /// </summary>
    public string hpKey { get => "hp"; }
 
+    /// <summary>
+    /// 化石の位置情報
+    /// </summary>
+    public string fossilKey { get => "fossil"; }
+    public PropertiesKeyList()
+    {
+        ExitGames.Client.Photon.Hashtable customPlayerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        customPlayerProperties[panelListKey] = new int[1];
+        customPlayerProperties[digKey] = false;
+        customPlayerProperties[nowFlagKey] = 0;
+        customPlayerProperties[flagKey] = 0;
+        customPlayerProperties[hpKey] = 30;
+        customPlayerProperties[fossilKey] = new int[1];
+        PhotonNetwork.LocalPlayer.SetCustomProperties(customPlayerProperties);
+        Debug.Log("StartSetPlayerCustomProperties");
+    }
 }

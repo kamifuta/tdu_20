@@ -57,7 +57,6 @@ public class DigSceneManager : MonoBehaviour
     private int fossilNum;
     private bool isPickel = false;
     private bool isHummer = true;
-    private bool first = false;
     //private bool first = true;
     int[] translatedPanelCount = new int[Count_h* Count_v];
 
@@ -67,13 +66,11 @@ public class DigSceneManager : MonoBehaviour
         hummer,
     }
 
-    private void Awake()
-    {
 
-    }
     private void OnEnable()
     {
         having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        punSettings = FindObjectOfType<PunSettings>();
         photonView = GetComponent<PhotonView>();
     }
 
@@ -102,23 +99,19 @@ public class DigSceneManager : MonoBehaviour
             {
                 var token = this.GetCancellationTokenOnDestroy();
                 await Initialization(token);
-                //int a = PhotonNetwork.LocalPlayer.ActorNumber;
-                Debug.Log("punSettings" + punSettings);
-                Debug.Log("rpcGroupSettings" + punSettings.rpcGroupSettings);
+                Debug.Log("");
                 punSettings.rpcGroupSettings.AddGroup(PhotonNetwork.LocalPlayer.ActorNumber);
-                photonView.Group = (byte)PhotonNetwork.LocalPlayer.ActorNumber;
-                Debug.Log("playerAction.digMaster: "+playerAction.digMaster);
 
-                if (!playerAction.digMaster)//最初の人
+                if (!playerAction.talkedPlayerdigging)//最初の人
                 {
-                    first=true;
+                    //first=true;
                     await Fossil(token);
                     ClickAsync(token).Forget();
                     punSettings.propertiesManager.PlayerCustomPropertiesSettings(true, punSettings.propertiesKeyList.digKey,PhotonNetwork.LocalPlayer);
                 }
                 else//後から入ってきた人
                 {
-                    ResieveFossilPosInfo(playerAction.talkToPlayer);//
+                    ResieveFossilPosInfo(playerAction.talkedPlayer);
                 }
 
             })
@@ -129,7 +122,7 @@ public class DigSceneManager : MonoBehaviour
     {
         mainSceneCanvas.SetActive(false);
         digSceneCanvas.SetActive(true);
-        first = false;
+        //first = false;
         hp = 30;
         hpBar.value = 1;
         getTextObj.SetActive(false);
@@ -157,6 +150,7 @@ public class DigSceneManager : MonoBehaviour
     /// <returns></returns>
     private async UniTask Fossil(CancellationToken token = default)
     {
+        photonView.Group = (byte)PhotonNetwork.LocalPlayer.ActorNumber;
         await GeneratePanels(token);
         while (generateFossilList.Count < 2)
         {
@@ -165,15 +159,19 @@ public class DigSceneManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// 後から掘り始めた人の処理
+    /// </summary>
+    /// <param name="player"></param>
     public void ResieveFossilPosInfo(Player player)
     {
+        photonView.Group = (byte)player.ActorNumber;
+        punSettings.rpcGroupSettings.AddGroup((byte)player.ActorNumber);
+        PhotonNetwork.IsMessageQueueRunning = false;
+
         int hpRPC = (int)player.CustomProperties[punSettings.propertiesKeyList.hpKey];
         int[] panelCountRPC=(int[])player.CustomProperties[punSettings.propertiesKeyList.panelListKey];
-
-        punSettings.rpcGroupSettings.AddGroup((byte)player.ActorNumber);
-        photonView.Group = (byte)player.ActorNumber;
-
+        float[] fossilInfoRPC=(float[])player.CustomProperties[punSettings.propertiesKeyList.fossilKey]; 
         hp = hpRPC;
         hpBar.value = hp/30;
         int k = 0;
@@ -182,11 +180,6 @@ public class DigSceneManager : MonoBehaviour
             for (int j = 0; j < Count_v; j++)
             {
                 panelCount[i, j] = panelCountRPC[k];
-
-                foreach (var a in panelsList)
-                {
-                    a.SetActive(true);
-                }
                 if (panelCountRPC[k]<0)
                 {
                     panelSpriteRenderer[i, j].sprite = panelSprites[0];
@@ -199,7 +192,17 @@ public class DigSceneManager : MonoBehaviour
             }
         }
 
-        ClickAsync(default).Forget();
+        for (int i=0; i<fossilInfoRPC.Length;)
+        {
+            fossilNum = (int)fossilInfoRPC[i];
+            generatePos= new Vector3( fossilInfoRPC[i+1], fossilInfoRPC[i + 2], 1);
+            generateFossilNumList.Add(fossilNum);
+            GenerateFossil();
+            i += 3;
+        }
+           
+
+        PhotonNetwork.IsMessageQueueRunning = true;
     }
 
 
@@ -242,7 +245,9 @@ public class DigSceneManager : MonoBehaviour
     public async UniTask GetFossilGeneratePos(CancellationToken token = default)
     {
         int fossilCount = Random.Range(3, maxFossilCount);
-        for(int i = 0; i < fossilCount; i++)
+        float[] fossilproperties=new float[fossilCount * 3];
+        int j = 0;
+        for (int i = 0; i < fossilCount; i++)
         {
             tryCount = 0;
             fossilNum = Random.Range(0, fossilInfo.FossilInfoDic.Count);
@@ -286,10 +291,15 @@ public class DigSceneManager : MonoBehaviour
                     }
                     break;
             }
+            fossilproperties[j] = (float)fossilNum;
+            fossilproperties[j + 1] = generatePos.x;
+            fossilproperties[j + 2] = generatePos.y;
+            j += 3;
 
             if (tryCount > maxTryCount) continue;
             GenerateFossil();
         }
+        punSettings.propertiesManager.PlayerCustomPropertiesSettings(fossilproperties, punSettings.propertiesKeyList.fossilKey, PhotonNetwork.LocalPlayer);
     }
     
     private void GenerateFossil()
@@ -495,10 +505,11 @@ public class DigSceneManager : MonoBehaviour
 
     public async UniTask BackMainScene(CancellationToken token = default)
     {
-        if (first)
-        {
-            punSettings.rpcGroupSettings.RemoveGroup(PhotonNetwork.LocalPlayer.ActorNumber);
-        }
+        int nowPvGroup = photonView.Group;
+        punSettings.rpcGroupSettings.RemoveGroup(nowPvGroup);
+        //グループ初期化はとりあえずなしで
+        punSettings.propertiesManager.PlayerCustomPropertiesSettings(false, punSettings.propertiesKeyList.digKey, playerAction.talkedPlayer);
+
         getTextObj.SetActive(true);
         for(int i = 0; i < getFossilNumList.Count; i++)
         {
@@ -511,7 +522,7 @@ public class DigSceneManager : MonoBehaviour
         {
             await UniTask.WaitUntil(() => Input.GetMouseButtonDown(0), cancellationToken: token);
         }
-        
+
         gameManager.isDigScene = false;
         mainSceneCanvas.SetActive(true);
         digSceneCanvas.SetActive(false);

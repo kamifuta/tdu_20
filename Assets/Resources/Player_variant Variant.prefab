@@ -371,6 +371,8 @@ MonoBehaviour:
   talkToPlayerObj: {fileID: 0}
   digSceneManagerObj: {fileID: 0}
   digSceneManager: {fileID: 0}
+  flagManager: {fileID: 0}
+  photonView: {fileID: 0}
 --- !u!114 &1724194588
 MonoBehaviour:
   m_ObjectHideFlags: 0

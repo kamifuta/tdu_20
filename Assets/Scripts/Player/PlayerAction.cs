@@ -36,32 +36,42 @@ public class PlayerAction : MonoBehaviour
     public PunSettings punSettings;
     private const int wallLayerMask = 1 << 8;
     private const int actionLayerMask = 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12|1<<16;
-    public bool digMaster=false;
+    public bool talkedPlayerdigging=false;
     public GameObject talkToPlayerObj;
-    public Player talkToPlayer;
+    public Player talkedPlayer;
     public GameObject digSceneManagerObj;
     public DigSceneManager digSceneManager;
+    public FlagManager flagManager;
+    public PhotonView photonView;
 
     private void Awake()
     {
-        actionButtonObj = GameObject.Find("ActionButton");
-        gameManager = GameObject.FindObjectOfType<GameManager>();
-        input = GetComponent<PlayerInput>();
-        menuePanel= GameObject.Find("MenuPanel");
-        talkPanel = GameObject.Find("TalkPanel");
-        //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
-        //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
-        collider = GetComponent<CapsuleCollider>();
-        //Debug.Log(actionButtonObj.transform.GetChild(0));
-        actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
-        cameraController = GameObject.Find("Player Camera").GetComponent<CameraController>();
-        cameraController.enabled = true;
-        //punSettings = FindObjectOfType<PunSettings>();
-        digSceneManagerObj = GameObject.Find("DigSceneManager");
-        digSceneManager= digSceneManagerObj.GetComponent<DigSceneManager>();
-        digSceneManager.enabled = true;
-        digSceneManager.playerAction = GetComponent<PlayerAction>();
-        token = this.GetCancellationTokenOnDestroy();
+        photonView = GetComponent<PhotonView>();
+        if (photonView.IsMine)
+        {
+            actionButtonObj = GameObject.Find("ActionButton");
+            gameManager = GameObject.FindObjectOfType<GameManager>();
+            flagManager = FindObjectOfType<FlagManager>();
+            input = GetComponent<PlayerInput>();
+            menuePanel = GameObject.Find("MenuPanel");
+            talkPanel = GameObject.Find("TalkPanel");
+            //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
+            //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
+            collider = GetComponent<CapsuleCollider>();
+            //Debug.Log(actionButtonObj.transform.GetChild(0));
+            actionText = actionButtonObj.transform.GetChild(0).GetComponent<Text>();
+            cameraController = GameObject.Find("Player Camera").GetComponent<CameraController>();
+            cameraController.enabled = true;
+            //punSettings = FindObjectOfType<PunSettings>();
+            digSceneManagerObj = GameObject.Find("DigSceneManager");
+            punSettings = FindObjectOfType<PunSettings>();
+            punSettings.enabled = true;
+            digSceneManager = digSceneManagerObj.GetComponent<DigSceneManager>();
+            digSceneManager.enabled = true;
+            digSceneManager.playerAction = GetComponent<PlayerAction>();
+            token = this.GetCancellationTokenOnDestroy();
+        }
+
     }
 
     // Start is called before the first frame update
@@ -180,28 +190,29 @@ public class PlayerAction : MonoBehaviour
     public void StartDigScene()
     {
         //digMaster = false;
-        talkToPlayer = null;
+        talkedPlayer = null;
         gameManager.isDigScene = true;
     }
 
     public void TalkToOtherPlayer()
     {
-        talkToPlayer= talkToPlayerObj.GetComponent<PhotonView>().Owner;
-        Debug.Log("talkToPlayer: "+ talkToPlayer);
-        if (talkToPlayer.CustomProperties[punSettings.propertiesKeyList.digKey]is bool digbool)
+        talkedPlayer= talkToPlayerObj.GetComponent<PhotonView>().Owner;
+        Debug.Log("talkToPlayer: "+ talkedPlayer);
+        if (talkedPlayer.CustomProperties[punSettings.propertiesKeyList.digKey]is bool digbool)
         {
-            digMaster = digbool;
-            Debug.Log("digMaster" + digMaster);
+            talkedPlayerdigging = digbool;
+            Debug.Log("digMaster" + talkedPlayerdigging);
         }
-        
 
+        int talktoPlayerNowFlag = (int)talkedPlayer.CustomProperties[punSettings.propertiesKeyList.nowFlagKey];
         //旗を持っていたら
-        /*if ()
+        if (talktoPlayerNowFlag > 0)
         {
-            //旗取る
-        }*/
-        
-        if(targetPlayerAction != null && digMaster)
+            //旗横取り
+            flagManager.SteelFlag(talkedPlayer,talktoPlayerNowFlag);
+        }
+
+        else if (targetPlayerAction != null && talkedPlayerdigging)
         {
             gameManager.isDigScene = true;
         }
