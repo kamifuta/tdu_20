@@ -6880,7 +6880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1120972624}
-  punSettings: {fileID: 1813374786}
+  punSettings: {fileID: 0}
   mainCamera: {fileID: 1574014061}
   playerCamera: {fileID: 963194227}
   panelParent: {fileID: 656117684}
@@ -11418,6 +11418,8 @@ MonoBehaviour:
   talkToPlayerObj: {fileID: 0}
   digSceneManagerObj: {fileID: 0}
   digSceneManager: {fileID: 0}
+  flagManager: {fileID: 0}
+  photonView: {fileID: 0}
 --- !u!114 &895728112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22748,7 +22750,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1813374785}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d8269fe3008869498f8a4b970827e46, type: 3}
   m_Name: 

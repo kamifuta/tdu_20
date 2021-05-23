@@ -7,7 +7,15 @@ using UnityEngine;
 /// </summary>
 public class PunSettings : MonoBehaviour
 {
-    public SetCustomPropertiesManager propertiesManager = new SetCustomPropertiesManager();
-    public PropertiesKeyList propertiesKeyList = new PropertiesKeyList();
-    public RPCGroupSettings rpcGroupSettings = new RPCGroupSettings();
+    //public GameObject a;
+    public SetCustomPropertiesManager propertiesManager;
+    public PropertiesKeyList propertiesKeyList;
+    public RPCGroupSettings rpcGroupSettings;
+    public void Start()
+    {
+        propertiesManager = new SetCustomPropertiesManager();
+        propertiesKeyList = new PropertiesKeyList();
+        rpcGroupSettings = new RPCGroupSettings();
+        Debug.Log("propertiesManager:"+propertiesManager);
+    }
 }

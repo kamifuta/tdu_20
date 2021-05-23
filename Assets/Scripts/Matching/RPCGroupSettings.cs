@@ -16,6 +16,7 @@ public class RPCGroupSettings
 
     public void RemoveGroup(int removeNum)
     {
+        Debug.Log("removeNum" + removeNum);
         PhotonNetwork.SetInterestGroups(new byte[] { (byte)removeNum }, null);
     }
 
