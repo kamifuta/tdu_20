@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class IceTrap : Trap
 {
-    public GameObject canvas;
+
     public GameObject IceImage;
     private int IceHp;
     public GameObject obj;
+    public Camera mainCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +21,7 @@ public class IceTrap : Trap
     void Update()
     {
 
-        obj = GameObject.Find("IceImage(Clone)");
+        obj = GameObject.Find("Bubble(Clone)");
         if (Input.GetMouseButtonDown(0)) 
         {
             IceHp -= 1;
@@ -33,8 +34,10 @@ public class IceTrap : Trap
     }
     protected override void OnAwake()
     {
-        GameObject prefab = (GameObject)Instantiate(IceImage,new Vector3(0.0f,0.0f,0.0f),Quaternion.identity);
-        prefab.transform.SetParent(canvas.transform, false);
+        Vector3 p = new Vector3(0.5f, 0.5f, 5.0f);
+        p = mainCamera.ViewportToWorldPoint(p);
+        GameObject prefab = Instantiate(IceImage,p,Quaternion.identity);
+        
         
         //キャラを動かせなくする
     }
