@@ -45,7 +45,7 @@ public class PropertiesKeyList
         customPlayerProperties[nowFlagKey] = 0;
         customPlayerProperties[flagKey] = 0;
         customPlayerProperties[hpKey] = 30;
-        customPlayerProperties[fossilKey] = new int[1];
+        customPlayerProperties[fossilKey] = new float[1];
         PhotonNetwork.LocalPlayer.SetCustomProperties(customPlayerProperties);
         Debug.Log("StartSetPlayerCustomProperties");
     }

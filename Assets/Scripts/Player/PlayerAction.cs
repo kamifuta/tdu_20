@@ -31,6 +31,8 @@ public class PlayerAction : MonoBehaviour
     public Text actionText;
     private GameObject targetTrap;
     private CancellationToken token;
+    //private MenuButtonManager buttonManager;
+    //private TalkPanel _talkPanel;
     private TrapsInfo trapsInfo = new TrapsInfo();
     private ItemInfo itemInfo = new ItemInfo();
     public PunSettings punSettings;
@@ -44,6 +46,7 @@ public class PlayerAction : MonoBehaviour
     public FlagManager flagManager;
     public PhotonView photonView;
 
+    
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -55,6 +58,7 @@ public class PlayerAction : MonoBehaviour
             input = GetComponent<PlayerInput>();
             menuePanel = GameObject.Find("MenuPanel");
             talkPanel = GameObject.Find("TalkPanel");
+            talkPanel.SetActive(false);
             //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
             //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
             collider = GetComponent<CapsuleCollider>();
@@ -69,6 +73,9 @@ public class PlayerAction : MonoBehaviour
             digSceneManager = digSceneManagerObj.GetComponent<DigSceneManager>();
             digSceneManager.enabled = true;
             digSceneManager.playerAction = GetComponent<PlayerAction>();
+            //buttonManager = FindObjectOfType<MenuButtonManager>();
+            //buttonManager.enabled = true;
+
             token = this.GetCancellationTokenOnDestroy();
         }
 
@@ -92,75 +99,77 @@ public class PlayerAction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (photonView.IsMine)
         {
-            having.GetItem(ItemInfo.Item.RoomMaker);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            having.GetFossil(FossilInfo.FossilSize.small, ItemInfo.pointType.red);
-        }
-
-        if (input.PushedSerch)
-        {
-            having.GetTrap(TrapsInfo.Trap.LeftMoveTrap);
-        }
-
-        if (input.PushedMenue)
-        {
-            OpenMenu();
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            MakeRoomGate();
-        }
-
-
-        Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
-        Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
-        RaycastHit hit;
-
-        if (Physics.CapsuleCast(p1, p2, collider.radius/2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
-        {
-            if (targetPlayerAction == null)
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                targetPlayerAction = hit.collider.gameObject.GetComponent<PlayerAction>();
-            }
-            if (talkToPlayerObj==null)
-            {
-                talkToPlayerObj = hit.collider.gameObject;
+                having.GetItem(ItemInfo.Item.RoomMaker);
             }
 
-            switch (hit.collider.gameObject.layer)
+            if (Input.GetKeyDown(KeyCode.D))
             {
-                case 9:
-                    SetActionButton("NPCに話す");
-                    break;
-                case 10:
-                    targetTrap = hit.collider.gameObject;
-                    SetActionButton("拾う");
-                    break;
-                case 11:
-                    SetActionButton("掘る");
-                    break;
-                case 12:
-                    SetActionButton("入る");
-                    break;
-                case 16:
-                    SetActionButton("話す");
-                    break;
+                having.GetFossil(FossilInfo.FossilSize.small, ItemInfo.pointType.red);
+            }
+
+            if (input.PushedSerch)
+            {
+                having.GetTrap(TrapsInfo.Trap.LeftMoveTrap);
+            }
+
+            if (input.PushedMenue)
+            {
+                OpenMenu();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                MakeRoomGate();
+            }
+
+
+            Vector3 p1 = transform.position + collider.center - Vector3.up * ((collider.height / 2.0f) - collider.radius);
+            Vector3 p2 = p1 + Vector3.up * (collider.height - collider.radius * 2);
+            RaycastHit hit;
+
+            if (Physics.CapsuleCast(p1, p2, collider.radius / 2.0f, transform.forward, out hit, 1.0f, actionLayerMask) && !IsAction)
+            {
+                if (targetPlayerAction == null)
+                {
+                    targetPlayerAction = hit.collider.gameObject.GetComponent<PlayerAction>();
+                }
+                if (talkToPlayerObj == null)
+                {
+                    talkToPlayerObj = hit.collider.gameObject;
+                }
+
+                switch (hit.collider.gameObject.layer)
+                {
+                    case 9:
+                        SetActionButton("NPCに話す");
+                        break;
+                    case 10:
+                        targetTrap = hit.collider.gameObject;
+                        SetActionButton("拾う");
+                        break;
+                    case 11:
+                        SetActionButton("掘る");
+                        break;
+                    case 12:
+                        SetActionButton("入る");
+                        break;
+                    case 16:
+                        SetActionButton("話す");
+                        break;
+                }
+            }
+            else
+            {
+                targetPlayerAction = null;
+                targetTrap = null;
+                actionButtonObj.SetActive(false);
+                talkToPlayerObj = null;
             }
         }
-        else
-        {
-            targetPlayerAction = null;
-            targetTrap = null;
-            actionButtonObj.SetActive(false);
-            talkToPlayerObj = null;
-        }
-       
     }
 
     public void Talk()

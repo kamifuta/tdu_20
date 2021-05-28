@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Photon.Pun;
 public class ShowExchangeTrap : MonoBehaviour
 {
     public GameObject nodePrefab;
@@ -13,10 +13,18 @@ public class ShowExchangeTrap : MonoBehaviour
     private List<Text> nodePointTextList = new List<Text>();
     private Having having;
     private int listNum = 0;
+    private GameObject[] havings;
 
     private void Awake()
     {
-        having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        havings = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var a in havings)
+        {
+            if (a.GetComponent<PhotonView>().IsMine)
+            {
+                having = a.GetComponent<Having>();
+            }
+        }
     }
 
     // Update is called once per frame

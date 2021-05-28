@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Photon.Pun;
 
 public class ShowHaveTrap : MonoBehaviour
 {
@@ -13,10 +14,18 @@ public class ShowHaveTrap : MonoBehaviour
     private Having having;
     private TrapsInfo trapsInfo = new TrapsInfo();
     private int listNum = 0;
+    private GameObject[] havings;
 
     private void Awake()
     {
-        having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        havings = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var a in havings)
+        {
+            if (a.GetComponent<PhotonView>().IsMine)
+            {
+                having = a.GetComponent<Having>();
+            }
+        }
     }
 
     public void ShowItem()

@@ -367,7 +367,7 @@ MonoBehaviour:
   cameraController: {fileID: 0}
   actionText: {fileID: 0}
   punSettings: {fileID: 0}
-  digMaster: 0
+  talkedPlayerdigging: 0
   talkToPlayerObj: {fileID: 0}
   digSceneManagerObj: {fileID: 0}
   digSceneManager: {fileID: 0}

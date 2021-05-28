@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using Photon.Pun;
 public class ShowExchangeItem : MonoBehaviour
 {
     public GameObject nodePrefab;
@@ -15,10 +15,18 @@ public class ShowExchangeItem : MonoBehaviour
     private Having having;
     private ItemInfo itemInfo = new ItemInfo();
     private int listNum = 0;
+    private GameObject[] havings;
 
     private void Awake()
     {
-        having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        havings = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var a in havings)
+        {
+            if (a.GetComponent<PhotonView>().IsMine)
+            {
+                having = a.GetComponent<Having>();
+            }
+        }
     }
 
     // Update is called once per frame
