@@ -31,6 +31,8 @@ public class PlayerAction : MonoBehaviour
     public Text actionText;
     private GameObject targetTrap;
     private CancellationToken token;
+    //private MenuButtonManager buttonManager;
+    //private TalkPanel _talkPanel;
     private TrapsInfo trapsInfo = new TrapsInfo();
     private ItemInfo itemInfo = new ItemInfo();
     public PunSettings punSettings;
@@ -44,6 +46,7 @@ public class PlayerAction : MonoBehaviour
     public FlagManager flagManager;
     public PhotonView photonView;
 
+    
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -55,6 +58,7 @@ public class PlayerAction : MonoBehaviour
             input = GetComponent<PlayerInput>();
             menuePanel = GameObject.Find("MenuPanel");
             talkPanel = GameObject.Find("TalkPanel");
+            talkPanel.SetActive(false);
             //trapPrefab = Resources.Load<GameObject>("TrapPrefab");
             //menuButtonManager = GameObject.FindObjectOfType<MenuButtonManager>();
             collider = GetComponent<CapsuleCollider>();
@@ -69,6 +73,9 @@ public class PlayerAction : MonoBehaviour
             digSceneManager = digSceneManagerObj.GetComponent<DigSceneManager>();
             digSceneManager.enabled = true;
             digSceneManager.playerAction = GetComponent<PlayerAction>();
+            //buttonManager = FindObjectOfType<MenuButtonManager>();
+            //buttonManager.enabled = true;
+
             token = this.GetCancellationTokenOnDestroy();
         }
 

@@ -20,7 +20,7 @@ public class TalkPanel : MonoBehaviour
         exchangePointPanel.SetActive(false);
         exchangeTrapPanel.SetActive(false);
         exchangeGoodsPanel.SetActive(false);
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
     }
 
     public void OnExchangePointButtont()

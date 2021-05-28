@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class ShowHaveFossil : MonoBehaviour
 {
@@ -13,10 +14,18 @@ public class ShowHaveFossil : MonoBehaviour
     private Having having;
     private FossilInfo fossilInfo = new FossilInfo();
     private int listNum = 0;
+    private GameObject[] havings;
 
     private void Awake()
     {
-        having = GameObject.FindGameObjectWithTag("Player").GetComponent<Having>();
+        havings = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var a in havings)
+        {
+            if (a.GetComponent<PhotonView>().IsMine)
+            {
+                having = a.GetComponent<Having>();
+            }
+        }
     }
 
     public void ShowItem()
